@@ -1,0 +1,44 @@
+etcd:
+  hosts:
+    - "127.0.0.1:2379"
+  options:
+    cert:          ""
+    key:           ""
+    caCert:        ""
+    dialTimeout:   30
+    dialKeepAlive: 30
+    username:      ""
+    password:      ""
+postgres:
+  url:  "host=127.0.0.1 user=root dbname=test sslmode=disable password=password"
+  poolMax: 100
+  poolMin:  10
+redis:
+  addrs:
+    - "192.168.0.99:7001"
+    - "192.168.0.99:7002"
+    - "192.168.0.99:7003"
+    - "192.168.0.99:7004"
+    - "192.168.0.99:7005"
+    - "192.168.0.99:7006"
+  password: ""
+  poolSize: 100
+  minIdleConns: 10
+emq:
+  url: ""
+  host: "192.168.0.99"
+  tcpPort: "1883"
+  userName: ""
+  password: ""
+
+mongo:
+  #url:  "mongodb://root:password@172.2.2.2:27017/test?&authSource=admin"
+  url:  "mongodb://root:password@192.168.0.99:27017/test?&authSource=admin"
+  options:
+    connectTimeout: 10
+    heartbeatInterval: 20
+    maxConnIdleTime:   300
+    maxPoolSize:       100
+    minPoolSize:       10
+    serverSelectionTimeout: 5
+

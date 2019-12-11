@@ -1,0 +1,12 @@
+2019/12/06 22:40:33 19 -->
+panic: err19
+
+goroutine 39 [running]:
+vchat/common/g.Test_routineN.func1(0xc0000f1788, 0x0)
+	/home/whr/go/src/vchat/common/g/routineN_test.go:17 +0x129
+vchat/common/g.(*RoutineN).Call.func1(0xc0000a8320, 0xc0000ba200)
+	/home/whr/go/src/vchat/common/g/routineN.go:28 +0x57
+created by vchat/common/g.(*RoutineN).Call
+	/home/whr/go/src/vchat/common/g/routineN.go:21 +0x66
+exit status 2
+FAIL	vchat/common/g	0.007s
