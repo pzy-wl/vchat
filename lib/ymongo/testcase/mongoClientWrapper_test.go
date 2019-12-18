@@ -26,7 +26,7 @@ var (
 )
 
 func init() {
-	err := lib.PrepareLibs(
+	err := lib.LoadModules(
 		false,
 		false,
 		false,

@@ -21,6 +21,7 @@ require (
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
+	github.com/robbert229/jwt v2.0.0+incompatible
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b
 	github.com/spf13/viper v1.5.0
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect

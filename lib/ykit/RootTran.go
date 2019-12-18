@@ -21,6 +21,7 @@ import (
 	tran "github.com/go-kit/kit/transport/http"
 
 	"vchat/lib/yetcd"
+	"vchat/lib/ylog"
 )
 
 /*--auth: whr  date:2019-12-05--------------------------
@@ -80,7 +81,7 @@ func (r *RootTran) MakeProxyEndPoint(
 	).Endpoint()
 }
 
-//service auto discovery
+//unit auto discovery
 func (r *RootTran) HandlerSD(ctx context.Context,
 	serviceTag, method, path string,
 	decodeRequestFunc func(ctx context.Context, req *http.Request) (interface{}, error),
@@ -107,6 +108,7 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 	//}
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
 		return nil
 	}
 
@@ -126,7 +128,7 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 	return tran.NewServer(e, decodeRequestFunc, r.EncodeResponse)
 }
 
-// service discovery
+// unit discovery
 func (r *RootTran) FactorySD(ctx context.Context, method, path string,
 	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error)) sd.Factory {
 	return func(instance string) (endpoint.Endpoint, io.Closer, error) {

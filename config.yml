@@ -1,18 +1,33 @@
+# 這個段的微服是不同的
+microService:
+  # 每一种服务不相同，同类的微服务相同
+  tag:  demo
+  # 本地监听商品，docker中
+  port: 9000
+  # 本地监听主机，docker中
+  host: 127.0.0.1
+  # etct注册端口，docker映射到外部时使用
+  regPort: 9000
+  # etct注册主机，docker映射到外部时使用
+  regHost: 127.0.0.1
+# 所有微服務相同
 etcd:
   hosts:
-    - "127.0.0.1:2379"
+    - "192.168.0.99:2379"
   options:
     cert:          ""
     key:           ""
     caCert:        ""
-    dialTimeout:   30
-    dialKeepAlive: 30
+    # dialTimeout:   30
+    # dialKeepAlive: 30
     username:      ""
     password:      ""
+# 所有微服務可能相同
 postgres:
   url:  "host=127.0.0.1 user=root dbname=test sslmode=disable password=password"
   poolMax: 100
   poolMin:  10
+# 所有微服務相同
 redis:
   addrs:
     - "192.168.0.99:7001"
@@ -24,13 +39,14 @@ redis:
   password: ""
   poolSize: 100
   minIdleConns: 10
+# 所有微服務相同
 emq:
   url: ""
   host: "192.168.0.99"
   tcpPort: "1883"
   userName: ""
   password: ""
-
+# 所有微服務相同
 mongo:
   #url:  "mongodb://root:password@172.2.2.2:27017/test?&authSource=admin"
   url:  "mongodb://root:password@192.168.0.99:27017/test?&authSource=admin"
@@ -41,4 +57,3 @@ mongo:
     maxPoolSize:       100
     minPoolSize:       10
     serverSelectionTimeout: 5
-

@@ -100,17 +100,17 @@ func Test_mult(t *testing.T) {
 //
 //	addr := fmt.Sprint(host, ":", port)
 //	client, err := etcdv3.NewClient(ctx, []string{"127.0.0.1:2379"}, options)
-//	service := etcdv3.Service{
+//	unit := etcdv3.Service{
 //		Key:   fmt.Sprint(serviceName, "||", addr),
 //		Value: addr,
 //		TTL:   etcdv3.NewTTLOption(time.Second*3, time.Second*10),
 //	}
-//	if err = client.Register(service); err != nil {
+//	if err = client.Register(unit); err != nil {
 //		fmt.Println("###register error:", err)
 //		return err
 //	}
 //
-//	fmt.Println(service.Key, "--register successful")
+//	fmt.Println(unit.Key, "--register successful")
 //	return nil
 //}
 

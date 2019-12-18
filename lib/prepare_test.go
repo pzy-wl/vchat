@@ -3,10 +3,12 @@ package lib
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"testing"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+
 	"vchat/common/g"
 	"vchat/lib/ylog"
 	"vchat/lib/ymongo"
@@ -21,14 +23,14 @@ import (
 //load config from vchat/.
 
 func Test_config_load_etcd(t *testing.T) {
-	PrepareLibs(true, false, false, false, false)
+	LoadModules(true, false, false, false, false)
 	spew.Dump(yetcd.XETCDConfig)
 	err := yetcd.RegisterService("api", "www.sina.com.cn", "3333")
 	log.Println(err)
 }
 
 func Test_config_load_pg(t *testing.T) {
-	err := PrepareLibs(false, true, false, false, false)
+	err := LoadModules(false, true, false, false, false)
 	if err != nil {
 		log.Println(err)
 		return
@@ -51,7 +53,7 @@ func Test_config_load_pg(t *testing.T) {
 }
 
 func Test_load_config_redis(t *testing.T) {
-	err := PrepareLibs(
+	err := LoadModules(
 		false,
 		false,
 		true, //
@@ -84,7 +86,7 @@ func Test_load_config_redis(t *testing.T) {
 }
 
 func Test_load_config_mongo(t *testing.T) {
-	err := PrepareLibs(
+	err := LoadModules(
 		false,
 		false,
 		false, //
@@ -133,7 +135,7 @@ func Test_load_config_mongo(t *testing.T) {
 }
 
 func Test_load_config_log(t *testing.T) {
-	err := PrepareLibs(
+	err := LoadModules(
 		false,
 		false,
 		false, //
@@ -168,4 +170,20 @@ func Test_load_config_log(t *testing.T) {
 	}
 	fmt.Println("----time--- ", wg.Wait(), "  of", h)
 
+}
+
+func Test_load_options(t *testing.T) {
+	opt := LoadOption{
+		LoadEtcd:  false,
+		LoadPg:    false,
+		LoadRedis: false,
+		LoadMongo: false,
+		LoadMq:    false,
+		LoadJwt:   false,
+	}
+	cfg, err := LoadModulesOfOptions(&opt)
+	fmt.Println("------", "", "-----------")
+	log.Println(err)
+	log.Println(cfg)
+	fmt.Println("------", "", "-----------")
 }

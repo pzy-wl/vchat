@@ -19,12 +19,22 @@ import (
 --------------------------------------- */
 type (
 	YmlConfig struct {
+		//微服务配置
+		MicroService MicroServiceConfig `json:"microService,omitempty"`
+		//etcd配置
 		Etcd     ETCDConfig  `json:"etcd,omitempty"`
 		Postgres PGConfig    `json:"postgres  omitempty"`
 		Redis    RedisConfig `json:"redis   omitempty"`
 		Emq      MQConfig    `json:"emq  omitempty"`
 		Mongo    MongoConfig `json:"mongo   omitempty"`
 		Log      LogConfig   `json:"log,omitempty"`
+		Jwt      JwtConfig   `json:"jwt,omitempty"`
+	}
+
+	ETCDConfig struct {
+		//ETCD cluster hosts
+		Hosts   []string             `json:"hosts,omitempty"`
+		Options etcdv3.ClientOptions `json:"options,omitempty"`
 	}
 
 	LogConfig struct {
@@ -38,12 +48,6 @@ type (
 		FileName string
 		//扩展名
 		Ext string
-	}
-
-	ETCDConfig struct {
-		//ETCD cluster hosts
-		Hosts   []string             `json:"hosts,omitempty"`
-		Options etcdv3.ClientOptions `json:"options,omitempty"`
 	}
 
 	//postgres-sql connection param

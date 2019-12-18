@@ -38,6 +38,9 @@ var (
 func InitETCD(cfg yconfig.ETCDConfig) error {
 	//get config and fill to XETCDConfig
 	*XETCDConfig = cfg
+	//
+	XETCDConfig.Options.DialTimeout *= time.Second
+	XETCDConfig.Options.DialKeepAlive *= time.Second
 	return nil
 }
 
@@ -70,10 +73,10 @@ func RegisterService(serviceName, host, port string) error {
 		TTL:   etcdv3.NewTTLOption(time.Second*3, time.Second*10),
 	}
 	if err = client.Register(service); err != nil {
-		log.Println("###register micro service error:", err)
+		log.Println("###register micro unit error:", err)
 		return err
 	}
 
-	log.Println(service.Key, "--register micro service  successful....")
+	log.Println(service.Key, "--register micro unit  successful....")
 	return nil
 }
