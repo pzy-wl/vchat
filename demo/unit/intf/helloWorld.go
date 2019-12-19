@@ -87,7 +87,7 @@ func (r *HelloWorldHandler) HandlerLocal(service HelloWorldService) *tran.Server
 func (r *HelloWorldHandler) HandlerSD() *tran.Server {
 	return r.base.HandlerSD(
 		context.Background(),
-		"api",
+		MSTAG,
 		"POST",
 		HelloWorld_HANDLER_PATH,
 		r.DecodeRequest,

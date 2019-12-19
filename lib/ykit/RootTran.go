@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	golog "log"
 	"net/http"
 	"net/url"
 	"os"
@@ -108,13 +109,16 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 	//}
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
-		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
 		return nil
 	}
 
 	//
 	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
 	if err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
 		return nil
 	}
 

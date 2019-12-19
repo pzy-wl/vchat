@@ -3,11 +3,11 @@ microService:
   # 每一种服务不相同，同类的微服务相同
   tag:  api
   # 本地监听商品，docker中
-  port: 9000
+  port: 9001
   # 本地监听主机，docker中
   host: localhost
   # etct注册端口，docker映射到外部时使用
-  regPort: 9000
+  regPort: 9001
   # etct注册主机，docker映射到外部时使用
   regHost: localhost
 # 所有微服務相同

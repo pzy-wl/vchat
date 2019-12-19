@@ -63,6 +63,7 @@ func main() {
 	handle := new(intf.HelloWorldHandler).HandlerLocal(new(service.HelloWorldImpl))
 	///HelloWorld
 	http.Handle("/HelloWorld", handle)
+	http.Handle("/UserAdd", handle)
 
 	//-------register micro-service-----------------
 	//註冊微服務到etcd

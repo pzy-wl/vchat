@@ -1,3 +1,5 @@
+package intf
+
 //for snippet用于标准返回值的微服务接口
 import (
 	"context"
@@ -11,18 +13,20 @@ import (
 )
 
 const (
-    //外部定义的常量，每个微服务都不相同
-    //MSTAG="api"
-	P_$name$_HANDLER_PATH = "/$name$"
+	//外部定义的常量，每个微服务都不相同
+	//MSTAG="api"
+	P_UserAdd_HANDLER_PATH = "/UserAdd"
 )
 
 type (
-	$name$Service interface {
-		$method$(in *$name$Request) (ykit.Result, error)
+	UserAddService interface {
+		Add(in *UserAddRequest) (*ykit.Result, error)
 	}
 	//input data
-	$name$Request struct {
-		S string `json:"s"`
+	UserAddRequest struct {
+		ID   string `json:"id"`
+		Name string `json:"name,omitempty"`
+		Age  int    `json:"age,omitempty"`
 	}
 
 	//output data
@@ -33,17 +37,17 @@ type (
 	//}
 
 	// handler implements
-	$name$Handler struct {
+	UserAddHandler struct {
 		base ykit.RootTran
 	}
 )
 
 //用作微服务的endPoint
-func (r *$name$Handler) MakeLocalEndpoint(svc $name$Service) endpoint.Endpoint {
+func (r *UserAddHandler) MakeLocalEndpoint(svc UserAddService) endpoint.Endpoint {
 	return func(_ context.Context, req interface{}) (interface{}, error) {
 		//modify
-		in := req.(*$name$Request)
-		return svc.$method$(in)
+		in := req.(*UserAddRequest)
+		return svc.Add(in)
 		//return ykit.Result{
 		//	Code: 200,
 		//	Msg:  "",
@@ -53,12 +57,12 @@ func (r *$name$Handler) MakeLocalEndpoint(svc $name$Service) endpoint.Endpoint {
 }
 
 //个人实现,参数不能修改
-func (r *$name$Handler) DecodeRequest(ctx context.Context, req *http.Request) (interface{}, error) {
-	return r.base.DecodeRequest(new($name$Request), ctx, req)
+func (r *UserAddHandler) DecodeRequest(ctx context.Context, req *http.Request) (interface{}, error) {
+	return r.base.DecodeRequest(new(UserAddRequest), ctx, req)
 }
 
 //个人实现,参数不能修改
-func (r *$name$Handler) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
+func (r *UserAddHandler) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
 	var response ykit.Result
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 		return nil, err
@@ -67,7 +71,7 @@ func (r *$name$Handler) DecodeResponse(_ context.Context, res *http.Response) (i
 }
 
 //handler for router，微服务本地接口，
-func (r *$name$Handler) HandlerLocal(service $name$Service) *tran.Server {
+func (r *UserAddHandler) HandlerLocal(service UserAddService) *tran.Server {
 	ep := r.MakeLocalEndpoint(service)
 	return tran.NewServer(
 		ep,
@@ -77,20 +81,19 @@ func (r *$name$Handler) HandlerLocal(service $name$Service) *tran.Server {
 }
 
 //sd,proxy实现,用于etcd自动服务发现时的handler
-func (r *$name$Handler) HandlerSD() *tran.Server {
+func (r *UserAddHandler) HandlerSD() *tran.Server {
 	return r.base.HandlerSD(
 		context.Background(),
 		MSTAG,  //外部定义的常量，每个微服务都不相同
 		"POST", //具體的方法
-		P_$name$_HANDLER_PATH,
+		P_UserAdd_HANDLER_PATH,
 		r.DecodeRequest,
 		r.DecodeResponse)
 }
 
-
 // for test
 //测试proxy方式的实现,用於測試某一微服務的運行情況
-func (r *$name$Handler) HandlerProxyForTest() *tran.Server {
+func (r *UserAddHandler) HandlerProxyForTest() *tran.Server {
 	ep := r.MakeProxyEndPointForTest(context.Background())
 	return tran.NewServer(
 		ep,
@@ -101,15 +104,14 @@ func (r *$name$Handler) HandlerProxyForTest() *tran.Server {
 
 // for test
 //sd,proxy实现,调用 指定位置的endPoint
-func (r *$name$Handler) MakeProxyEndPointForTest(
+func (r *UserAddHandler) MakeProxyEndPointForTest(
 	ctx context.Context) endpoint.Endpoint {
 	//modify
 	return r.base.MakeProxyEndPoint(
 		//此为被调用的微服务的(host:port),
 		"localhost:9001",
 		"POST",
-		P_$name$_HANDLER_PATH,
+		P_UserAdd_HANDLER_PATH,
 		r.DecodeResponse,
 		ctx)
 }
-

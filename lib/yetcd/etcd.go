@@ -39,8 +39,8 @@ func InitETCD(cfg yconfig.ETCDConfig) error {
 	//get config and fill to XETCDConfig
 	*XETCDConfig = cfg
 	//
-	XETCDConfig.Options.DialTimeout *= time.Second
-	XETCDConfig.Options.DialKeepAlive *= time.Second
+	XETCDConfig.Options.DialTimeout = time.Second * 10
+	XETCDConfig.Options.DialKeepAlive *= time.Second * 100
 	return nil
 }
 
@@ -60,8 +60,8 @@ func RegisterService(serviceName, host, port string) error {
 		Password:      XETCDConfig.Options.Password,
 	}
 	//set time to second
-	options.DialTimeout = options.DialTimeout * time.Second
-	options.DialKeepAlive = options.DialKeepAlive * time.Second
+	//options.DialTimeout = options.DialTimeout * time.Second
+	//options.DialKeepAlive = options.DialKeepAlive * time.Second
 
 	etcdHosts := XETCDConfig.Hosts
 

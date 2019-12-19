@@ -31,7 +31,7 @@ func main() {
 	//ctx := context.Background()
 
 	http.Handle("/api/HelloWorld", new(intf.HelloWorldHandler).HandlerSD())
-	//http.Handle("/api/SayGoodBye", new(intf.SayGoodByeHandler).HandlerSD())
+	http.Handle("/api/UserAdd", new(intf.UserAddHandler).HandlerSD())
 
 	golog.Println(
 		`start at :9999,url is curl:localhost/hello`,
