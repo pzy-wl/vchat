@@ -4,6 +4,8 @@ import (
 	golog "log"
 	"net/http"
 
+	//单独运行时导入改为这个
+	// or import "github.com/weihaoranW/vchat"
 	"vchat/demo/unit/intf"
 	"vchat/lib"
 )
@@ -11,7 +13,7 @@ import (
 func init() {
 	//------------ prepare modules----------
 	//本步骤主要是装入系统必备的模块
-	_, err := lib.LoadModulesOfOptions(&lib.LoadOption{
+	_, err := lib.InitModulesOfOptions(&lib.LoadOption{
 		LoadMicroService: true, //这不同必需要的
 		LoadEtcd:         true, //etcd必須開啟，否則無法自動發現服務
 		LoadPg:           false,

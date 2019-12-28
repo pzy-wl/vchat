@@ -23,14 +23,14 @@ import (
 //load config from vchat/.
 
 func Test_config_load_etcd(t *testing.T) {
-	LoadModules(true, false, false, false, false)
+	_ = InitModules(true, false, false, false, false)
 	spew.Dump(yetcd.XETCDConfig)
 	err := yetcd.RegisterService("api", "www.sina.com.cn", "3333")
 	log.Println(err)
 }
 
 func Test_config_load_pg(t *testing.T) {
-	err := LoadModules(false, true, false, false, false)
+	err := InitModules(false, true, false, false, false)
 	if err != nil {
 		log.Println(err)
 		return
@@ -53,7 +53,7 @@ func Test_config_load_pg(t *testing.T) {
 }
 
 func Test_load_config_redis(t *testing.T) {
-	err := LoadModules(
+	err := InitModules(
 		false,
 		false,
 		true, //
@@ -86,7 +86,7 @@ func Test_load_config_redis(t *testing.T) {
 }
 
 func Test_load_config_mongo(t *testing.T) {
-	err := LoadModules(
+	err := InitModules(
 		false,
 		false,
 		false, //
@@ -101,8 +101,8 @@ func Test_load_config_mongo(t *testing.T) {
 	var ctx = context.Background()
 	var docs []interface{}
 
-	client := ymongo.XMongo
-	defer client.Disconnect(ctx)
+	client := ymongo.XMongo.Base
+	//defer client.Disconnect(ctx)
 
 	log.Println("cnt ok")
 
@@ -114,9 +114,6 @@ func Test_load_config_mongo(t *testing.T) {
 	t0 := time.Now()
 	for i := 0; i < h; i++ {
 		docs = append(docs, bson.M{"a": i, "b": i * 10})
-		if err != nil {
-			log.Println("insert One err:", err)
-		}
 	}
 
 	if _, err := tb.InsertMany(ctx, docs); err != nil {
@@ -135,7 +132,7 @@ func Test_load_config_mongo(t *testing.T) {
 }
 
 func Test_load_config_log(t *testing.T) {
-	err := LoadModules(
+	err := InitModules(
 		false,
 		false,
 		false, //
@@ -181,7 +178,7 @@ func Test_load_options(t *testing.T) {
 		LoadMq:    false,
 		LoadJwt:   false,
 	}
-	cfg, err := LoadModulesOfOptions(&opt)
+	cfg, err := InitModulesOfOptions(&opt)
 	fmt.Println("------", "", "-----------")
 	log.Println(err)
 	log.Println(cfg)

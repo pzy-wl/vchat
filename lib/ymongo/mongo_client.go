@@ -3,6 +3,7 @@ package ymongo
 import (
 	"context"
 	"log"
+
 	"vchat/lib/yconfig"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,11 +11,11 @@ import (
 )
 
 var (
-	XMongo *mongo.Client
+	XMongo *MongoClientWrapper
 )
 
 func InitMongo(cfg yconfig.MongoConfig) error {
-	cnt, err := NewMongoClient(cfg)
+	cnt, err := NewMongoClientWrapper(cfg)
 	if err != nil {
 		return err
 	}
@@ -22,7 +23,17 @@ func InitMongo(cfg yconfig.MongoConfig) error {
 	return nil
 }
 
-func NewMongoClient(cfg yconfig.MongoConfig) (*mongo.Client, error) {
+func NewMongoClientWrapper(cfg yconfig.MongoConfig) (*MongoClientWrapper, error) {
+	bean, err := newMongoClient(cfg)
+	if err != nil {
+		return nil, err
+	}
+	return &MongoClientWrapper{
+		Base: bean,
+	}, nil
+}
+
+func newMongoClient(cfg yconfig.MongoConfig) (*mongo.Client, error) {
 	var err error
 	var client *mongo.Client
 	// for cluster

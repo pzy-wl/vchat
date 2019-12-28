@@ -36,7 +36,7 @@ func Test_mongo_insert_one(t *testing.T) {
 	var ctx = context.Background()
 	var doc = bson.M{"a": 100, "b": 30}
 
-	client, err := NewMongoClient(cfg)
+	client, err := newMongoClient(cfg)
 	defer client.Disconnect(ctx)
 	if err != nil {
 		fmt.Println("------aa-----------")
@@ -72,7 +72,7 @@ func Test_mongo_insert2(t *testing.T) {
 	var ctx = context.Background()
 	var doc = bson.M{"a": 100, "b": 30}
 
-	client, err := NewMongoClient(cfg)
+	client, err := newMongoClient(cfg)
 	defer client.Disconnect(ctx)
 	if err != nil {
 		fmt.Println("------aa-----------")
@@ -110,7 +110,7 @@ func Test_mongo_insert_batch(t *testing.T) {
 	var ctx = context.Background()
 	var docs []interface{}
 
-	client, err := NewMongoClient(cfg)
+	client, err := newMongoClient(cfg)
 	defer client.Disconnect(ctx)
 	if err != nil {
 		fmt.Println("------aa-----------")
@@ -156,7 +156,7 @@ func Test_mongo_struct(t *testing.T) {
 		Name: "aaaaa",
 	}
 
-	client, err := NewMongoClient(cfg)
+	client, err := newMongoClient(cfg)
 	defer client.Disconnect(ctx)
 	if err != nil {
 		fmt.Println("------aa-----------")

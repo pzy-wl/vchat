@@ -26,7 +26,7 @@ var (
 func init() {
 	//------------ prepare modules----------
 	//本步骤主要是装入系统必备的模块
-	cfg, err := lib.LoadModulesOfOptions(&lib.LoadOption{
+	cfg, err := lib.InitModulesOfOptions(&lib.LoadOption{
 		LoadEtcd:  true,
 		LoadPg:    false,
 		LoadRedis: false,

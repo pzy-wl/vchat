@@ -26,7 +26,7 @@ var (
 )
 
 func init() {
-	err := lib.LoadModules(
+	err := lib.InitModules(
 		false,
 		false,
 		false,
@@ -38,9 +38,7 @@ func init() {
 		panic(err)
 	}
 
-	db = &ymongo.MongoClientWrapper{
-		Base: ymongo.XMongo,
-	}
+	db = ymongo.XMongo
 	if db == nil {
 		log.Println("----------", "init", "------------")
 		panic("db not prepare")

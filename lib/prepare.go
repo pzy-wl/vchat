@@ -10,6 +10,7 @@ import (
 	"vchat/lib/yjwt"
 	"vchat/lib/ylog"
 	"vchat/lib/ymongo"
+	"vchat/lib/ymq"
 	"vchat/lib/ypg"
 	"vchat/lib/yredis"
 )
@@ -24,7 +25,7 @@ type LoadOption struct {
 	LoadJwt          bool //6
 }
 
-func LoadModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
+func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	var (
 		cfg *yconfig.YmlConfig
 		err error
@@ -80,10 +81,16 @@ func LoadModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 		}
 	}
 
+	if opt.LoadMq {
+		if err := ymq.InitMq(cfg.Emq); err != nil {
+			return nil, err
+		}
+	}
+
 	return cfg, nil
 }
 
-func LoadModules(loadEtcd, loadPostgres, loadRedis, loadEMQ, loadMongo bool) error {
+func InitModules(loadEtcd, loadPostgres, loadRedis, loadEMQ, loadMongo bool) error {
 	opt := &LoadOption{
 		LoadEtcd:  loadEtcd,
 		LoadPg:    loadPostgres,
@@ -93,6 +100,6 @@ func LoadModules(loadEtcd, loadPostgres, loadRedis, loadEMQ, loadMongo bool) err
 		LoadJwt:   true,
 	}
 
-	_, err := LoadModulesOfOptions(opt)
+	_, err := InitModulesOfOptions(opt)
 	return err
 }
