@@ -14,8 +14,10 @@ import (
 )
 
 var (
+	// 每个微服务都不同，这里需要更改
+	// todo
 	msTag   = "api"
-	host    = "127.0.0.1"
+	host    = "0.0.0.0"
 	port    = 9000
 	regHost = "127.0.0.1"
 	regPort = 9000
@@ -36,8 +38,8 @@ func init() {
 		panic(err.Error())
 	}
 
-	//------------------------------------------
-	//装入微服务配置
+	//-------###############-----------------------------------
+	//装入微服务配置,对于微服务开发人员，中需要写跌幅，写接口及实现
 	ms := cfg.MicroService
 	//assert yconfig.config
 	if g.IsEmptyOr(ms.Host, ms.Tag, ms.RegHost) {
@@ -48,25 +50,27 @@ func init() {
 		panic("配置文件错误，必须有microService.port/regPort")
 	}
 
-	//
-	//微服務tag,用於註冊時標識/監聽商品/監聽主機
+	//微服務tag,用於註冊時標識/監聽端口/監聽主機
 	msTag, port, regPort = ms.Tag, ms.Port, ms.RegPort
 	//注冊用監聽/注册用主机
-	host, regHost = ms.Host, ms.RegHost
+	host, regHost = "0.0.0.0", ms.RegHost
 }
 
 func main() {
 	ylog.Info("微服务tag：", msTag)
 
+	mux := http.NewServeMux()
 	//--------handlers-----------------------------
-	//配置路由
-	handle := new(intf.HelloWorldHandler).HandlerLocal(new(service.HelloWorldImpl))
-	///HelloWorld
-	http.Handle("/HelloWorld", handle)
-	http.Handle("/UserAdd", handle)
+	// 每一步：配置路由
+	// HelloWorld handler
+	mux.Handle("/HelloWorld", new(intf.HelloWorldHandler).HandlerLocal(new(service.HelloWorldImpl)))
+	// userAdd,注意每个路由的来源
+	mux.Handle("/UserAdd", new(intf.UserAddHandler).HandlerLocal(new(service.UserAddImpl)))
+	// 每一个微服务都需要实现的方法，用于测试服务是否运行
+	mux.Handle("/ping", http.HandlerFunc(new(Ping).handler))
 
 	//-------register micro-service-----------------
-	//註冊微服務到etcd
+	// 每二步:註冊微服務到etcd
 	ylog.Info("正在向etcd注册微服务......")
 	if err := yetcd.RegisterService(msTag, regHost, fmt.Sprint(regPort)); err != nil {
 		ylog.Error("error", err)
@@ -75,7 +79,7 @@ func main() {
 	ylog.Info("注册微服务", msTag, " 成功")
 
 	//--------start server -------------------------
-	//啟動服務器，全球調試，打印垤控制臺和日誌文件
+	//用于显示服务器状态，用于测试
 	fmt.Println(fmt.Sprint("监听:", host, ":", port))
 	testStr := fmt.Sprintf(
 		`测试：curl -X POST  -H 'Content-Type:application/json'  -d '{"S":"hello,weihaoran"}' %s:%d/HelloWorld`,
@@ -84,5 +88,14 @@ func main() {
 	ylog.Info(fmt.Sprint("监听:", host, ":", port))
 
 	addr := fmt.Sprint(host, ":", port)
-	golog.Fatal(http.ListenAndServe(addr, nil))
+
+	//-------------------------------------
+	//  第三步：启动微服务
+	golog.Fatal(http.ListenAndServe(addr, mux))
+}
+
+type Ping struct{}
+
+func (r *Ping) handler(out http.ResponseWriter, in *http.Request) {
+	_, _ = out.Write([]byte("pong........................"))
 }

@@ -12,14 +12,18 @@ import (
 )
 
 const (
+	//todo
 	HelloWorld_HANDLER_PATH = "/HelloWorld"
 )
 
 type (
 	HelloWorldService interface {
+		//todo
 		Hello(in *HelloWorldRequest) (string, error)
 	}
+
 	//input data
+	//todo
 	HelloWorldRequest struct {
 		S string `json:"s"`
 	}
@@ -39,7 +43,7 @@ type (
 
 func (r *HelloWorldHandler) MakeLocalEndpoint(svc HelloWorldService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		//modify
+		//todo
 		in := request.(*HelloWorldRequest)
 		ret, err := svc.Hello(in)
 		if err != nil {
@@ -49,6 +53,7 @@ func (r *HelloWorldHandler) MakeLocalEndpoint(svc HelloWorldService) endpoint.En
 				Data: nil,
 			}, err
 		}
+		//todo
 		return &ykit.Result{
 			Code: 200,
 			Msg:  "ok",
@@ -88,6 +93,7 @@ func (r *HelloWorldHandler) HandlerSD() *tran.Server {
 	return r.base.HandlerSD(
 		context.Background(),
 		MSTAG,
+		//todo
 		"POST",
 		HelloWorld_HANDLER_PATH,
 		r.DecodeRequest,

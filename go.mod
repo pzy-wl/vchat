@@ -24,6 +24,7 @@ require (
 	github.com/robbert229/jwt v2.0.0+incompatible
 	github.com/satori/go.uuid v1.2.1-0.20181028125025-b2ce2384e17b
 	github.com/spf13/viper v1.5.0
+	github.com/tidwall/gjson v1.3.5
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
 	go.etcd.io/etcd v3.3.18+incompatible // indirect
