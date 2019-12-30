@@ -12,17 +12,17 @@ import (
 type BaseModel struct {
 	CreatedTime ytime.Date
 	UpdatedTime ytime.Date
-	DelTime     ytime.Date
+	//DelTime     ytime.Date
 }
 
 // // 注册新建钩子在持久化之前
-func updateTimeStampForCreateCallback(scope *gorm.Scope) {
+func createCallback(scope *gorm.Scope) {
 	if !scope.HasError() {
 		//nowTime := time.Now().Unix()
 		now := ytime.OfNow()
 		if createTimeField, ok := scope.FieldByName("CreatedTime"); ok {
 			if createTimeField.IsBlank {
-				createTimeField.Set(now)
+				_ = createTimeField.Set(now)
 			}
 		}
 
@@ -35,7 +35,7 @@ func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 }
 
 // 注册更新钩子在持久化之前
-func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
+func updateCallback(scope *gorm.Scope) {
 	if _, ok := scope.Get("gorm:update_column"); !ok {
 		_ = scope.SetColumn("UpdatedTime", ytime.OfNow())
 	}

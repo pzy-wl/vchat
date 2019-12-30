@@ -23,11 +23,9 @@ func InitPG(cfg yconfig.PGConfig) (err error) {
 	if cnt, err := NewPGCnt(&cfg); err != nil {
 		return err
 	} else {
-
-		cnt.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
-		cnt.Callback().Update().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
-		cnt.Callback().Delete().Replace("gorm:delete", deleteCallback)
-
+		cnt.Callback().Create().Replace("gorm:update_time_stamp", createCallback)
+		cnt.Callback().Update().Replace("gorm:update_time_stamp", updateCallback)
+		//cnt.Callback().Delete().Replace("gorm:delete", deleteCallback)
 		XDB = cnt
 		return nil
 	}

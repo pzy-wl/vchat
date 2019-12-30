@@ -33,7 +33,7 @@ func Test_mq_publish(t *testing.T) {
 	t0 := time.Now()
 	for i := 0; i < h; i++ {
 		msg := fmt.Sprint(time.Now(), "---msg--", i)
-		cnt.PublishQos("test", 2, "hello "+msg)
+		_ = cnt.PublishQos("test", 2, "hello "+msg)
 	}
 	log.Println("times:", time.Since(t0))
 	//

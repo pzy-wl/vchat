@@ -13,7 +13,7 @@ import (
 
 type Abc struct {
 	ypg.BaseModel
-	ID    int
+	ID    int `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id"`
 	CName string
 }
 
@@ -21,7 +21,7 @@ func (r *Abc) TableName() string {
 	return "abc"
 }
 
-func Test_pg_insert(t *testing.T) {
+func prepare() {
 	// load config
 	opt := &lib.LoadOption{
 		LoadMicroService: false,
@@ -41,8 +41,14 @@ func Test_pg_insert(t *testing.T) {
 	_, err := lib.InitModulesOfOptions(opt)
 	if err != nil {
 		log.Println(err)
+		panic(err.Error())
 		return
 	}
+}
+
+func Test_pg_insert(t *testing.T) {
+	var err error
+	prepare()
 
 	if ypg.XDB.HasTable(new(Abc)) {
 		err := ypg.XDB.DropTable(new(Abc)).Error
@@ -69,6 +75,35 @@ func Test_pg_insert(t *testing.T) {
 		}
 
 		err = ypg.XDB.Save(bean).Error
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		fmt.Println("------", "ok", "-----------")
+	}
+
+	fmt.Println("------", "demo find", "-----------")
+	l := make([]*Abc, 0)
+	err = ypg.XDB.Find(&l).Error
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	spew.Dump(l)
+}
+
+func Test_pg_update(t *testing.T) {
+	prepare()
+	var err error
+
+	for i := 0; i < 10; i++ {
+		bean := &Abc{
+			ID: i,
+		}
+
+		//err = ypg.XDB.Model(bean).Update("CName", "hello").Error
+		err = ypg.XDB.Model(bean).Updates(Abc{CName: "test "}).Error
 		if err != nil {
 			log.Println(err)
 			return
