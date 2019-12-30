@@ -50,5 +50,4 @@ func Test_emq_send(t *testing.T) {
 		}
 		time.Sleep(time.Second)
 	}
-
 }

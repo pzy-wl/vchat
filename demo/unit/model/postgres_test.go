@@ -12,6 +12,7 @@ import (
 )
 
 type Abc struct {
+	ypg.BaseModel
 	ID    int
 	CName string
 }
@@ -43,6 +44,14 @@ func Test_pg_insert(t *testing.T) {
 		return
 	}
 
+	if ypg.XDB.HasTable(new(Abc)) {
+		err := ypg.XDB.DropTable(new(Abc)).Error
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+
 	if !ypg.XDB.HasTable(new(Abc)) {
 		er := ypg.XDB.CreateTable(new(Abc)).Error
 		if er != nil {
@@ -50,6 +59,7 @@ func Test_pg_insert(t *testing.T) {
 			return
 		}
 	}
+
 	//
 	for i := 0; i < 10; i++ {
 		bean := &Abc{

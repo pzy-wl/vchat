@@ -24,7 +24,7 @@ etcd:
     password:      ""
 # 所有微服務可能相同
 postgres:
-  url:  "host=127.0.0.1 user=root dbname=test sslmode=disable password=password"
+  url:  "host=192.168.0.99 user=root dbname=test sslmode=disable password=password"
   poolMax: 100
   poolMin:  10
 # 所有微服務相同

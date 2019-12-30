@@ -19,6 +19,7 @@ import (
 
 type (
 	personX struct {
+		BaseModel
 		ID        uint32     `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id"`
 		Name      string     `gorm:"size:255;not null;unique" json:"Name"`
 		Nickname  string     `gorm:"size:255" json:"nickname"`
