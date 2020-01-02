@@ -2,10 +2,8 @@ package yconfig
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/go-kit/kit/sd/etcdv3"
@@ -154,14 +152,16 @@ func GetYmlConfig() (*YmlConfig, error) {
 
 	//only for test case,all yml from on path
 	if s := os.Getenv("vchat_yml_path"); len(s) > 0 {
-		fmt.Println("------------vchat_yml_path hitted-----", s)
+		log.Println("------------vchat_yml_path hitted-----", s)
 		pwd = s
+	} else {
+		log.Println("vchat_yml_path not found,config file used dir:", s)
 	}
 
 	vp := viper.New()
 	paths := []string{
 		//filepath.Join(pwd, "./config"),
-		filepath.Join(pwd, "./"),
+		pwd,
 	}
 	for _, path := range paths {
 		vp.AddConfigPath(path)
@@ -172,6 +172,8 @@ func GetYmlConfig() (*YmlConfig, error) {
 		log.Println("------------vchat_yml_file hitted-----", fileName)
 		//pwd = s
 		vp.SetConfigName(fileName)
+	} else {
+		log.Println("used default config name config.yml")
 	}
 
 	vp.SetConfigType("yml")

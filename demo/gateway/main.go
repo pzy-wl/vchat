@@ -31,14 +31,15 @@ func init() {
 func main() {
 	addr := "localhost:9999"
 	//ctx := context.Background()
+	mux := http.NewServeMux()
 
-	http.Handle("/api/HelloWorld", new(intf.HelloWorldHandler).HandlerSD())
-	http.Handle("/api/UserAdd", new(intf.UserAddHandler).HandlerSD())
-
+	mux.Handle("/api/HelloWorld", new(intf.HelloWorldHandler).HandlerSD())
+	mux.Handle("/api/UserAdd", new(intf.UserAddHandler).HandlerSD())
+	
 	golog.Println(
 		`start at :9999,url is curl:localhost/hello`,
 		`test command:`,
-		`curl -X POST  -H 'Content-Type:application/json'  -d '{"S":"hello,world pass in data"}' localhost:9999/HelloWorld -v`)
+		`curl -X POST  -H 'Content-Type:application/json'  -d '{"S":"hello,world pass in data"}' localhost:9999/api/HelloWorld -v`)
 
-	golog.Fatal(http.ListenAndServe(addr, nil))
+	golog.Fatal(http.ListenAndServe(addr, mux))
 }

@@ -10,7 +10,7 @@ type (
 		//启动的本地地址
 		Host string
 
-		//向etct注册的商品，,在docker中时需要区分
+		//向etcd注册的商品，,在docker中时需要区分
 		RegPort int
 		//向etcd注册的host,在docker中时需要区分
 		RegHost string
