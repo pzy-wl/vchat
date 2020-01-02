@@ -89,7 +89,7 @@ func (r *HelloWorldHandler) HandlerLocal(service HelloWorldService) *tran.Server
 }
 
 //sd,proxy实现,用于etcd自动服务发现时的handler
-func (r *HelloWorldHandler) HandlerSD() *tran.Server {
+func (r *HelloWorldHandler) HandlerSD(mid ...endpoint.Middleware) *tran.Server {
 	return r.base.HandlerSD(
 		context.Background(),
 		MSTAG,
@@ -97,7 +97,8 @@ func (r *HelloWorldHandler) HandlerSD() *tran.Server {
 		"POST",
 		HelloWorld_HANDLER_PATH,
 		r.DecodeRequest,
-		r.DecodeResponse)
+		r.DecodeResponse,
+		mid...)
 }
 
 // for test

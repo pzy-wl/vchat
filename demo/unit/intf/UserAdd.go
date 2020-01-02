@@ -81,14 +81,15 @@ func (r *UserAddHandler) HandlerLocal(service UserAddService) *tran.Server {
 }
 
 //sd,proxy实现,用于etcd自动服务发现时的handler
-func (r *UserAddHandler) HandlerSD() *tran.Server {
+func (r *UserAddHandler) HandlerSD(mid ...endpoint.Middleware) *tran.Server {
 	return r.base.HandlerSD(
 		context.Background(),
 		MSTAG,  //外部定义的常量，每个微服务都不相同
 		"POST", //具體的方法
 		P_UserAdd_HANDLER_PATH,
 		r.DecodeRequest,
-		r.DecodeResponse)
+		r.DecodeResponse,
+		mid...)
 }
 
 // for test

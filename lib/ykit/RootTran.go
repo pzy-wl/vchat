@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	golog "log"
@@ -37,6 +38,7 @@ type (
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
 	spew.Dump("RootTran->DecodeRequest:reqDatePtr", reqDataPtr)
 	//	spew.Dump("RootTran->DecodeRequest:req", req.Body)
+	fmt.Println("----host:------", req.Host, "------------")
 
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
 		return nil, err
@@ -86,7 +88,8 @@ func (r *RootTran) MakeProxyEndPoint(
 func (r *RootTran) HandlerSD(ctx context.Context,
 	serviceTag, method, path string,
 	decodeRequestFunc func(ctx context.Context, req *http.Request) (interface{}, error),
-	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error)) *tran.Server {
+	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
+	mid ...endpoint.Middleware) *tran.Server {
 	var err error
 	var client etcdv3.Client
 	var logger log.Logger
@@ -95,6 +98,10 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
+
+	golog.Println("----------", "context", "------------")
+	spew.Dump(ctx)
+	golog.Println("----------", "context", "------------")
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
@@ -123,18 +130,21 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 	}
 
 	//
-	factory := r.FactorySD(ctx, method, path, decodeResponseFunc)
+	factory := r.FactorySD(ctx, method, path, decodeResponseFunc, mid...)
 	endPointer := sd.NewEndpointer(instance, factory, logger)
 	balance := lb.NewRoundRobin(endPointer)
 	retry := lb.Retry(retryMax, retryTimeout, balance)
 	e := retry
+	//
+
 	//
 	return tran.NewServer(e, decodeRequestFunc, r.EncodeResponse)
 }
 
 // unit discovery
 func (r *RootTran) FactorySD(ctx context.Context, method, path string,
-	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error)) sd.Factory {
+	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
+	mid ...endpoint.Middleware) sd.Factory {
 	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
 		if !strings.HasPrefix(instance, "http") {
 			instance = "http://" + instance
@@ -148,6 +158,11 @@ func (r *RootTran) FactorySD(ctx context.Context, method, path string,
 		enc := r.EncodeRequestBuffer
 		dec := decodeResponseFunc
 
-		return tran.NewClient(method, targetURL, enc, dec).Endpoint(), nil, nil
+		ep := tran.NewClient(method, targetURL, enc, dec).Endpoint()
+		//
+		for _, f := range mid {
+			ep = f(ep)
+		}
+		return ep, nil, nil
 	}
 }

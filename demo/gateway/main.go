@@ -33,9 +33,9 @@ func main() {
 	//ctx := context.Background()
 	mux := http.NewServeMux()
 
-	mux.Handle("/api/HelloWorld", new(intf.HelloWorldHandler).HandlerSD())
+	mux.Handle("/api/HelloWorld", new(intf.HelloWorldHandler).HandlerSD(Middleware1))
 	mux.Handle("/api/UserAdd", new(intf.UserAddHandler).HandlerSD())
-	
+
 	golog.Println(
 		`start at :9999,url is curl:localhost/hello`,
 		`test command:`,
