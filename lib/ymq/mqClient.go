@@ -38,10 +38,11 @@ func NewMqtt(url string, userName, password string) (*Mqtt, error) {
 //Connect opens connection
 func (m *Mqtt) connect() error {
 	//uuid
-	uid, err := uuid.NewV1()
-	if err != nil {
-		panic(err)
-	}
+	//uid, err := uuid.NewV1()
+	uid := uuid.NewV1()
+	////if err != nil {
+	//	panic(err)
+	//}
 	//
 
 	m.clientID = uid.String()

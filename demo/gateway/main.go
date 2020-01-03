@@ -7,7 +7,8 @@ import (
 
 	//单独运行时导入改为这个
 	// or import "github.com/weihaoranW/vchat"
-	"../unit/intf"
+	"github.com/weihaoranW/vchat/demo/unit/intf"
+
 	"github.com/weihaoranW/vchat/lib"
 	"github.com/weihaoranW/vchat/lib/ykit"
 )

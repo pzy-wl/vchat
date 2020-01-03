@@ -36,10 +36,11 @@ func GetUUID() string {
 }
 
 func getUUID() string {
-	u, err := uuid.NewV1()
-	if err != nil {
-		return ""
-	}
+	//u, err := uuid.NewV1()
+	u := uuid.NewV1()
+	//if err != nil {
+	//	return ""
+	//}
 	//
 	return u.String()
 }
