@@ -150,21 +150,19 @@ func GetYmlConfig() (*YmlConfig, error) {
 		return nil, errors.New("get ymlConfig err," + err.Error())
 	}
 
+	otherPath := ""
 	//only for test case,all yml from on path
 	if s := os.Getenv("vchat_yml_path"); len(s) > 0 {
 		log.Println("------------vchat_yml_path hitted-----", s)
-		pwd = s
+		otherPath = s
 	} else {
 		log.Println("vchat_yml_path not found,config file used dir:", s)
 	}
 
 	vp := viper.New()
-	paths := []string{
-		//filepath.Join(pwd, "./config"),
-		pwd,
-	}
-	for _, path := range paths {
-		vp.AddConfigPath(path)
+	vp.AddConfigPath(pwd)
+	if len(otherPath) > 0 {
+		vp.AddConfigPath(pwd)
 	}
 
 	vp.SetConfigName("config")

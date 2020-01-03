@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	golog "log"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	// or import "github.com/weihaoranW/vchat"
 	"vchat/demo/unit/intf"
 	"vchat/lib"
+	"vchat/lib/ykit"
 )
 
 func init() {
@@ -35,6 +37,12 @@ func main() {
 
 	mux.Handle("/api/HelloWorld", new(intf.HelloWorldHandler).HandlerSD(Middleware1))
 	mux.Handle("/api/UserAdd", new(intf.UserAddHandler).HandlerSD())
+	mux.Handle("/api/aaa", new(ykit.RootTran).HandlerSDDefault(
+		context.Background(),
+		"api",
+		"POST",
+		"/HelloWorld",
+		nil))
 
 	golog.Println(
 		`start at :9999,url is curl:localhost/hello`,

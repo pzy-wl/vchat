@@ -3,8 +3,10 @@ package intf
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-kit/kit/endpoint"
 	tran "github.com/go-kit/kit/transport/http"
 
@@ -42,7 +44,10 @@ type (
 )
 
 func (r *HelloWorldHandler) MakeLocalEndpoint(svc HelloWorldService) endpoint.Endpoint {
-	return func(_ context.Context, request interface{}) (interface{}, error) {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		fmt.Println("#############  hello ###########")
+		spew.Dump(ctx)
+
 		//todo
 		in := request.(*HelloWorldRequest)
 		ret, err := svc.Hello(in)
@@ -98,7 +103,7 @@ func (r *HelloWorldHandler) HandlerSD(mid ...endpoint.Middleware) *tran.Server {
 		HelloWorld_HANDLER_PATH,
 		r.DecodeRequest,
 		r.DecodeResponse,
-		mid...)
+		mid)
 }
 
 // for test

@@ -4,6 +4,7 @@ package intf
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-kit/kit/endpoint"
@@ -73,23 +74,34 @@ func (r *UserAddHandler) DecodeResponse(_ context.Context, res *http.Response) (
 //handler for router，微服务本地接口，
 func (r *UserAddHandler) HandlerLocal(service UserAddService) *tran.Server {
 	ep := r.MakeLocalEndpoint(service)
-	return tran.NewServer(
+
+	// 访问 request内容,丁当于Java中的拦截器
+	before := tran.ServerBefore(func(ctx context.Context, req *http.Request) context.Context {
+		fmt.Println("------------before host:", req.Host)
+		return ctx
+	})
+
+	srv := tran.NewServer(
 		ep,
 		r.DecodeRequest,
 		r.base.EncodeResponse,
-	)
+		before)
+
+	return srv
 }
 
 //sd,proxy实现,用于etcd自动服务发现时的handler
 func (r *UserAddHandler) HandlerSD(mid ...endpoint.Middleware) *tran.Server {
 	return r.base.HandlerSD(
 		context.Background(),
-		MSTAG,  //外部定义的常量，每个微服务都不相同
-		"POST", //具體的方法
+		MSTAG,
+		//外部定义的常量，每个微服务都不相同
+		"POST",
+		//具體的方法
 		P_UserAdd_HANDLER_PATH,
 		r.DecodeRequest,
 		r.DecodeResponse,
-		mid...)
+		mid)
 }
 
 // for test
