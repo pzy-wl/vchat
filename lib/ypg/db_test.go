@@ -13,8 +13,8 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/magiconair/properties/assert"
 
-	"vchat/common/ytime"
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/common/ytime"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 type (

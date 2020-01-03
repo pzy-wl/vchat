@@ -7,7 +7,7 @@ import (
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	uuid "github.com/satori/go.uuid"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 type Mqtt struct {

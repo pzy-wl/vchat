@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

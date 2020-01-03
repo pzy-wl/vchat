@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"vchat/lib"
-	"vchat/lib/yredis"
+	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/yredis"
 )
 
 func Test_redis_set(t *testing.T) {

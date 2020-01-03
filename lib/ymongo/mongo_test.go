@@ -10,7 +10,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/mitchellh/mapstructure"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 
 	"go.mongodb.org/mongo-driver/bson"
 )

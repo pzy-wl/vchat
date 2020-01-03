@@ -8,8 +8,8 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
-	"vchat/lib"
-	"vchat/lib/ymq"
+	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/ymq"
 )
 
 func Test_emq_send(t *testing.T) {

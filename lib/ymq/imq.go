@@ -5,7 +5,7 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 var (

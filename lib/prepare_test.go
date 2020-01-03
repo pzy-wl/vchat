@@ -9,15 +9,15 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 
-	"vchat/common/g"
-	"vchat/lib/ylog"
-	"vchat/lib/ymongo"
+	"github.com/weihaoranW/vchat/common/g"
+	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/weihaoranW/vchat/lib/ymongo"
 
 	"github.com/davecgh/go-spew/spew"
 
-	"vchat/lib/yetcd"
-	"vchat/lib/ypg"
-	"vchat/lib/yredis"
+	"github.com/weihaoranW/vchat/lib/yetcd"
+	"github.com/weihaoranW/vchat/lib/ypg"
+	"github.com/weihaoranW/vchat/lib/yredis"
 )
 
 //load config from vchat/.

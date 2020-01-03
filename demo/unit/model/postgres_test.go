@@ -7,8 +7,8 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	"vchat/lib"
-	"vchat/lib/ypg"
+	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/ypg"
 )
 
 type Abc struct {

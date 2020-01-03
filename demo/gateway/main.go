@@ -7,9 +7,9 @@ import (
 
 	//单独运行时导入改为这个
 	// or import "github.com/weihaoranW/vchat"
-	"vchat/demo/unit/intf"
-	"vchat/lib"
-	"vchat/lib/ykit"
+	"../unit/intf"
+	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/ykit"
 )
 
 func init() {

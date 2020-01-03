@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"vchat/demo/unit/intf"
+	"github.com/weihaoranW/vchat/demo/unit/intf"
 )
 
 type (

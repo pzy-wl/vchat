@@ -9,8 +9,8 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"go.mongodb.org/mongo-driver/bson"
 
-	"vchat/lib"
-	"vchat/lib/ymongo"
+	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/ymongo"
 )
 
 type ABC struct {

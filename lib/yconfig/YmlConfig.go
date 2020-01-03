@@ -152,11 +152,11 @@ func GetYmlConfig() (*YmlConfig, error) {
 
 	otherPath := ""
 	//only for test case,all yml from on path
-	if s := os.Getenv("vchat_yml_path"); len(s) > 0 {
+	if s := os.Getenv("github.com/weihaoranW/vchat_yml_path"); len(s) > 0 {
 		log.Println("------------vchat_yml_path hitted-----", s)
 		otherPath = s
 	} else {
-		log.Println("vchat_yml_path not found,config file used dir:", s)
+		log.Println("github.com/weihaoranW/vchat_yml_path not found,config file used dir:", s)
 	}
 
 	vp := viper.New()
@@ -166,7 +166,7 @@ func GetYmlConfig() (*YmlConfig, error) {
 	}
 
 	vp.SetConfigName("config")
-	if fileName := os.Getenv("vchat_yml_file"); len(fileName) > 0 {
+	if fileName := os.Getenv("github.com/weihaoranW/vchat_yml_file"); len(fileName) > 0 {
 		log.Println("------------vchat_yml_file hitted-----", fileName)
 		//pwd = s
 		vp.SetConfigName(fileName)

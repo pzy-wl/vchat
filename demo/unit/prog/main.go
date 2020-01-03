@@ -5,12 +5,12 @@ import (
 	golog "log"
 	"net/http"
 
-	"vchat/common/g"
-	"vchat/demo/unit/intf"
-	"vchat/demo/unit/service"
-	"vchat/lib"
-	"vchat/lib/yetcd"
-	"vchat/lib/ylog"
+	"github.com/weihaoranW/vchat/common/g"
+	"github.com/weihaoranW/vchat/demo/unit/intf"
+	"github.com/weihaoranW/vchat/demo/unit/service"
+	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/yetcd"
+	"github.com/weihaoranW/vchat/lib/ylog"
 )
 
 var (

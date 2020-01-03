@@ -6,7 +6,7 @@ import (
 	gorm "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 var (

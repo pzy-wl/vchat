@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"vchat/common/g"
-	"vchat/common/ytime"
+	"github.com/weihaoranW/vchat/common/g"
+	"github.com/weihaoranW/vchat/common/ytime"
 )
 
 func Test_log_test(t *testing.T) {
@@ -15,7 +15,7 @@ func Test_log_test(t *testing.T) {
 		today:      ytime.Today(),
 		BackupPath: "./log/backup",
 		LogPath:    "./log",
-		FileName:   "vchat",
+		FileName:   "github.com/weihaoranW/vchat",
 		Ext:        ".log",
 	}
 
@@ -51,7 +51,7 @@ func Test_log_single(t *testing.T) {
 		today:      ytime.Today(),
 		BackupPath: "./log/backup",
 		LogPath:    "./log",
-		FileName:   "vchat",
+		FileName:   "github.com/weihaoranW/vchat",
 		Ext:        ".log",
 	}
 

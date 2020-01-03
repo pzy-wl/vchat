@@ -8,11 +8,11 @@ import (
 
 	"github.com/robbert229/jwt"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 var (
-	jwtSecretKey string = "vchat_jwt_key"
+	jwtSecretKey string = "github.com/weihaoranW/vchat_jwt_key"
 	jwtExpired          = 24 * 365 * 10
 )
 

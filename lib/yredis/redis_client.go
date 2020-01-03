@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-redis/redis"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 var (

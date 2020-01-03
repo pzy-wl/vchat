@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-kit/kit/sd/etcdv3"
 
-	"vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 /*--auth: whr  date:2019/12/511:45--------------------------

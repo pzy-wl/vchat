@@ -22,9 +22,9 @@ import (
 	"github.com/go-kit/kit/sd/lb"
 	tran "github.com/go-kit/kit/transport/http"
 
-	"vchat/lib/yetcd"
-	"vchat/lib/ylog"
-	"vchat/lib/ymid"
+	"github.com/weihaoranW/vchat/lib/yetcd"
+	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/weihaoranW/vchat/lib/ymid"
 )
 
 /*--auth: whr  date:2019-12-05--------------------------

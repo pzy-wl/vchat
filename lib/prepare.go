@@ -5,14 +5,14 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	"vchat/lib/yconfig"
-	"vchat/lib/yetcd"
-	"vchat/lib/yjwt"
-	"vchat/lib/ylog"
-	"vchat/lib/ymongo"
-	"vchat/lib/ymq"
-	"vchat/lib/ypg"
-	"vchat/lib/yredis"
+	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/weihaoranW/vchat/lib/yetcd"
+	"github.com/weihaoranW/vchat/lib/yjwt"
+	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/weihaoranW/vchat/lib/ymongo"
+	"github.com/weihaoranW/vchat/lib/ymq"
+	"github.com/weihaoranW/vchat/lib/ypg"
+	"github.com/weihaoranW/vchat/lib/yredis"
 )
 
 type LoadOption struct {

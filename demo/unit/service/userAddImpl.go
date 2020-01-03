@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 
-	"vchat/demo/unit/intf"
-	"vchat/lib/ykit"
+	"github.com/weihaoranW/vchat/demo/unit/intf"
+	"github.com/weihaoranW/vchat/lib/ykit"
 )
 
 type UserAddImpl struct {

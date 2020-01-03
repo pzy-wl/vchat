@@ -10,7 +10,7 @@ import (
 	"github.com/go-kit/kit/endpoint"
 	tran "github.com/go-kit/kit/transport/http"
 
-	"vchat/lib/ykit"
+	"github.com/weihaoranW/vchat/lib/ykit"
 )
 
 const (

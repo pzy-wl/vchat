@@ -5,8 +5,8 @@ import (
 	"log"
 	"testing"
 
-	"vchat/lib"
-	"vchat/lib/ymongo"
+	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/ymongo"
 )
 
 type MongoHello struct {
