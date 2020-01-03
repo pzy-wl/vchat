@@ -42,7 +42,6 @@ func prepare() {
 	if err != nil {
 		log.Println(err)
 		panic(err.Error())
-		return
 	}
 }
 
