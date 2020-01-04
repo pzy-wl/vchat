@@ -15,7 +15,7 @@ func Test_log_test(t *testing.T) {
 		today:      ytime.Today(),
 		BackupPath: "./log/backup",
 		LogPath:    "./log",
-		FileName:   "github.com/weihaoranW/vchat",
+		FileName:   "vchat",
 		Ext:        ".log",
 	}
 
@@ -51,7 +51,7 @@ func Test_log_single(t *testing.T) {
 		today:      ytime.Today(),
 		BackupPath: "./log/backup",
 		LogPath:    "./log",
-		FileName:   "github.com/weihaoranW/vchat",
+		FileName:   "vchat",
 		Ext:        ".log",
 	}
 

@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	jwtSecretKey string = "github.com/weihaoranW/vchat_jwt_key"
+	jwtSecretKey string = "vchat_jwt_key"
 	jwtExpired          = 24 * 365 * 10
 )
 
