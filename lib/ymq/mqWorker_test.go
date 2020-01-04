@@ -13,7 +13,7 @@ import (
 func Test_mq_publish(t *testing.T) {
 	cfg := &yconfig.MQConfig{
 		Url:          "",
-		Host:         "192.168.0.99",
+		Host:         "192.168.0.201",
 		TCPPort:      "1883",
 		UserName:     "",
 		Password:     "",

@@ -1,4 +1,4 @@
-module github.com/weihaoranW/vchat
+module github.com/weihaoranW/vchat.v1.0
 
 go 1.13
 
