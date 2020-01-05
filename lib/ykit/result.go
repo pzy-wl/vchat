@@ -30,10 +30,10 @@ func RErr(msg string) *Result {
 	}
 }
 
-func ROK(msg string, data interface{}) *Result {
+func ROK(data interface{}) *Result {
 	return &Result{
 		Code: OK,
-		Msg:  msg,
+		Msg:  "ok",
 		Data: data,
 	}
 }
@@ -48,23 +48,23 @@ func RWarn(msg string, data interface{}) *Result {
 
 func ResultOK(data interface{}) *Result {
 	return &Result{
-		Code: 200,
+		Code: OK,
 		Msg:  "执行成功",
 		Data: data,
 	}
 }
 
-func ResultError(err error) *Result {
+func ResultErr(err error) *Result {
 	return &Result{
-		Code: -1,
+		Code: FAIL,
 		Msg:  err.Error(),
 		Data: nil,
 	}
 }
 
-func ResultWarning(warnMsg string, data interface{}) *Result {
+func ResultWarn(warnMsg string, data interface{}) *Result {
 	return &Result{
-		Code: 100,
+		Code: WARNING,
 		Msg:  warnMsg,
 		Data: data,
 	}
