@@ -44,35 +44,43 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//--------etcd -----------------------------
 	// 微服务注册地址设置set XEtcdConfig
 	if opt.LoadEtcd {
+		ylog.Debug("etcd connecting...")
 		if err := yetcd.InitETCD(cfg.Etcd); err != nil {
 			return nil, err
 		}
+		ylog.Debug("etcd connected ok")
 	}
 
 	//-------- postgres sql -----------------------------
 	//postgres 数据库配置参数设置 XDB
 	if opt.LoadPg {
+		ylog.Debug("postgres connecting...")
 		if err := ypg.InitPG(cfg.Postgres); err != nil {
 			return nil, err
 		}
+		ylog.Debug("postgres connected ok")
 	}
 
 	//--------load redis -----------------------------
 	//redis cluster连接设置 xred
 	if opt.LoadRedis {
 		//set XRed
+		ylog.Debug("redis connecting...")
 		if err := yredis.InitRedis(cfg.Redis); err != nil {
 			return nil, err
 		}
+		ylog.Debug("redis connected ok")
 	}
 
 	//--------load emq -----------------------------
 
 	//--------load mongo -----------------------------
 	if opt.LoadMongo {
+		ylog.Debug("mongo connecting...")
 		if err := ymongo.InitMongo(cfg.Mongo); err != nil {
 			return nil, err
 		}
+		ylog.Debug("mongo connected ok")
 	}
 
 	if opt.LoadJwt {
@@ -82,9 +90,11 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	}
 
 	if opt.LoadMq {
+		ylog.Debug("emqx connecting...")
 		if err := ymq.InitMq(cfg.Emq); err != nil {
 			return nil, err
 		}
+		ylog.Debug("emqx connected ok")
 	}
 
 	return cfg, nil
