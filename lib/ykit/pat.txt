@@ -20,7 +20,7 @@ const (
 type (
 	$name$Service interface {
 		//todo
-		$methods$(in *$name$Request) (ykit.Result, error)
+		$methods$(in *$name$Request) (*ykit.Result, error)
 	}
 
 	//input data
