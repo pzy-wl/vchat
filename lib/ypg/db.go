@@ -1,6 +1,7 @@
 package ypg
 
 import (
+	"github.com/weihaoranW/vchat/lib/ylog"
 	"log"
 
 	gorm "github.com/jinzhu/gorm"
@@ -41,6 +42,8 @@ func NewPGCnt(cfg *yconfig.PGConfig) (*gorm.DB, error) {
 	}
 	db.DB().SetMaxOpenConns(cfg.PoolMax)
 	db.DB().SetMaxIdleConns(cfg.PoolMax)
+	db.LogMode(true)
+	db.SetLogger(ylog.GetLogger())
 
 	return db, nil
 }

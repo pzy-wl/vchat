@@ -2,6 +2,7 @@ package ylog
 
 import (
 	"fmt"
+	"log"
 	"sync"
 
 	"github.com/davecgh/go-spew/spew"
@@ -46,6 +47,13 @@ func InitLog(cfg yconfig.LogConfig) error {
 	mu.Lock()
 	defer mu.Unlock()
 	w = bean
+	return nil
+}
+
+func GetLogger() *log.Logger {
+	if w != nil {
+		return w.GetLogger()
+	}
 	return nil
 }
 

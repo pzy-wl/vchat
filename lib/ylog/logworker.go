@@ -27,6 +27,10 @@ type (
 	}
 )
 
+func (r *LogWorker) GetLogger() *log.Logger {
+	return r.log
+}
+
 func (r *LogWorker) Close() error {
 	r.Lock()
 	defer r.Unlock()
