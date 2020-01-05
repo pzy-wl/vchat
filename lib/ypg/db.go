@@ -32,12 +32,6 @@ func InitPG(cfg yconfig.PGConfig) (err error) {
 }
 
 func NewPGCnt(cfg *yconfig.PGConfig) (*gorm.DB, error) {
-	//connStr := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s",
-	//	"127.0.0.1", //viper.GetString("DB_HOST"),
-	//	"root",      //viper.GetString("DB_USER"),
-	//	"test",      //viper.GetString("DB_NAME"),
-	//	"password",  ///viper.GetString("DB_PASS"),
-	//)
 	connStr := cfg.URL
 
 	db, err := gorm.Open("postgres", connStr)

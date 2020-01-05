@@ -35,21 +35,20 @@ func Test_config_load_pg(t *testing.T) {
 		log.Println(err)
 		return
 	}
-	spew.Dump(yetcd.XETCDConfig)
 	if ypg.XDB == nil {
 		log.Println("xdb is null")
 	}
 
-	b := ypg.XDB.HasTable("t")
+	//b := ypg.XDB.HasTable("t")
 	fmt.Println("------exists-----------")
-	log.Println("b", b)
-	fmt.Println("------mapResult-----------")
-	l := make([]interface{}, 0)
-	if err = ypg.XDB.Raw("select * from t").First(&l).Error; err != nil {
-		log.Println("select error:", err)
-	}
+	//log.Println("b", b)
+	//fmt.Println("------mapResult-----------")
+	//l := make([]interface{}, 0)
+	//if err = ypg.XDB.Raw("select * from t").First(&l).Error; err != nil {
+	//	log.Println("select error:", err)
+	//}
 
-	spew.Dump(l)
+	//spew.Dump(l)
 }
 
 func Test_load_config_redis(t *testing.T) {
