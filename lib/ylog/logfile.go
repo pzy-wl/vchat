@@ -3,6 +3,7 @@ package ylog
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -45,9 +46,13 @@ func NewBindLogger(path, fileName, fileSuffix, ext string) (*log.Logger, *os.Fil
 		return nil, nil, err
 	}
 	//defer logFile.Close()
+	writers := []io.Writer{
+		logFile,
+		os.Stdout}
+	multiWriter := io.MultiWriter(writers...)
 
 	//logger := log.New(logFile, "\r\n", log.Ldate|log.Ltime)
-	logger := log.New(logFile, "", log.Ldate|log.Ltime)
+	logger := log.New(multiWriter, "", log.Ldate|log.Ltime)
 	logger.SetFlags(log.LstdFlags)
 
 	return logger, logFile, nil

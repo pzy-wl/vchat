@@ -20,6 +20,7 @@ var (
 func InitLog(cfg yconfig.LogConfig) error {
 	level = cfg.LogLevel
 	if len(level) == 0 {
+		//if not set,then level is debug
 		level = "debug"
 	}
 

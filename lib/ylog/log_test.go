@@ -30,7 +30,6 @@ func Test_log_test(t *testing.T) {
 		})
 	}
 	bean.Wait()
-
 }
 
 func Test_moveTo_(t *testing.T) {
