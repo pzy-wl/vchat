@@ -1,10 +1,6 @@
 package lib
 
 import (
-	"log"
-
-	"github.com/davecgh/go-spew/spew"
-
 	"github.com/weihaoranW/vchat/lib/yconfig"
 	"github.com/weihaoranW/vchat/lib/yetcd"
 	"github.com/weihaoranW/vchat/lib/yjwt"
@@ -25,6 +21,20 @@ type LoadOption struct {
 	LoadJwt          bool //6
 }
 
+func InitModulesOfAll() (*yconfig.YmlConfig, error) {
+	cfg := LoadOption{
+		LoadMicroService: true,
+		LoadEtcd:         true,
+		LoadPg:           true,
+		LoadRedis:        true,
+		LoadMongo:        true,
+		LoadMq:           true,
+		LoadJwt:          true,
+	}
+
+	return InitModulesOfOptions(&cfg)
+}
+
 func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	var (
 		cfg *yconfig.YmlConfig
@@ -33,12 +43,12 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	if cfg, err = yconfig.GetYmlConfig(); err != nil {
 		return nil, err
 	}
-	log.Println("----------", "config-file", "------------")
+	ylog.Debug("----------", "config-file", "------------")
 	//spew.Dump(cfg)
 	//log.Println("----------", "----", "------------")
 
 	if err = ylog.InitLog(cfg.Log); err != nil {
-		spew.Dump(cfg.Log)
+		ylog.DebugDump(cfg.Log)
 		return nil, err
 	}
 	//--------etcd -----------------------------

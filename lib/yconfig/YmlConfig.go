@@ -2,7 +2,7 @@ package yconfig
 
 import (
 	"errors"
-	"log"
+	"fmt"
 	"os"
 	"time"
 
@@ -153,25 +153,25 @@ func GetYmlConfig() (*YmlConfig, error) {
 	otherPath := ""
 	//only for test case,all yml from on path
 	if s := os.Getenv("vchat_yml_path"); len(s) > 0 {
-		log.Println("------------vchat_yml_path hitted-----", s)
+		fmt.Println("------------vchat_yml_path hitted-----", s)
 		otherPath = s
 	} else {
-		log.Println("vchat_yml_path not found,config file used dir:", s)
+		fmt.Println("vchat_yml_path not found,config file used dir:", s)
 	}
 
 	vp := viper.New()
 	vp.AddConfigPath(pwd)
 	if len(otherPath) > 0 {
-		vp.AddConfigPath(pwd)
+		vp.AddConfigPath(otherPath)
 	}
 
 	vp.SetConfigName("config")
 	if fileName := os.Getenv("vchat_yml_file"); len(fileName) > 0 {
-		log.Println("------------vchat_yml_file hitted-----", fileName)
+		fmt.Println("------------vchat_yml_file hitted-----", fileName)
 		//pwd = s
 		vp.SetConfigName(fileName)
 	} else {
-		log.Println("used default config name config.yml")
+		fmt.Println("used default config name config.yml")
 	}
 
 	vp.SetConfigType("yml")
