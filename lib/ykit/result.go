@@ -16,6 +16,36 @@ type (
 	}
 )
 
+const (
+	OK      = 200
+	FAIL    = -1
+	WARNING = 1000
+)
+
+func RErr(msg string) *Result {
+	return &Result{
+		Code: FAIL,
+		Msg:  msg,
+		Data: nil,
+	}
+}
+
+func ROK(msg string, data interface{}) *Result {
+	return &Result{
+		Code: OK,
+		Msg:  msg,
+		Data: data,
+	}
+}
+
+func RWarn(msg string, data interface{}) *Result {
+	return &Result{
+		Code: WARNING,
+		Msg:  msg,
+		Data: data,
+	}
+}
+
 func ResultOK(data interface{}) *Result {
 	return &Result{
 		Code: 200,
