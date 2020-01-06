@@ -16,20 +16,38 @@ type (
 	}
 )
 
+const (
+	OK   = 200
+	ERR  = -1
+	WARN = 1000
+)
+
+func ROK(data interface{}) *Result {
+	return ResultOK(data)
+}
+
 func ResultOK(data interface{}) *Result {
 	return &Result{
-		Code: 200,
+		Code: OK,
 		Msg:  "执行成功",
 		Data: data,
 	}
 }
 
+func RErr(err error) *Result {
+	return ResultError(err)
+}
+
 func ResultError(err error) *Result {
 	return &Result{
-		Code: -1,
+		Code: ERR,
 		Msg:  err.Error(),
 		Data: nil,
 	}
+}
+
+func RWarn(msg string, data interface{}) *Result {
+	return ResultWarning(msg, data)
 }
 
 func ResultWarning(warnMsg string, data interface{}) *Result {
