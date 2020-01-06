@@ -59,7 +59,7 @@ func (r *$name$Handler) DecodeRequest(ctx context.Context, req *http.Request) (i
 }
 
 //个人实现,参数不能修改
-func (r *HelloWorldHandler) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
+func (r *$name$Handler) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
 	var response ykit.Result
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (r *HelloWorldHandler) DecodeResponse(_ context.Context, res *http.Response
 }
 
 //handler for router，微服务本地接口，
-func (r *HelloWorldHandler) HandlerLocal(service $name$Service,
+func (r *$name$Handler) HandlerLocal(service $name$Service,
 	mid []endpoint.Middleware,
 	options ...tran.ServerOption) *tran.Server {
 
