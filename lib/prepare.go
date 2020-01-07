@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"github.com/weihaoranW/vchat/common/ytime"
 	"github.com/weihaoranW/vchat/lib/yconfig"
 	"github.com/weihaoranW/vchat/lib/yetcd"
 	"github.com/weihaoranW/vchat/lib/yjwt"
@@ -40,6 +41,8 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 		cfg *yconfig.YmlConfig
 		err error
 	)
+	initOthers()
+
 	if cfg, err = yconfig.GetYmlConfig(); err != nil {
 		return nil, err
 	}
@@ -122,4 +125,9 @@ func InitModules(loadEtcd, loadPostgres, loadRedis, loadEMQ, loadMongo bool) err
 
 	_, err := InitModulesOfOptions(opt)
 	return err
+}
+
+//初始化其它数据
+func initOthers() {
+	ytime.SetTimeZone()
 }
