@@ -119,3 +119,7 @@ func (t *Date) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)
 }
+
+func (t Date) TimeShanghai() time.Time {
+	return t.Time.In(time.Local)
+}
