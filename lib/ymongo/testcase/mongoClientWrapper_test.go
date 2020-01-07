@@ -87,7 +87,6 @@ func Test_wrapper_insert_many(t *testing.T) {
 
 func Test_mongo_client_wrapper_find(t *testing.T) {
 	client := db.Base
-
 	ctx := context.Background()
 
 	dbName, tbName := "test", "abc"
@@ -122,8 +121,9 @@ func Test_mongo_update_one(t *testing.T) {
 	//var id primitive.ObjectID
 
 	opts := options.FindOneAndUpdate().SetUpsert(true)
-	filter := bson.D{{"a", 1}}
-	update := bson.D{{"$set", bson.D{{"b", 333}}}}
+	filter := bson.D{bson.E{Key: "a", Value: 1}}
+	update := bson.D{bson.E{Key: "$set", Value: bson.D{
+		bson.E{Key: "b", Value: 333}}}}
 	var updatedDocument bson.M
 
 	client := db.Base
@@ -199,4 +199,16 @@ func Test_del_one(t *testing.T) {
 		bson.D{{"a", ""}})
 	log.Println("----------", "aaa", "------------")
 	ylog.Debug("i", i, "  err", err)
+}
+
+type T struct {
+	Key   string
+	Value string
+}
+
+func Test_a_test(t *testing.T) {
+	c := []T{{"a", "b"}, {"c", "d"}}
+	for _, v := range c {
+		fmt.Println(v)
+	}
 }
