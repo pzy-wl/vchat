@@ -10,8 +10,8 @@ import (
 )
 
 type BaseModel struct {
-	CreatedTime ytime.Date
-	UpdatedTime ytime.Date
+	CreatedAt ytime.Date
+	UpdatedAt ytime.Date
 	//DelTime     ytime.Date
 }
 
@@ -20,13 +20,13 @@ func createCallback(scope *gorm.Scope) {
 	if !scope.HasError() {
 		//nowTime := time.Now().Unix()
 		now := ytime.OfNow()
-		if createTimeField, ok := scope.FieldByName("CreatedTime"); ok {
+		if createTimeField, ok := scope.FieldByName("CreatedAt"); ok {
 			if createTimeField.IsBlank {
 				_ = createTimeField.Set(now)
 			}
 		}
 
-		if modifyTimeField, ok := scope.FieldByName("UpdatedTime"); ok {
+		if modifyTimeField, ok := scope.FieldByName("UpdatedAt"); ok {
 			if modifyTimeField.IsBlank {
 				_ = modifyTimeField.Set(now)
 			}
@@ -37,7 +37,7 @@ func createCallback(scope *gorm.Scope) {
 // 注册更新钩子在持久化之前
 func updateCallback(scope *gorm.Scope) {
 	if _, ok := scope.Get("gorm:update_column"); !ok {
-		_ = scope.SetColumn("UpdatedTime", ytime.OfNow())
+		_ = scope.SetColumn("UpdatedAt", ytime.OfNow())
 	}
 }
 
