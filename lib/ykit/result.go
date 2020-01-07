@@ -18,25 +18,9 @@ type (
 
 const (
 	OK      = 200
-	FAIL    = -1
+	ERR     = -1
 	WARNING = 1000
 )
-
-func RErr(msg string) *Result {
-	return &Result{
-		Code: FAIL,
-		Msg:  msg,
-		Data: nil,
-	}
-}
-
-func ROK(data interface{}) *Result {
-	return &Result{
-		Code: OK,
-		Msg:  "ok",
-		Data: data,
-	}
-}
 
 func RWarn(msg string, data interface{}) *Result {
 	return &Result{
@@ -44,6 +28,10 @@ func RWarn(msg string, data interface{}) *Result {
 		Msg:  msg,
 		Data: data,
 	}
+}
+
+func ROK(data interface{}) *Result {
+	return ResultOK(data)
 }
 
 func ResultOK(data interface{}) *Result {
@@ -54,15 +42,23 @@ func ResultOK(data interface{}) *Result {
 	}
 }
 
-func ResultErr(err error) *Result {
+func RErr(err error) *Result {
+	return ResultError(err)
+}
+
+func ResultError(err error) *Result {
 	return &Result{
-		Code: FAIL,
+		Code: ERR,
 		Msg:  err.Error(),
 		Data: nil,
 	}
 }
 
-func ResultWarn(warnMsg string, data interface{}) *Result {
+func ResultWarn(msg string, data interface{}) *Result {
+	return ResultWarning(msg, data)
+}
+
+func ResultWarning(warnMsg string, data interface{}) *Result {
 	return &Result{
 		Code: WARNING,
 		Msg:  warnMsg,

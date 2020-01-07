@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/weihaoranW/vchat/common/reflectUtils"
+	"github.com/weihaoranW/vchat/lib/ylog"
 )
 
 type (
@@ -34,7 +35,6 @@ func (r *MongoClientWrapper) DoInsertOne(dbName, tbName string,
 }
 
 func (r *MongoClientWrapper) tran2Slice(a interface{}) ([]interface{}, error) {
-	//only suupoer struct pointer or slice,array
 	l := make([]interface{}, 0)
 
 	v := reflect.Indirect(reflect.ValueOf(a))
@@ -75,6 +75,67 @@ func (r *MongoClientWrapper) DoInsertMany(dbName, tbName string,
 	//dbName, tbName := "test", "t"
 	tb := db.Database(dbName).Collection(tbName)
 	return tb.InsertMany(ctx, l, opts...)
+}
+
+func (r *MongoClientWrapper) DoUpdateOne(dbName, tbName string,
+	filter, updateExp bson.D) error {
+	//ctx := context.Background()
+	ctx := context.TODO()
+
+	db := r.Base
+	tb := db.Database(dbName).Collection(tbName)
+	opts := options.FindOneAndUpdate().SetUpsert(true)
+
+	//filter := bson.D{{"a", 1}}
+	update := bson.D{{"$set", updateExp}}
+	var ret bson.M
+
+	err := tb.FindOneAndUpdate(ctx, filter, update, opts).Decode(&ret)
+	if err != nil {
+		ylog.Error("mongoClientWrapper.go->DoUpdateOne", err)
+		return err
+	}
+
+	return nil
+}
+
+func (r *MongoClientWrapper) DoDelMany(dbName, tbName string,
+	filter bson.D) (delCount int64, err error) {
+	db := r.Base
+	tb := db.Database(dbName).Collection(tbName)
+	ctx := context.TODO()
+
+	opts := options.Delete().SetCollation(&options.Collation{
+		Locale:    "en_US",
+		Strength:  1,
+		CaseLevel: false,
+	})
+	ret, err := tb.DeleteMany(ctx, filter, opts)
+	if err != nil {
+		ylog.Error("mongoClientWrapper.go->DoDelMany", err)
+		return
+	}
+	delCount = ret.DeletedCount
+	return
+}
+
+func (r *MongoClientWrapper) DoUpdateMany(dbName, tbName string,
+	filter, updateExp bson.D) error {
+	//ctx := context.Background()
+	ctx := context.TODO()
+
+	db := r.Base
+	tb := db.Database(dbName).Collection(tbName)
+	update := bson.D{{"$set", updateExp}}
+
+	//err := tb.FindOneAndUpdate(ctx, filter, update, opts).Decode(&ret)
+	_, err := tb.UpdateMany(ctx, filter, update)
+	if err != nil {
+		ylog.Error("mongoClientWrapper.go->DoUpdateMany", err)
+		return err
+	}
+
+	return nil
 }
 
 func (r *MongoClientWrapper) DoFind(retSlicePtr interface{},

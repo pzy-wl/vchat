@@ -8,8 +8,11 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/weihaoranW/vchat/lib"
+	"github.com/weihaoranW/vchat/lib/ylog"
 	"github.com/weihaoranW/vchat/lib/ymongo"
 )
 
@@ -106,11 +109,80 @@ func Test_mongo_client_wrapper_find(t *testing.T) {
 
 func Test_test_wrapper_find(t *testing.T) {
 	l := make([]*ABC, 0)
-	err := db.DoFind(&l, "test", "abc", bson.M{"id": 1})
+	err := db.DoFind(&l, "test", "abc", bson.M{"_id": 1, "b": 10})
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	fmt.Println("------", "", "-----------")
 	spew.Dump(l)
+}
+
+func Test_mongo_update_one(t *testing.T) {
+	//var id primitive.ObjectID
+
+	opts := options.FindOneAndUpdate().SetUpsert(true)
+	filter := bson.D{{"a", 1}}
+	update := bson.D{{"$set", bson.D{{"b", 333}}}}
+	var updatedDocument bson.M
+
+	client := db.Base
+	tb := client.Database("test").Collection("t")
+	err := tb.FindOneAndUpdate(context.TODO(), filter, update, opts).Decode(&updatedDocument)
+
+	if err != nil {
+		log.Println("########## err:", err)
+		return
+	}
+
+	fmt.Printf("updated document %v", updatedDocument)
+}
+
+func Test_mongo_update_many(t *testing.T) {
+	//var id primitive.ObjectID
+
+	//opts := options.FindOneAndUpdate().SetUpsert(true)
+	filter := bson.D{{"a", 1}}
+	update := bson.D{{"$set", bson.D{{"b", 100}}}}
+	var updatedDocument bson.M
+
+	client := db.Base
+	tb := client.Database("test").Collection("abc")
+	//err := tb.FindOneAndUpdate(context.TODO(), filter, update, opts).Decode(&updatedDocument)
+	_, err := tb.UpdateMany(context.TODO(), filter, update)
+
+	if err != nil {
+		// ErrNoDocuments means that the filter did not match any documents in the collection
+		if err == mongo.ErrNoDocuments {
+			log.Println("########## err:", err)
+			return
+		}
+		log.Fatal(err)
+	}
+
+	fmt.Printf("updated document %v", updatedDocument)
+}
+
+func Test_wrap_update_one(t *testing.T) {
+	err := db.DoUpdateOne("test", "t",
+		bson.D{{"a", 1}},
+		bson.D{{"b", 32}},
+	)
+	if err != nil {
+		ylog.Error("mongoClientWrapper_test.go->", err)
+		return
+	}
+	fmt.Println("------", "ok", "-----------")
+}
+
+func Test_wrap_update_many(t *testing.T) {
+	err := db.DoUpdateMany("test", "t",
+		bson.D{{"a", 1}},
+		bson.D{{"b", 42}},
+	)
+	if err != nil {
+		ylog.Error("mongoClientWrapper_test.go->", err)
+		return
+	}
+	fmt.Println("------", "ok", "-----------")
 }

@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"github.com/weihaoranW/vchat/common/ytime"
 	"github.com/weihaoranW/vchat/lib/yconfig"
 	"github.com/weihaoranW/vchat/lib/yetcd"
 	"github.com/weihaoranW/vchat/lib/yjwt"
@@ -40,6 +41,8 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 		cfg *yconfig.YmlConfig
 		err error
 	)
+	initOthers()
+
 	if cfg, err = yconfig.GetYmlConfig(); err != nil {
 		return nil, err
 	}
@@ -54,7 +57,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//--------etcd -----------------------------
 	// 微服务注册地址设置set XEtcdConfig
 	if opt.LoadEtcd {
-		ylog.Debug("etcd connecting...")
+		ylog.Debug("etcd connecting...", cfg.Etcd.Hosts)
 		if err := yetcd.InitETCD(cfg.Etcd); err != nil {
 			return nil, err
 		}
@@ -64,7 +67,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//-------- postgres sql -----------------------------
 	//postgres 数据库配置参数设置 XDB
 	if opt.LoadPg {
-		ylog.Debug("postgres connecting...")
+		ylog.Debug("postgres connecting...", cfg.Postgres.URL)
 		if err := ypg.InitPG(cfg.Postgres); err != nil {
 			return nil, err
 		}
@@ -75,7 +78,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//redis cluster连接设置 xred
 	if opt.LoadRedis {
 		//set XRed
-		ylog.Debug("redis connecting...")
+		ylog.Debug("redis connecting...", cfg.Redis.Addrs)
 		if err := yredis.InitRedis(cfg.Redis); err != nil {
 			return nil, err
 		}
@@ -86,7 +89,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 
 	//--------load mongo -----------------------------
 	if opt.LoadMongo {
-		ylog.Debug("mongo connecting...")
+		ylog.Debug("mongo connecting...", cfg.Mongo.URL)
 		if err := ymongo.InitMongo(cfg.Mongo); err != nil {
 			return nil, err
 		}
@@ -100,7 +103,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	}
 
 	if opt.LoadMq {
-		ylog.Debug("emqx connecting...")
+		ylog.Debug("emqx connecting...", cfg.Emq.Url, "  ;  ", cfg.Emq.Host)
 		if err := ymq.InitMq(cfg.Emq); err != nil {
 			return nil, err
 		}
@@ -122,4 +125,9 @@ func InitModules(loadEtcd, loadPostgres, loadRedis, loadEMQ, loadMongo bool) err
 
 	_, err := InitModulesOfOptions(opt)
 	return err
+}
+
+//初始化其它数据
+func initOthers() {
+	ytime.SetTimeZone()
 }
