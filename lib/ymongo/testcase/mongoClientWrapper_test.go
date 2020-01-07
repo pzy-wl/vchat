@@ -18,7 +18,7 @@ import (
 
 type ABC struct {
 	ID int `json:"id omitempty"`
-
+	//
 	Name    string `json:"name omitempty"`
 	Age     int    `json:"age omitempty"`
 	AgeIsOk int    `json:"test_b omitempty"`
@@ -178,11 +178,25 @@ func Test_wrap_update_one(t *testing.T) {
 func Test_wrap_update_many(t *testing.T) {
 	err := db.DoUpdateMany("test", "t",
 		bson.D{{"a", 1}},
-		bson.D{{"b", 42}},
-	)
+		bson.D{{"b", 42}})
+
 	if err != nil {
 		ylog.Error("mongoClientWrapper_test.go->", err)
 		return
 	}
 	fmt.Println("------", "ok", "-----------")
+}
+
+func Test_del_many(t *testing.T) {
+	i, err := db.DoDelMany("test", "t",
+		bson.D{{"a", 1}})
+	log.Println("----------", "aaa", "------------")
+	ylog.Debug("i", i, "  err", err)
+}
+
+func Test_del_one(t *testing.T) {
+	i, err := db.DoDelOne("test", "t",
+		bson.D{{"a", ""}})
+	log.Println("----------", "aaa", "------------")
+	ylog.Debug("i", i, "  err", err)
 }

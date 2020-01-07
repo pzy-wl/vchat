@@ -106,11 +106,33 @@ func (r *MongoClientWrapper) DoDelMany(dbName, tbName string,
 	ctx := context.TODO()
 
 	opts := options.Delete().SetCollation(&options.Collation{
-		Locale:    "en_US",
+		//Locale:    "en_US",
+		Locale:    "zh_CN",
 		Strength:  1,
 		CaseLevel: false,
 	})
 	ret, err := tb.DeleteMany(ctx, filter, opts)
+	if err != nil {
+		ylog.Error("mongoClientWrapper.go->DoDelMany", err)
+		return
+	}
+	delCount = ret.DeletedCount
+	return
+}
+func (r *MongoClientWrapper) DoDelOne(dbName, tbName string,
+	filter bson.D) (delCount int64, err error) {
+	db := r.Base
+	tb := db.Database(dbName).Collection(tbName)
+	ctx := context.TODO()
+
+	opts := options.Delete().SetCollation(&options.Collation{
+		//Locale:    "en_US",
+		Locale:    "zh_CN",
+		Strength:  1,
+		CaseLevel: false,
+	})
+
+	ret, err := tb.DeleteOne(ctx, filter, opts)
 	if err != nil {
 		ylog.Error("mongoClientWrapper.go->DoDelMany", err)
 		return
