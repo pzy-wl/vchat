@@ -10,7 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/weihaoranW/vchat/common/reflectUtils"
-	"github.com/weihaoranW/vchat/lib/ylog"
 )
 
 type (
@@ -96,7 +95,6 @@ func (r *MongoClientWrapper) DoUpdateOne(dbName, tbName string,
 
 	err := tb.FindOneAndUpdate(ctx, filter, update, opts).Decode(&ret)
 	if err != nil {
-		ylog.Error("mongoClientWrapper.go->DoUpdateOne", err)
 		return err
 	}
 
@@ -117,7 +115,6 @@ func (r *MongoClientWrapper) DoDelMany(dbName, tbName string,
 	})
 	ret, err := tb.DeleteMany(ctx, filter, opts)
 	if err != nil {
-		ylog.Error("mongoClientWrapper.go->DoDelMany", err)
 		return
 	}
 	delCount = ret.DeletedCount
@@ -138,7 +135,6 @@ func (r *MongoClientWrapper) DoDelOne(dbName, tbName string,
 
 	ret, err := tb.DeleteOne(ctx, filter, opts)
 	if err != nil {
-		ylog.Error("mongoClientWrapper.go->DoDelMany", err)
 		return
 	}
 	delCount = ret.DeletedCount
@@ -157,7 +153,6 @@ func (r *MongoClientWrapper) DoUpdateMany(dbName, tbName string,
 	//err := tb.FindOneAndUpdate(ctx, filter, update, opts).Decode(&ret)
 	_, err := tb.UpdateMany(ctx, filter, update)
 	if err != nil {
-		ylog.Error("mongoClientWrapper.go->DoUpdateMany", err)
 		return err
 	}
 
@@ -174,12 +169,10 @@ func (r *MongoClientWrapper) DoFindOne(ptr interface{},
 
 	ret := tb.FindOne(ctx, filter, opts...)
 	if ret.Err() != nil {
-		ylog.Error("mongoClientWrapper.go->DoFindOne", ret.Err())
 		return ret.Err()
 	}
 
 	if err := ret.Decode(ptr); err != nil {
-		ylog.Error("mongoClientWrapper.go->DoFindOne", err)
 		return err
 	}
 	return nil
