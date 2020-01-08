@@ -107,7 +107,7 @@ func (r *MongoClientWrapper) DoDelMany(dbName, tbName string,
 
 	opts := options.Delete().SetCollation(&options.Collation{
 		//Locale:    "en_US",
-		Locale:    "zh_CN",
+		Locale:    "zh",
 		Strength:  1,
 		CaseLevel: false,
 	})
@@ -127,7 +127,7 @@ func (r *MongoClientWrapper) DoDelOne(dbName, tbName string,
 
 	opts := options.Delete().SetCollation(&options.Collation{
 		//Locale:    "en_US",
-		Locale:    "zh_CN",
+		Locale:    "zh",
 		Strength:  1,
 		CaseLevel: false,
 	})
