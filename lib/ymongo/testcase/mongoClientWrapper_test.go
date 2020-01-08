@@ -41,7 +41,7 @@ func init() {
 		panic(err)
 	}
 
-	db = ymongo.XMongo
+	db = ymongo.X
 	if db == nil {
 		log.Println("----------", "init", "------------")
 		panic("db not prepare")
@@ -284,7 +284,7 @@ func Test_a_b_find_many(t *testing.T) {
 		ylog.Error("### mongoClientWrapper_test.go->", err)
 		return
 	}
-	
+
 	//
 	log.Println("----------", "aaa", "------------")
 	ylog.DebugDump(l)

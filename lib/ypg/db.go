@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	XDB *gorm.DB
+	X *gorm.DB
 )
 
 /*--auth: whr  date:2019/12/511:44--------------------------
@@ -27,7 +27,7 @@ func InitPG(cfg yconfig.PGConfig) (err error) {
 		cnt.Callback().Create().Replace("gorm:update_time_stamp", createCallback)
 		cnt.Callback().Update().Replace("gorm:update_time_stamp", updateCallback)
 		//cnt.Callback().Delete().Replace("gorm:delete", deleteCallback)
-		XDB = cnt
+		X = cnt
 		return nil
 	}
 }

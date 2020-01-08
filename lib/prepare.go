@@ -65,7 +65,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	}
 
 	//-------- postgres sql -----------------------------
-	//postgres 数据库配置参数设置 XDB
+	//postgres 数据库配置参数设置 X
 	if opt.LoadPg {
 		ylog.Debug("postgres connecting...", cfg.Postgres.URL)
 		if err := ypg.InitPG(cfg.Postgres); err != nil {
@@ -77,7 +77,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//--------load redis -----------------------------
 	//redis cluster连接设置 xred
 	if opt.LoadRedis {
-		//set XRed
+		//set X
 		ylog.Debug("redis connecting...", cfg.Redis.Addrs)
 		if err := yredis.InitRedis(cfg.Redis); err != nil {
 			return nil, err

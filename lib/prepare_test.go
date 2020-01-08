@@ -35,16 +35,16 @@ func Test_config_load_pg(t *testing.T) {
 		log.Println(err)
 		return
 	}
-	if ypg.XDB == nil {
+	if ypg.X == nil {
 		log.Println("xdb is null")
 	}
 
-	//b := ypg.XDB.HasTable("t")
+	//b := ypg.X.HasTable("t")
 	fmt.Println("------exists-----------")
 	//log.Println("b", b)
 	//fmt.Println("------mapResult-----------")
 	//l := make([]interface{}, 0)
-	//if err = ypg.XDB.Raw("select * from t").First(&l).Error; err != nil {
+	//if err = ypg.X.Raw("select * from t").First(&l).Error; err != nil {
 	//	log.Println("select error:", err)
 	//}
 
@@ -64,18 +64,18 @@ func Test_load_config_redis(t *testing.T) {
 	}
 	//spew.Dump(yetcd.XETCDConfig)
 	//
-	ret, er := yredis.XRed.Set("key", "aaa_value", time.Hour).Result()
+	ret, er := yredis.X.Set("key", "aaa_value", time.Hour).Result()
 	log.Println(ret, er)
 	fmt.Println("------after set-----------")
-	ret, er = yredis.XRed.Get("key").Result()
+	ret, er = yredis.X.Get("key").Result()
 	log.Println(ret)
 	fmt.Println("-----------------")
 	log.Println(err)
 	//
 	lua := `local a = redis.call('get','key') 
 			return "this is a good result"  `
-	//ret, err = yredis.XRed.ScriptLoad(lua).Result()
-	result, err1 := yredis.XRed.Eval(lua, nil).Result()
+	//ret, err = yredis.X.ScriptLoad(lua).Result()
+	result, err1 := yredis.X.Eval(lua, nil).Result()
 	// it should a wrong test
 	// not lua script
 
@@ -100,7 +100,7 @@ func Test_load_config_mongo(t *testing.T) {
 	var ctx = context.Background()
 	var docs []interface{}
 
-	client := ymongo.XMongo.Base
+	client := ymongo.X.Base
 	//defer client.Disconnect(ctx)
 
 	log.Println("cnt ok")

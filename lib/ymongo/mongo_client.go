@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	XMongo *MongoClientWrapper
+	X *MongoClientWrapper
 )
 
 func InitMongo(cfg yconfig.MongoConfig) error {
@@ -19,7 +19,7 @@ func InitMongo(cfg yconfig.MongoConfig) error {
 	if err != nil {
 		return err
 	}
-	XMongo = cnt
+	X = cnt
 	return nil
 }
 

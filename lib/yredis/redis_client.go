@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	XRed *redis.ClusterClient
+	X *redis.ClusterClient
 )
 
 func InitRedis(cfg yconfig.RedisConfig) error {
@@ -18,7 +18,7 @@ func InitRedis(cfg yconfig.RedisConfig) error {
 	if err != nil {
 		return err
 	}
-	XRed = cnt
+	X = cnt
 	return nil
 }
 

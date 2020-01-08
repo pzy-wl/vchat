@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	XMq *MqWorker
+	X *MqWorker
 )
 
 type (
@@ -28,6 +28,6 @@ func InitMq(cfg yconfig.MQConfig) error {
 		return err
 	}
 
-	XMq = cnt
+	X = cnt
 	return nil
 }
