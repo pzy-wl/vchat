@@ -108,7 +108,7 @@ func Test_mongo_client_wrapper_find(t *testing.T) {
 
 func Test_test_wrapper_find(t *testing.T) {
 	l := make([]*ABC, 0)
-	err := db.DoFind(&l, "test", "abc", bson.M{"_id": 1, "b": 10})
+	err := db.DoFindMany(&l, "test", "abc", bson.M{"_id": 1, "b": 10})
 	if err != nil {
 		log.Println(err)
 		return
@@ -211,4 +211,81 @@ func Test_a_test(t *testing.T) {
 	for _, v := range c {
 		fmt.Println(v)
 	}
+}
+
+func Test_a_insert_One(t *testing.T) {
+	bean := &ABC{
+		ID:      1,
+		Name:    "abc",
+		Age:     0,
+		AgeIsOk: 0,
+	}
+	_, err := db.DoInsertOne("test", "abc", bean)
+	if err != nil {
+		ylog.Error("mongoClientWrapper_test.go->", err)
+		return
+	}
+}
+
+func Test_a_b_findOne(t *testing.T) {
+	bean := &ABC{
+
+	}
+
+	err := db.DoFindOne(bean, "test", "abc",
+		bson.M{"name": "abc"})
+	if err != nil {
+		ylog.Error("### mongoClientWrapper_test.go->", err)
+		return
+	}
+	//
+	log.Println("----------", "aaa", "------------")
+	ylog.DebugDump(bean)
+}
+
+func Test_count(t *testing.T) {
+	var opts *options.CountOptions
+
+	i, err := db.Table("test", "abc").CountDocuments(
+		context.Background(),
+		bson.D{{"name", "abc"}}, opts)
+	if err != nil {
+		ylog.Error("####mongoClientWrapper_test.go->", err)
+		return
+	}
+	log.Println("---------count: ", i, "------------")
+}
+
+func Test_count_1(t *testing.T) {
+	i, err := db.Count("test", "abc",
+		bson.D{{"name", "abc"}})
+	if err != nil {
+		ylog.Error("####mongoClientWrapper_test.go->", err)
+		return
+	}
+	log.Println("---------count: ", i, "------------")
+}
+
+func Test_a_b_find_many(t *testing.T) {
+	l := make([]*ABC, 0)
+
+	i := int64(5)
+	options := &options.FindOptions{
+		Limit: &i,
+		Sort: bson.D{{
+			"Name",
+			1,
+		}},
+	}
+
+	err := db.DoFindMany(&l, "test", "abc",
+		bson.M{"name": bson.M{"$ne": "abc"}}, options)
+	if err != nil {
+		ylog.Error("### mongoClientWrapper_test.go->", err)
+		return
+	}
+	
+	//
+	log.Println("----------", "aaa", "------------")
+	ylog.DebugDump(l)
 }

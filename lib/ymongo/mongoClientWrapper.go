@@ -3,7 +3,6 @@ package ymongo
 import (
 	"context"
 	"errors"
-	"log"
 	"reflect"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,12 +19,17 @@ type (
 	}
 )
 
+func (r *MongoClientWrapper) Table(dbName, tbName string) *mongo.Collection {
+	client := r.Base
+	return client.Database(dbName).Collection(tbName)
+}
+
 func (r *MongoClientWrapper) DoInsertOne(dbName, tbName string,
 	doc interface{}, opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error) {
 	var ctx = context.Background()
 
 	client := r.Base
-	log.Println("cnt ok")
+	//log.Println("cnt ok")
 
 	//var doc = bson.M{"a": 100, "b": 30}
 	//d
@@ -160,7 +164,28 @@ func (r *MongoClientWrapper) DoUpdateMany(dbName, tbName string,
 	return nil
 }
 
-func (r *MongoClientWrapper) DoFind(retSlicePtr interface{},
+func (r *MongoClientWrapper) DoFindOne(ptr interface{},
+	dbName, tbName string,
+	filter interface{},
+	opts ...*options.FindOneOptions) error {
+	var ctx = context.Background()
+	db := r.Base
+	tb := db.Database(dbName).Collection(tbName)
+
+	ret := tb.FindOne(ctx, filter, opts...)
+	if ret.Err() != nil {
+		ylog.Error("mongoClientWrapper.go->DoFindOne", ret.Err())
+		return ret.Err()
+	}
+
+	if err := ret.Decode(ptr); err != nil {
+		ylog.Error("mongoClientWrapper.go->DoFindOne", err)
+		return err
+	}
+	return nil
+}
+
+func (r *MongoClientWrapper) DoFindMany(retSlicePtr interface{},
 	dbName, tbName string,
 	filter interface{},
 	opts ...*options.FindOptions) error {
@@ -198,4 +223,12 @@ func (r *MongoClientWrapper) DoFind(retSlicePtr interface{},
 	v := reflect.ValueOf(retSlicePtr)
 	v.Elem().Set(l)
 	return nil
+}
+
+func (r *MongoClientWrapper) Count(db, tb string, filter bson.D,
+	opts ...*options.CountOptions) (int64, error) {
+	return r.Table(db, tb).CountDocuments(
+		context.Background(),
+		filter,
+		opts...)
 }
