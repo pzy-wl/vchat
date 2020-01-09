@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/weihaoranW/vchat/common/reflectUtils"
+	"github.com/weihaoranW/vchat/common/ypage"
 )
 
 type (
@@ -218,10 +219,44 @@ func (r *MongoClientWrapper) DoFindMany(retSlicePtr interface{},
 	return nil
 }
 
-func (r *MongoClientWrapper) Count(db, tb string, filter bson.D,
+func (r *MongoClientWrapper) DoCount(db, tb string, filter bson.D,
 	opts ...*options.CountOptions) (int64, error) {
 	return r.Table(db, tb).CountDocuments(
 		context.Background(),
 		filter,
 		opts...)
+}
+
+func (r *MongoClientWrapper) DoPage(slicePtr interface{},
+	db, tb string,
+	bean *ypage.PageBean) error {
+	allCount, err := r.DoCount(db, tb, bean.Where)
+	if err != nil {
+		return err
+	}
+	bean.RowsCount = allCount
+	bean.PagesCount = bean.GetPagesCount()
+
+	skip := bean.GetSkip()
+	filter := bson.D{{}}
+	if len(bean.Where) > 0 {
+		filter = bean.Where
+	}
+
+	limit := int64(bean.RowsPerPage)
+	opts := &options.FindOptions{
+		Limit: &limit,
+		Skip:  &skip,
+	}
+
+	if len(bean.Sort) > 0 {
+		opts.Sort = bean.Sort
+	}
+
+	if err = r.DoFindMany(slicePtr, db, tb, filter, opts); err != nil {
+		return err
+	}
+	//
+	bean.Data = slicePtr
+	return nil
 }

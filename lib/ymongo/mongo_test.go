@@ -123,13 +123,11 @@ func Test_mongo_insert_batch(t *testing.T) {
 	dbName, tbName := "test", "t"
 	tb := client.Database(dbName).Collection(tbName)
 
-	h := 10000
+	h := 1000
 	t0 := time.Now()
 	for i := 0; i < h; i++ {
 		docs = append(docs, bson.M{"a": i, "b": i * 10})
-		if err != nil {
-			log.Println("insert One err:", err)
-		}
+
 	}
 
 	if _, err := tb.InsertMany(ctx, docs); err != nil {

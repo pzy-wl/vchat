@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"github.com/weihaoranW/vchat/common/ypage"
 	"github.com/weihaoranW/vchat/lib"
 	"github.com/weihaoranW/vchat/lib/ylog"
 	"github.com/weihaoranW/vchat/lib/ymongo"
@@ -257,7 +258,7 @@ func Test_count(t *testing.T) {
 }
 
 func Test_count_1(t *testing.T) {
-	i, err := db.Count("test", "abc",
+	i, err := db.DoCount("test", "abc",
 		bson.D{{"name", "abc"}})
 	if err != nil {
 		ylog.Error("####mongoClientWrapper_test.go->", err)
@@ -270,7 +271,7 @@ func Test_a_b_find_many(t *testing.T) {
 	l := make([]*ABC, 0)
 
 	i := int64(5)
-	options := &options.FindOptions{
+	opts := &options.FindOptions{
 		Limit: &i,
 		Sort: bson.D{{
 			"Name",
@@ -279,7 +280,7 @@ func Test_a_b_find_many(t *testing.T) {
 	}
 
 	err := db.DoFindMany(&l, "test", "abc",
-		bson.M{"name": bson.M{"$ne": "abc"}}, options)
+		bson.M{"name": bson.M{"$ne": "abc"}}, opts)
 	if err != nil {
 		ylog.Error("### mongoClientWrapper_test.go->", err)
 		return
@@ -288,4 +289,28 @@ func Test_a_b_find_many(t *testing.T) {
 	//
 	log.Println("----------", "aaa", "------------")
 	ylog.DebugDump(l)
+}
+
+func Test_page_bean(t *testing.T) {
+	bean := &ypage.PageBean{
+		PageNo:      2,
+		RowsPerPage: 10,
+		PagesCount:  0,
+		RowsCount:   0,
+		Where:       bson.D{{}},
+		Sort:        nil, //bson.D{{"name", 1}},
+		Data:        nil,
+	}
+
+	l := make([]*ABC, 0)
+
+	err := db.DoPage(&l, "test", "abc", bean)
+
+	if err != nil {
+		ylog.Error("mongoClientWrapper_test.go->", err)
+		return
+	}
+	//
+	fmt.Println("------", "", "-----------")
+	ylog.DebugDump("", bean)
 }
