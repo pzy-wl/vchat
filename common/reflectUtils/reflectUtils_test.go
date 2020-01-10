@@ -1,6 +1,7 @@
 package reflectUtils
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"testing"
@@ -41,3 +42,28 @@ func Test_make_alice_element_ptr(t *testing.T) {
 	spew.Dump(a)
 }
 
+func Test_MakeStructObj(t *testing.T) {
+	bean := &Good{
+		ID:   1,
+		Name: "aaaaaaa",
+	}
+	buffer, err := json.Marshal(bean)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	//
+	obj, er1 := MakeStructObj(new(Good))
+	if er1 != nil {
+		log.Println(err)
+		return
+	}
+
+	er2 := json.Unmarshal(buffer, obj)
+	if er2 != nil {
+		log.Println(er2)
+		return
+	}
+	spew.Dump(obj)
+}

@@ -43,3 +43,15 @@ func MakeSliceElemPtr(a interface{}) (interface{}, error) {
 
 	return reflect.New(tp).Interface(), nil
 }
+
+//传入一个interface型的结构或结构指针，返回新的结果对象
+func MakeStructObj(ptr interface{}) (obj interface{}, err error) {
+	bean := reflect.Indirect(reflect.ValueOf(ptr))
+	//
+	if bean.Type().Kind() != reflect.Struct {
+		return nil, errors.New("no a struct")
+	}
+
+	//
+	return reflect.New(bean.Type()).Interface(), nil
+}
