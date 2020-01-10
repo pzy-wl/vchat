@@ -17,6 +17,8 @@ import (
 --------------------------------------- */
 type (
 	YmlConfig struct {
+		GwConfig GWConfig `json:"gwConfig omitempty"`
+
 		//微服务配置
 		MicroService MicroServiceConfig `json:"microService,omitempty"`
 		//etcd配置

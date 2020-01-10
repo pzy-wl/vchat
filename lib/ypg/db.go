@@ -20,8 +20,8 @@ var (
  --->：yconfig
 --------------------------------------- */
 
-func InitPG(cfg yconfig.PGConfig) (err error) {
-	if cnt, err := NewPGCnt(&cfg); err != nil {
+func InitPG(cfg yconfig.PGConfig, debug ...bool) (err error) {
+	if cnt, err := NewPGCnt(&cfg, debug...); err != nil {
 		return err
 	} else {
 		cnt.Callback().Create().Replace("gorm:update_time_stamp", createCallback)
@@ -32,7 +32,7 @@ func InitPG(cfg yconfig.PGConfig) (err error) {
 	}
 }
 
-func NewPGCnt(cfg *yconfig.PGConfig) (*gorm.DB, error) {
+func NewPGCnt(cfg *yconfig.PGConfig, debug ...bool) (*gorm.DB, error) {
 	connStr := cfg.URL
 
 	db, err := gorm.Open("postgres", connStr)
@@ -42,8 +42,11 @@ func NewPGCnt(cfg *yconfig.PGConfig) (*gorm.DB, error) {
 	}
 	db.DB().SetMaxOpenConns(cfg.PoolMax)
 	db.DB().SetMaxIdleConns(cfg.PoolMax)
-	db.LogMode(true)
-	db.SetLogger(ylog.GetLogger())
+
+	if len(debug) > 1 {
+		db.LogMode(true)
+		db.SetLogger(ylog.GetLogger())
+	}
 
 	return db, nil
 }

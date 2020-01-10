@@ -2,6 +2,7 @@ package ylog
 
 import (
 	"fmt"
+	"github.com/weihaoranW/vchat/lib/yconfig"
 	"log"
 	"testing"
 	"time"
@@ -62,4 +63,30 @@ func Test_log_single(t *testing.T) {
 		obj.Println("hello", j)
 	}
 	log.Println("time:", time.Since(t0))
+}
+
+func Test_debug(t *testing.T) {
+
+	InitLog(yconfig.LogConfig{
+		LogLevel:      "debug",
+		LogBackupPath: "",
+		LogPath:       "",
+		FileName:      "",
+		Ext:           "",
+	})
+
+	Debug("abc")
+	Info("info")
+
+	level = "debug"
+	InitLog(yconfig.LogConfig{
+		LogLevel:      "info",
+		LogBackupPath: "",
+		LogPath:       "",
+		FileName:      "",
+		Ext:           "",
+	})
+	Debug("abc")
+	Info("info")
+
 }

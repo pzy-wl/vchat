@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+
+
 func Today() time.Time {
 	t := time.Now()
 	return DayTime(t)

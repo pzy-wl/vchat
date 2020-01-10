@@ -13,6 +13,7 @@ import (
 
 type (
 	LogWorker struct {
+		Level string
 		today time.Time
 		sync.Mutex
 

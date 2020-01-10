@@ -26,6 +26,7 @@ func InitLog(cfg yconfig.LogConfig) error {
 	}
 
 	bean := &LogWorker{
+		Level:      level,
 		BackupPath: cfg.LogBackupPath,
 		LogPath:    cfg.LogPath,
 		FileName:   cfg.FileName,
@@ -50,6 +51,7 @@ func InitLog(cfg yconfig.LogConfig) error {
 	return nil
 }
 
+// outer called
 func GetLogger() *log.Logger {
 	if w != nil {
 		return w.GetLogger()

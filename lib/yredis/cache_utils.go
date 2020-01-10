@@ -13,7 +13,7 @@ import (
 func CacheAutoGetH(ptrTableBean interface{}, field interface{},
 	callback func(field interface{}) (interface{}, error)) (interface{}, error) {
 	tbName := ymodel.TableName(ptrTableBean)
-	key := TableCacheH(tbName)
+	key := CacheKeyTableH(tbName)
 	log.Println("cache key is:", key)
 	fd := fmt.Sprint(field)
 
@@ -56,4 +56,15 @@ func CacheAutoGetH(ptrTableBean interface{}, field interface{},
 	}
 
 	return obj1, nil
+}
+
+func CacheClearH(ptrTableBean interface{}, fields ...interface{}) {
+	tbName := ymodel.TableName(ptrTableBean)
+	key := CacheKeyTableH(tbName)
+
+	l := make([]string, 0)
+	for _, v := range fields {
+		l = append(l, fmt.Sprint(v))
+	}
+	_ = X.HDel(key, l...)
 }

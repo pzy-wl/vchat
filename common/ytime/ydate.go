@@ -3,6 +3,7 @@ package ytime
 import (
 	"database/sql/driver"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -15,6 +16,11 @@ const (
 	//DateLayout ...
 	DateLayout = "2006-01-02"
 )
+
+func init() {
+	SetTimeZone()
+	log.Println("-----ytime init-called---------")
+}
 
 //SetTimeZone ...
 func SetTimeZone() {

@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/weihaoranW/vchat/lib/ylog"
 	"testing"
 	"time"
 
@@ -45,5 +46,12 @@ func Test_call_back_set(t *testing.T) {
 		spew.Dump(v)
 		fmt.Println("------", time.Since(t0), "-----------")
 	}
+}
 
+func Test_CacheClearH(t *testing.T) {
+	yredis.CacheClearH(new(Good), 2, 4, 8)
+}
+
+func Test_debug(t *testing.T) {
+	ylog.Debug("hello")
 }

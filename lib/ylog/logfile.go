@@ -47,8 +47,12 @@ func NewBindLogger(path, fileName, fileSuffix, ext string) (*log.Logger, *os.Fil
 	}
 	//defer logFile.Close()
 	writers := []io.Writer{
-		logFile,
-		os.Stdout}
+		logFile}
+
+	if levelN() <= 1 {
+		writers = append(writers, os.Stdout)
+	}
+
 	multiWriter := io.MultiWriter(writers...)
 
 	//logger := log.New(logFile, "\r\n", log.Ldate|log.Ltime)

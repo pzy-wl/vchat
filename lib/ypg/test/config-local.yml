@@ -1,5 +1,3 @@
-gwConfig:
-  port: 9999
 microService:
   # 每一种服务不相同，同类的微服务相同
   tag:  api
@@ -12,15 +10,6 @@ microService:
   # etct注册主机，docker映射到外部时使用
   regHost: localhost
   # 所有微服務相同
-log:
-  logLevel: info
-  # 日志路径
-  # logPath: "/Users/whr/logs"
-  # 文件名，不含路径
-  fileName: log
-  # 扩展名
-  ext: .log
-
 etcd:
   hosts:
     - "127.0.0.1:2379"
