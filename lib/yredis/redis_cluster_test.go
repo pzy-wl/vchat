@@ -10,6 +10,15 @@ import (
 	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
+type Good struct {
+	ID   int64
+	Name string
+}
+
+func (Good) TableName() string {
+	return "good"
+}
+
 func Test_redis(t *testing.T) {
 	url := []string{
 		"192.168.0.99:7001",
