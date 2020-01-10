@@ -28,11 +28,12 @@ func init() {
 }
 
 func Test_call_back_set(t *testing.T) {
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		t0 := time.Now()
-		v, err := yredis.CacheAutoGetH(new(Good), int64(1),
+		k := i % 10
+		v, err := yredis.CacheAutoGetH(new(Good), int64(k),
 			func(fd interface{}) (interface{}, error) {
-				time.Sleep(5 * time.Second)
+				time.Sleep(50 * time.Millisecond)
 
 				return &Good{
 					ID:   fd.(int64),

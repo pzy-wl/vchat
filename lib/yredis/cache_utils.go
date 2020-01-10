@@ -3,6 +3,7 @@ package yredis
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/weihaoranW/vchat/lib/ylog"
 	"log"
 
 	"github.com/weihaoranW/vchat/common/reflectUtils"
@@ -22,10 +23,12 @@ func CacheAutoGetH(ptrTableBean interface{}, field interface{},
 			return nil, err
 		}
 		//
-		if s, err := json.Marshal(v); err == nil {
-			_, err := X.HSet(key, fd, string(s)).Result()
-			err != nil{
-
+		var s []byte
+		if s, err = json.Marshal(v); err == nil {
+			_, err = X.HSet(key, fd, string(s)).Result()
+			if err != nil {
+				ylog.Error("cache_utils.go->", err)
+				return v, nil
 			}
 		}
 		return v, nil
