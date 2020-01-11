@@ -3,22 +3,23 @@ package yredis
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/weihaoranW/vchat/lib/ylog"
 	"log"
+
+	"github.com/weihaoranW/vchat/lib/ylog"
 
 	"github.com/weihaoranW/vchat/common/reflectUtils"
 	"github.com/weihaoranW/vchat/common/ymodel"
 )
 
 func CacheAutoGetH(ptrTableBean interface{}, field interface{},
-	callback func(field interface{}) (interface{}, error)) (interface{}, error) {
+	callback func() (interface{}, error)) (interface{}, error) {
 	tbName := ymodel.TableName(ptrTableBean)
 	key := CacheKeyTableH(tbName)
 	log.Println("cache key is:", key)
 	fd := fmt.Sprint(field)
 
 	doCallbackAndSet := func() (interface{}, error) {
-		v, err := callback(field)
+		v, err := callback()
 		if err != nil {
 			return nil, err
 		}
