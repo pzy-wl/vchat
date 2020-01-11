@@ -44,7 +44,9 @@ emq:
   password: ""
 
 mongo:
-  url:  "mongodb://root:password@192.168.0.201:27017/test?&authSource=admin"
+  url:   "mongodb://root:password@192.168.0.201:27017,192.168.0.201:27018,192.168.0.201:27019/test?&authSource=admin&slaveOk=true"
+  #url:   "mongodb://192.168.0.201:27017,192.168.0.201:27018,192.168.0.201:27019/test?&slaveOk=true"
+
   options:
     connectTimeout: 10
     heartbeatInterval: 20

@@ -77,7 +77,7 @@ func Test_wrapper_insert_many(t *testing.T) {
 		l = append(l, bean)
 	}
 
-	ret, err := db.DoInsertMany("test", "abc", l)
+	ret, err := db.DoInsertMany("test", "t", l)
 	log.Println("--------", "", "--------------")
 	log.Println(ret)
 	log.Println("----------------------")
