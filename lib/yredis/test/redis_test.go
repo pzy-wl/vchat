@@ -2,9 +2,10 @@ package test
 
 import (
 	"fmt"
-	"github.com/weihaoranW/vchat/lib/ylog"
 	"testing"
 	"time"
+
+	"github.com/weihaoranW/vchat/lib/ylog"
 
 	"github.com/davecgh/go-spew/spew"
 
@@ -33,12 +34,12 @@ func Test_call_back_set(t *testing.T) {
 		t0 := time.Now()
 		k := i % 10
 		v, err := yredis.CacheAutoGetH(new(Good), int64(k),
-			func(fd interface{}) (interface{}, error) {
+			func() (interface{}, error) {
 				time.Sleep(50 * time.Millisecond)
 
 				return &Good{
-					ID:   fd.(int64),
-					Name: "whr-test" + fmt.Sprint(fd),
+					ID:   int64(k),
+					Name: "whr-test" + fmt.Sprint(int64(k)),
 				}, nil
 
 			})
