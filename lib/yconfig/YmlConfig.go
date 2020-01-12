@@ -17,7 +17,8 @@ import (
 --------------------------------------- */
 type (
 	YmlConfig struct {
-		GwConfig GWConfig `json:"gwConfig omitempty"`
+		RabbitMq RabbitConfig `json:"rabbitMq omitempty"`
+		Gateway  GWConfig     `json:"gwConfig omitempty"`
 
 		//微服务配置
 		MicroService MicroServiceConfig `json:"microService,omitempty"`
@@ -139,6 +140,12 @@ type (
 		// Adds an option for internal use only and should not be set. This option is deprecated and is
 		// not part of the stability guarantee. It may be removed in the future.
 		AuthenticateToAnything bool `json:"authenticateToAnything omitempty"`
+	}
+
+	RabbitConfig struct {
+		Url     string `json:"url omitempty"`
+		PoolMax int    `json:"poolMax  omitempty"`
+		PoolMin int    `json:"poolMin   omitempty"`
 	}
 )
 

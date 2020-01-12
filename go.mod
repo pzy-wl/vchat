@@ -19,6 +19,7 @@ require (
 	github.com/robbert229/jwt v2.0.0+incompatible
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.6.1
+	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tidwall/gjson v1.3.5
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
