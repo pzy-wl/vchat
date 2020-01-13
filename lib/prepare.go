@@ -3,6 +3,7 @@ package lib
 import (
 	"github.com/weihaoranW/vchat/common/ytime"
 	_ "github.com/weihaoranW/vchat/common/ytime"
+	"github.com/weihaoranW/vchat/lib/ymqa"
 	"github.com/weihaoranW/vchat/lib/yconfig"
 	"github.com/weihaoranW/vchat/lib/yetcd"
 	"github.com/weihaoranW/vchat/lib/yjwt"
@@ -20,7 +21,8 @@ type LoadOption struct {
 	LoadRedis        bool //3
 	LoadMongo        bool //4
 	LoadMq           bool //5
-	LoadJwt          bool //6
+	LoadRabbitMq     bool //6
+	LoadJwt          bool //7
 }
 
 func InitModulesOfAll() (*yconfig.YmlConfig, error) {
@@ -31,6 +33,7 @@ func InitModulesOfAll() (*yconfig.YmlConfig, error) {
 		LoadRedis:        true,
 		LoadMongo:        true,
 		LoadMq:           true,
+		LoadRabbitMq:     true,
 		LoadJwt:          true,
 	}
 
@@ -109,6 +112,14 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 			return nil, err
 		}
 		ylog.Debug("emqx connected ok")
+	}
+
+	if opt.LoadRabbitMq {
+		ylog.Debug("rabbit connecting...", cfg.Emq.Url, "  ;  ", cfg.Emq.Host)
+		if err := ymqa.InitRabbit(cfg.RabbitMq); err != nil {
+			return nil, err
+		}
+		ylog.Debug("rabbitmq connected ok")
 	}
 
 	return cfg, nil

@@ -10,7 +10,7 @@ import (
 
 // 只能在安装 rabbitmq 的服务器上操作
 func main() {
-	conn, err := amqp.Dial("amqp://root:password@localhost:5672/")
+	conn, err := amqp.Dial("amqp://root:password@192.168.0.99:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -18,13 +18,15 @@ func main() {
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
 
+	topic := fmt.Sprint("t_", 3%5)
+
 	q, err := ch.QueueDeclare(
-		"hello", // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		topic, // name
+		false, // durable
+		false, // delete when unused
+		false, // exclusive
+		false, // no-wait
+		nil,   // arguments
 	)
 
 	failOnError(err, "Failed to declare a queue")

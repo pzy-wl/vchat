@@ -1,14 +1,15 @@
-package yamq
+package ymqa
 
 import (
 	"errors"
-	"fmt"
-	"github.com/streadway/amqp"
-	"github.com/weihaoranW/vchat/lib/yconfig"
-	"go.uber.org/atomic"
 	"log"
 	"sync"
 	"time"
+
+	"github.com/streadway/amqp"
+	"go.uber.org/atomic"
+
+	"github.com/weihaoranW/vchat/lib/yconfig"
 )
 
 type (
@@ -34,15 +35,16 @@ type (
 		//must be bytes or string
 		Data interface{}
 	}
+	AMQSubCallBack func(body amqp.Delivery) error
 )
 
 const (
-	chanLength = 2000000
+	chanLength = 100 * 1024
 )
 
-func (r *AMqWorker) NewPoolClient(config *yconfig.RabbitConfig) error {
+func (r *AMqWorker) NewClient(config yconfig.RabbitConfig) error {
 	r.Lock()
-	r.config = config
+	r.config = &config
 	r.queue = make(chan *AMqData, chanLength)
 	r.Unlock()
 
@@ -50,8 +52,8 @@ func (r *AMqWorker) NewPoolClient(config *yconfig.RabbitConfig) error {
 	r.max.Store(int64(config.PoolMax))
 	r.count.Store(0)
 
-	go r.scan(*config)
-	return r.createOne(*config)
+	go r.scan(config)
+	return r.createOne(config)
 }
 
 func (r *AMqWorker) scan(cfg yconfig.RabbitConfig) {
@@ -60,16 +62,15 @@ func (r *AMqWorker) scan(cfg yconfig.RabbitConfig) {
 		min := r.min.Load()
 		max := r.max.Load()
 
-		//log.Println("##### emq pool count:", count, " max:", max, " len(chan)", len(r.queue))
+		//log.Println("##### emq pool count:", count, " max:", max, " high(chan)", high(r.queue))
 		if count < min {
 			r.createOne(cfg)
 			continue
 		}
 
 		//如果长度过半，则加一个长度
-		len := len(r.queue)
-		if int64(len) > count*5 && count < max {
-			//ylog.SysLogN().WarnF("emq连接池数量需要增加 count: %d len: %d  max: %d", count, len, max) //log.Printf("emq连接池数量需要增加 count: %d len: %d, max: %d", count, len, max)
+		high := len(r.queue)
+		if int64(high) > count*5 && count < max {
 			r.createOne(cfg)
 			continue
 		}
@@ -79,14 +80,10 @@ func (r *AMqWorker) scan(cfg yconfig.RabbitConfig) {
 }
 
 func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
-	cnt, err := r.GetCntDirect(cfg)
+	cnt, err := r.getCntDirect(cfg)
 	//
 	if err != nil {
 		return errors.New("没有获取到emq连接")
-	}
-	ch, err := cnt.Channel()
-	if err != nil {
-		return errors.New("没有获取到rabbit连接")
 	}
 
 	r.count.Inc()
@@ -96,20 +93,20 @@ func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
 		//出错时，释放连接数量
 		defer func() {
 			r.count.Dec()
-			ch.Close()
-			cnt.Close()
+			_ = cnt.Close()
 			log.Println("##### mq pool close,len(", r.count.Load(), ")")
 		}()
 
 		//start := time.Now()
 		endLoop := false
+		log.Println("....begin wait")
 		for !endLoop {
 			select {
 			case bean, ok := <-r.queue:
 				if ok && bean != nil {
 					success := false
 					for i := 0; i < 3; i++ {
-						if err := publishWrap(ch, bean); err == nil {
+						if err := publishWrap(cnt, bean); err == nil {
 							success = true
 							break
 						}
@@ -118,11 +115,11 @@ func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
 
 					// 重新放入对列中，进行发送
 					if !success {
-						r.Publish(bean.Queue, bean.Qos, bean.Data)
+						_ = r.Publish(bean.Queue, bean.Qos, bean.Data)
 					}
 					continue
 				}
-			case <-time.After(time.Minute * 1):
+			case <-time.After(time.Minute * 50):
 				log.Println("mq wait timeout-->")
 				if r.count.Load() > r.min.Load() {
 					endLoop = true
@@ -147,7 +144,8 @@ func (r *AMqWorker) getSleepDuration(connCount int64) time.Duration {
 	return time.Duration(connCount/100) * time.Second
 }
 
-func (r *AMqWorker) Publish(topic string, qos byte, msg interface{}) error {
+func (r *AMqWorker) Publish(topic string, msg interface{}) error {
+	qos := byte(0)
 	bean := &AMqData{
 		Queue: topic,
 		Qos:   qos,
@@ -162,20 +160,33 @@ func (r *AMqWorker) Publish(topic string, qos byte, msg interface{}) error {
 	return nil
 }
 
-func (r *AMqWorker) Subscribe(topic string, handler func(body *amqp.Delivery) error) (cnt *amqp.Connection, err error) {
+func (r *AMqWorker) Consume(topic string, handler AMQSubCallBack) (cnt *amqp.Connection, err error) {
 	//---------从池中扑出来一个，不归还的mq client------------
-	cnt, err = r.GetCntDirect(*r.config)
-	if cnt == nil {
-		return nil, fmt.Errorf("emqx Subscribe 无法再建立连接")
+	cnt, err = r.getCntDirect(*r.config)
+	if err != nil {
+		return nil, err
 	}
 
 	//订阅并返回，有多个订阅时，可以直接在返回结果上操作
-	err = consumeWrap(topic, handler)
+	err = consumeWrap(cnt, topic, handler, true)
+	return cnt, err
+}
+
+func (r *AMqWorker) ConsumeAck(topic string, handler AMQSubCallBack) (cnt *amqp.Connection, err error) {
+	//---------从池中扑出来一个，不归还的mq client------------
+	cnt, err = r.getCntDirect(*r.config)
+	if err != nil {
+		return nil, err
+	}
+
+	//订阅并返回，有多个订阅时，可以直接在返回结果上操作
+	//autoack = false
+	err = consumeWrap(cnt, topic, handler, false)
 	return cnt, err
 }
 
 // 根据配置，直接生成一个新的连接
-func (r *AMqWorker) GetCntDirect(cfg yconfig.RabbitConfig) (cnt *amqp.Connection, err error) {
+func (r *AMqWorker) getCntDirect(cfg yconfig.RabbitConfig) (cnt *amqp.Connection, err error) {
 	// lock ??
 	cnt, err = getCntOfRabbitMQ(cfg.Url)
 	return

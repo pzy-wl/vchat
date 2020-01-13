@@ -65,17 +65,17 @@ func (r *MqWorker) scan(cfg yconfig.MQConfig) {
 		min := r.min.Load()
 		max := r.max.Load()
 
-		//log.Println("##### emq pool count:", count, " max:", max, " len(chan)", len(r.queue))
+		//log.Println("##### emq pool count:", count, " max:", max, " lenOfQueue(chan)", lenOfQueue(r.queue))
 		if count < min {
-			r.createOne(cfg)
+			_ = r.createOne(cfg)
 			continue
 		}
 
 		//如果长度过半，则加一个长度
-		len := len(r.queue)
-		if int64(len) > count*5 && count < max {
-			//ylog.SysLogN().WarnF("emq连接池数量需要增加 count: %d len: %d  max: %d", count, len, max) //log.Printf("emq连接池数量需要增加 count: %d len: %d, max: %d", count, len, max)
-			r.createOne(cfg)
+		lenOfQueue := len(r.queue)
+		if int64(lenOfQueue) > count*5 && count < max {
+			//ylog.SysLogN().WarnF("emq连接池数量需要增加 count: %d lenOfQueue: %d  max: %d", count, lenOfQueue, max) //log.Printf("emq连接池数量需要增加 count: %d lenOfQueue: %d, max: %d", count, lenOfQueue, max)
+			_ = r.createOne(cfg)
 			continue
 		}
 
@@ -96,7 +96,7 @@ func (r *MqWorker) createOne(cfg yconfig.MQConfig) error {
 		//出错时，释放连接数量
 		defer func() {
 			r.count.Dec()
-			cnt.Destroy()
+			_ = cnt.Destroy()
 			log.Println("##### mq pool close,len(", r.count.Load(), ")")
 		}()
 
@@ -117,12 +117,12 @@ func (r *MqWorker) createOne(cfg yconfig.MQConfig) error {
 
 					// 重新放入对列中，进行发送
 					if !success {
-						r.PublishQos(bean.Topic, bean.Qos, bean.Data)
+						_ = r.PublishQos(bean.Topic, bean.Qos, bean.Data)
 					}
 					continue
 				}
-			case <-time.After(time.Minute * 1):
-				log.Println("mq wait timeout-->")
+			case <-time.After(time.Minute * 10):
+				log.Println("mq wait timeout-->,and recycle...")
 				if r.count.Load() > r.min.Load() {
 					endLoop = true
 				}

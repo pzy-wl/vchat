@@ -60,4 +60,4 @@ mongo:
 rabbitMq:
   url: amqp://root:password@192.168.0.99:5672/
   poolMax: 100
-  poolMin: 10
+  poolMin: 5
