@@ -115,7 +115,7 @@ func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
 
 					// 重新放入对列中，进行发送
 					if !success {
-						_ = r.Publish(bean.Queue, bean.Qos, bean.Data)
+						_ = r.Publish(bean.Queue, bean.Data)
 					}
 					continue
 				}
