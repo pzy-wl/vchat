@@ -1,7 +1,7 @@
 package ymqa
 
 import (
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 var (

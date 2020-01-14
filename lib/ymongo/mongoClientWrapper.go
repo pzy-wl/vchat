@@ -9,8 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/weihaoranW/vchat/common/reflectUtils"
-	"github.com/weihaoranW/vchat/common/ypage"
+	"github.com/vhaoran/vchat/common/reflectUtils"
+	"github.com/vhaoran/vchat/common/ypage"
 )
 
 type (

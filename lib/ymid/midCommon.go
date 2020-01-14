@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 
-	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ylog"
 )
 
 //内置中间件

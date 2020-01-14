@@ -13,7 +13,7 @@ import (
 	//"chat/Library/Inner/Sources/yconfig"
 	//"chat/Library/Inner/Sources/ylog"
 
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 type (

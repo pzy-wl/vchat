@@ -9,10 +9,10 @@ import (
 	"github.com/streadway/amqp"
 	"go.uber.org/atomic"
 
-	"github.com/weihaoranW/vchat/common/ytime"
-	"github.com/weihaoranW/vchat/lib"
-	"github.com/weihaoranW/vchat/lib/ylog"
-	"github.com/weihaoranW/vchat/lib/ymqa"
+	"github.com/vhaoran/vchat/common/ytime"
+	"github.com/vhaoran/vchat/lib"
+	"github.com/vhaoran/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ymqa"
 )
 
 func init() {
@@ -104,7 +104,7 @@ func Test_Consume_ack(t *testing.T) {
 }
 
 func Test_bench_publish(t *testing.T) {
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 100000; i++ {
 		topic := fmt.Sprint("t_", i%5)
 		s := fmt.Sprint("  ", i, " hello_", ytime.OfNow().String())
 		//

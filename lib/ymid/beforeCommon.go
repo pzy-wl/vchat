@@ -6,7 +6,7 @@ import (
 
 	tran "github.com/go-kit/kit/transport/http"
 
-	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ylog"
 )
 
 var ServerBeforeCallback = tran.ServerBefore(beforeCallback)

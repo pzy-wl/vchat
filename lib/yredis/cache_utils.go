@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ylog"
 
-	"github.com/weihaoranW/vchat/common/reflectUtils"
-	"github.com/weihaoranW/vchat/common/ymodel"
+	"github.com/vhaoran/vchat/common/reflectUtils"
+	"github.com/vhaoran/vchat/common/ymodel"
 )
 
 func CacheAutoGetH(ptrTableBean interface{}, field interface{},

@@ -4,7 +4,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	_ "github.com/lib/pq"
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 	"log"
 	_ "xorm.io/core"
 

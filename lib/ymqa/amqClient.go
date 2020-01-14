@@ -6,8 +6,8 @@ import (
 
 	"github.com/streadway/amqp"
 
-	"github.com/weihaoranW/vchat/common/g"
-	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/common/g"
+	"github.com/vhaoran/vchat/lib/ylog"
 )
 
 func getCntOfRabbitMQ(url string) (*amqp.Connection, error) {

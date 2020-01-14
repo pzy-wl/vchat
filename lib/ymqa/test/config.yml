@@ -58,6 +58,6 @@ mongo:
     minPoolSize:       10
     serverSelectionTimeout: 5
 rabbitMq:
-  url: amqp://root:password@192.168.0.99:5672/
+  url: amqp://root:password@192.168.0.201:5672/
   poolMax: 100
   poolMin: 5

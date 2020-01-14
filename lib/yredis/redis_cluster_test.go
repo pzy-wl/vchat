@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 type Good struct {

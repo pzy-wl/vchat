@@ -6,7 +6,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	"github.com/weihaoranW/vchat/common/ytime"
+	"github.com/vhaoran/vchat/common/ytime"
 )
 
 type BaseModel struct {

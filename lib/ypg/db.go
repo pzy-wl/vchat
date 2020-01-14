@@ -1,13 +1,13 @@
 package ypg
 
 import (
-	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ylog"
 	"log"
 
 	gorm "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 var (

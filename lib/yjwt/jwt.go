@@ -8,7 +8,7 @@ import (
 
 	"github.com/robbert229/jwt"
 
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 var (

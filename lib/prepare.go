@@ -1,17 +1,17 @@
 package lib
 
 import (
-	"github.com/weihaoranW/vchat/common/ytime"
-	_ "github.com/weihaoranW/vchat/common/ytime"
-	"github.com/weihaoranW/vchat/lib/ymqa"
-	"github.com/weihaoranW/vchat/lib/yconfig"
-	"github.com/weihaoranW/vchat/lib/yetcd"
-	"github.com/weihaoranW/vchat/lib/yjwt"
-	"github.com/weihaoranW/vchat/lib/ylog"
-	"github.com/weihaoranW/vchat/lib/ymongo"
-	"github.com/weihaoranW/vchat/lib/ymq"
-	"github.com/weihaoranW/vchat/lib/ypg"
-	"github.com/weihaoranW/vchat/lib/yredis"
+	"github.com/vhaoran/vchat/common/ytime"
+	_ "github.com/vhaoran/vchat/common/ytime"
+	"github.com/vhaoran/vchat/lib/ymqa"
+	"github.com/vhaoran/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yetcd"
+	"github.com/vhaoran/vchat/lib/yjwt"
+	"github.com/vhaoran/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ymongo"
+	"github.com/vhaoran/vchat/lib/ymq"
+	"github.com/vhaoran/vchat/lib/ypg"
+	"github.com/vhaoran/vchat/lib/yredis"
 )
 
 type LoadOption struct {

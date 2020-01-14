@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 func Test_mq_publish(t *testing.T) {

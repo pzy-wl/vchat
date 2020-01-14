@@ -5,12 +5,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/weihaoranW/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ylog"
 
 	"github.com/davecgh/go-spew/spew"
 
-	"github.com/weihaoranW/vchat/lib"
-	"github.com/weihaoranW/vchat/lib/yredis"
+	"github.com/vhaoran/vchat/lib"
+	"github.com/vhaoran/vchat/lib/yredis"
 )
 
 type Good struct {

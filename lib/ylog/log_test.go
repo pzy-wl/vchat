@@ -2,13 +2,13 @@ package ylog
 
 import (
 	"fmt"
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 	"log"
 	"testing"
 	"time"
 
-	"github.com/weihaoranW/vchat/common/g"
-	"github.com/weihaoranW/vchat/common/ytime"
+	"github.com/vhaoran/vchat/common/g"
+	"github.com/vhaoran/vchat/common/ytime"
 )
 
 func Test_log_test(t *testing.T) {

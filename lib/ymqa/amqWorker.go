@@ -9,7 +9,7 @@ import (
 	"github.com/streadway/amqp"
 	"go.uber.org/atomic"
 
-	"github.com/weihaoranW/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 type (

@@ -3,8 +3,8 @@ package test
 import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/jinzhu/gorm"
-	"github.com/weihaoranW/vchat/lib"
-	"github.com/weihaoranW/vchat/lib/ypg"
+	"github.com/vhaoran/vchat/lib"
+	"github.com/vhaoran/vchat/lib/ypg"
 	"log"
 	"testing"
 )

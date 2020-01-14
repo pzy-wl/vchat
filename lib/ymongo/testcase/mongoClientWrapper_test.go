@@ -11,10 +11,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/weihaoranW/vchat/common/ypage"
-	"github.com/weihaoranW/vchat/lib"
-	"github.com/weihaoranW/vchat/lib/ylog"
-	"github.com/weihaoranW/vchat/lib/ymongo"
+	"github.com/vhaoran/vchat/common/ypage"
+	"github.com/vhaoran/vchat/lib"
+	"github.com/vhaoran/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ymongo"
 )
 
 type ABC struct {
