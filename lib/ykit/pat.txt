@@ -13,18 +13,15 @@ import (
 )
 
 const (
-	//todo
 	$name$_HANDLER_PATH = "/$name$"
 )
 
 type (
 	$name$Service interface {
-		//todo
 		$methods$(in *$name$Request) (*ykit.Result, error)
 	}
 
 	//input data
-	//todo
 	$name$Request struct {
 		S string `json:"s"`
 	}
@@ -47,7 +44,6 @@ func (r *$name$Handler) MakeLocalEndpoint(svc $name$Service) endpoint.Endpoint {
 		fmt.Println("#############  $name$ ###########")
 		spew.Dump(ctx)
 
-		//todo
 		in := request.(*$name$Request)
 		return svc.$methods$(in)
 	}
@@ -92,7 +88,6 @@ func (r *$name$Handler) HandlerSD(mid []endpoint.Middleware,
 	return r.base.HandlerSD(
 		context.Background(),
 		MSTAG,
-		//todo
 		"POST",
 		$name$_HANDLER_PATH,
 		r.DecodeRequest,
@@ -100,3 +95,14 @@ func (r *$name$Handler) HandlerSD(mid []endpoint.Middleware,
 		mid,
 		options...)
 }
+
+func (r *$name$Handler) ProxySD() endpoint.Endpoint {
+	return r.base.ProxyEndpointSD(
+		context.Background(),
+		MSTAG,
+		"POST",
+		$name$_HANDLER_PATH,
+		r.DecodeRequest,
+		r.DecodeResponse)
+}
+
