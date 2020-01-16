@@ -38,7 +38,7 @@ func CacheAutoGetH(ptrTableBean interface{}, field interface{},
 	s, err := X.HGet(key, fd).Result()
 	// if find
 	if err == nil {
-		ylog.Debug("redis cache hit,key:", key, " v: ", s)
+		ylog.Debug("redis cache hit,key:", key, "  field: ", fd, " v: ", s)
 		obj, err := reflectUtils.MakeStructObj(ptrTableBean)
 		if err != nil {
 			if obj, err = doCallbackAndSet(); err != nil {
