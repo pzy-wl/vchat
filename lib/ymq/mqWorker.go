@@ -146,6 +146,10 @@ func (r *MqWorker) getSleepDuration(connCount int64) time.Duration {
 	return time.Duration(connCount/100) * time.Second
 }
 
+func (r *MqWorker) Publish(topic string, msg interface{}) error {
+	return r.PublishQos(topic, 1, msg)
+}
+
 func (r *MqWorker) PublishQos(topic string, qos byte, msg interface{}) error {
 	bean := &MqData{
 		Topic: topic,
