@@ -13,6 +13,7 @@ import (
 	//"chat/Library/Inner/Sources/yconfig"
 	//"chat/Library/Inner/Sources/ylog"
 
+	"github.com/vhaoran/vchat/common/g"
 	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
@@ -151,10 +152,15 @@ func (r *MqWorker) Publish(topic string, msg interface{}) error {
 }
 
 func (r *MqWorker) PublishQos(topic string, qos byte, msg interface{}) error {
+	buffer, err := g.GetBufferForMq(msg)
+	if err != nil {
+		return err
+	}
+
 	bean := &MqData{
 		Topic: topic,
 		Qos:   qos,
-		Data:  msg,
+		Data:  string(buffer),
 	}
 
 	select {
