@@ -203,3 +203,8 @@ func Test_m2s(t *testing.T) {
 	fmt.Println("------aa-----------")
 	spew.Dump(m)
 }
+
+func Test_test_aggregate(t *testing.T) {
+
+
+}

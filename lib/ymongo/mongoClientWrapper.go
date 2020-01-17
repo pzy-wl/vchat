@@ -260,3 +260,30 @@ func (r *MongoClientWrapper) DoPage(slicePtr interface{},
 	bean.Data = slicePtr
 	return nil
 }
+
+// don't use it,it not pass test case
+func (r *MongoClientWrapper) DoAggregateOne(ptr interface{},
+	dbName, tbName string,
+	pip interface{},
+	opts ...*options.AggregateOptions) error {
+	var ctx = context.Background()
+	db := r.Base
+	tb := db.Database(dbName).Collection(tbName)
+	//pip := bson.D{{"$match",bson.D{{"uid",uid}}},}
+
+	//db.user_addr.aggregate([{$group:{"_id":"$uid",max:{$max:1}}}])
+	// db.abc.aggregate([{$group:{"_id":"$ageisok","age":{$max:"$age"}}}])
+	c, err := tb.Aggregate(ctx, pip, opts...)
+
+	if err != nil {
+		return err
+	}
+	for c.Next(ctx) {
+		if err = bson.Unmarshal(c.Current, ptr); err != nil {
+			return err
+		}
+		break
+	}
+
+	return nil
+}
