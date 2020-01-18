@@ -1,0 +1,349 @@
+package ykit
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"io/ioutil"
+	golog "log"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/sd"
+	"github.com/go-kit/kit/sd/etcdv3"
+	"github.com/go-kit/kit/sd/lb"
+	tran "github.com/go-kit/kit/transport/http"
+
+	"github.com/vhaoran/vchat/lib/yetcd"
+	"github.com/vhaoran/vchat/lib/ylog"
+	"github.com/vhaoran/vchat/lib/ymid"
+)
+
+/*--auth: whr  date:2019-12-05--------------------------
+ 这是微服务是基类，所有实现微服务的接口都
+ 需要"继承"此类，用于快速开发及部署
+--------------------------------------- */
+type (
+	RootTran struct {
+	}
+)
+
+func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
+	spew.Dump("RootTran->DecodeRequest:reqDatePtr", reqDataPtr)
+	//	spew.Dump("RootTran->DecodeRequest:req", req.Body)
+	fmt.Println("----host:------", req.Host, "------------")
+
+	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
+		return nil, err
+	}
+	return reqDataPtr, nil
+}
+
+//针对黑夜传入类型的decode
+func (r *RootTran) DecodeRequestDefault(ctx context.Context, req *http.Request) (interface{}, error) {
+	return r.DecodeRequest(new(RequestDefault), ctx, req)
+}
+
+func (r *RootTran) EncodeRequestBuffer(_ context.Context, res *http.Request, requestData interface{}) error {
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(requestData); err != nil {
+		return err
+	}
+	res.Body = ioutil.NopCloser(&buf)
+	return nil
+}
+
+func (r *RootTran) EncodeResponse(_ context.Context, wr http.ResponseWriter, res interface{}) error {
+	return json.NewEncoder(wr).Encode(res)
+}
+
+//实现decoder
+func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) (interface{}, error) {
+	var response Result
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+//manual proxy
+func (r *RootTran) ProxyEndPointOfInstance(
+	instance,
+	method,
+	path string,
+	decodeResponse func(_ context.Context, r *http.Response) (interface{}, error),
+	ctx context.Context) endpoint.Endpoint {
+	//instance := "localhost:9999"
+
+	if !strings.HasPrefix(instance, "http") {
+		instance = "http://" + instance
+	}
+	u, err := url.Parse(instance)
+	if err != nil {
+		panic(err)
+	}
+	u.Path = path
+	return tran.NewClient(
+		method,
+		u,
+		r.EncodeRequestBuffer,
+		decodeResponse,
+	).Endpoint()
+}
+
+//unit auto discovery
+func (r *RootTran) ProxyEndpointSD(ctx context.Context,
+	serviceTag, method, path string,
+	decodeRequestFunc func(ctx context.Context, req *http.Request) (interface{}, error),
+	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
+) endpoint.Endpoint {
+	var err error
+	var client etcdv3.Client
+	var logger log.Logger
+	{
+		logger = log.NewLogfmtLogger(os.Stderr)
+		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+		logger = log.With(logger, "caller", log.DefaultCaller)
+	}
+
+	golog.Println("----------", "context", "------------")
+	spew.Dump(ctx)
+	golog.Println("----------", "context", "------------")
+
+	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
+	retryMax := 3
+	retryTimeout := 500 * time.Millisecond
+
+	//
+
+	//etcdAddr := "127.0.0.1:2379"
+	//options := etcdv3.ClientOptions{
+	//	DialTimeout:   time.Second * 10,
+	//	DialKeepAlive: time.Second * 50,
+	//}
+
+	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		return nil
+	}
+
+	//
+	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
+	if err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		return nil
+	}
+
+	//
+	factory := r.FactorySD(ctx, method, path, decodeResponseFunc)
+	endPointer := sd.NewEndpointer(instance, factory, logger)
+	balance := lb.NewRoundRobin(endPointer)
+	retry := lb.Retry(retryMax, retryTimeout, balance)
+	ep := retry
+
+	return ep
+}
+
+func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
+	serviceTag, method, path string,
+	mid []endpoint.Middleware,
+	options ...tran.ServerOption) endpoint.Endpoint {
+
+	ylog.Debug(" ....... enter ProxyEndpointSDDefault")
+	var err error
+	var client etcdv3.Client
+	var logger log.Logger
+	{
+		logger = log.NewLogfmtLogger(os.Stderr)
+		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+		logger = log.With(logger, "caller", log.DefaultCaller)
+	}
+
+	golog.Println("----------", "context", "------------")
+	spew.Dump(ctx)
+	golog.Println("----------", "context", "------------")
+
+	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
+	retryMax := 3
+	retryTimeout := 500 * time.Millisecond
+
+	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		return nil
+	}
+
+	//
+	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
+	if err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		return nil
+	}
+
+	//
+	factory := r.FactorySD(ctx, method, path, r.DecodeResponseDefault)
+	endPointer := sd.NewEndpointer(instance, factory, logger)
+	balance := lb.NewRoundRobin(endPointer)
+	retry := lb.Retry(retryMax, retryTimeout, balance)
+	ep := retry
+
+	return ep
+}
+
+//unit auto discovery
+func (r *RootTran) HandlerSD(ctx context.Context,
+	serviceTag, method, path string,
+	decodeRequestFunc func(ctx context.Context, req *http.Request) (interface{}, error),
+	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
+	mid []endpoint.Middleware,
+	options ...tran.ServerOption) *tran.Server {
+	var err error
+	var client etcdv3.Client
+	var logger log.Logger
+	{
+		logger = log.NewLogfmtLogger(os.Stderr)
+		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+		logger = log.With(logger, "caller", log.DefaultCaller)
+	}
+
+	golog.Println("----------", "context", "------------")
+	spew.Dump(ctx)
+	golog.Println("----------", "context", "------------")
+
+	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
+	retryMax := 3
+	retryTimeout := 500 * time.Millisecond
+
+	//
+
+	//etcdAddr := "127.0.0.1:2379"
+	//options := etcdv3.ClientOptions{
+	//	DialTimeout:   time.Second * 10,
+	//	DialKeepAlive: time.Second * 50,
+	//}
+
+	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		return nil
+	}
+
+	//
+	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
+	if err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		return nil
+	}
+
+	//
+	factory := r.FactorySD(ctx, method, path, decodeResponseFunc)
+	endPointer := sd.NewEndpointer(instance, factory, logger)
+	balance := lb.NewRoundRobin(endPointer)
+	retry := lb.Retry(retryMax, retryTimeout, balance)
+	ep := retry
+
+	//------------bind middle ware-------------------
+	ep = ymid.MidCommon(ep)
+	for _, f := range mid {
+		ep = f(ep)
+	}
+
+	return tran.NewServer(ep, decodeRequestFunc, r.EncodeResponse, options...)
+}
+
+//unit auto discovery
+//输入为map[string]interface{}
+//输出为result的 handler
+func (r *RootTran) HandlerSDDefault(ctx context.Context,
+	serviceTag, method, path string,
+	mid []endpoint.Middleware,
+	options ...tran.ServerOption) *tran.Server {
+	var err error
+	var client etcdv3.Client
+	var logger log.Logger
+	{
+		logger = log.NewLogfmtLogger(os.Stderr)
+		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+		logger = log.With(logger, "caller", log.DefaultCaller)
+	}
+
+	golog.Println("----------", "context", "------------")
+	spew.Dump(ctx)
+	golog.Println("----------", "context", "------------")
+
+	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
+	retryMax := 3
+	retryTimeout := 500 * time.Millisecond
+
+	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		return nil
+	}
+
+	//
+	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
+	if err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		return nil
+	}
+
+	//
+	factory := r.FactorySD(ctx, method, path, r.DecodeResponseDefault)
+	endPointer := sd.NewEndpointer(instance, factory, logger)
+	balance := lb.NewRoundRobin(endPointer)
+	retry := lb.Retry(retryMax, retryTimeout, balance)
+	ep := retry
+
+	//bind middle ware
+	ep = ymid.MidCommon(ep)
+	for _, f := range mid {
+		ep = f(ep)
+	}
+
+	opt := make([]tran.ServerOption, 0)
+	opt = append(opt, ymid.ServerBeforeCallback)
+	opt = append(opt, options...)
+
+	return tran.NewServer(ep, r.DecodeRequestDefault, r.EncodeResponse, opt...)
+}
+
+// unit discovery
+func (r *RootTran) FactorySD(ctx context.Context, method, path string,
+	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
+	mid ...endpoint.Middleware) sd.Factory {
+	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
+		if !strings.HasPrefix(instance, "http") {
+			instance = "http://" + instance
+		}
+		targetURL, err := url.Parse(instance)
+		if err != nil {
+			return nil, nil, err
+		}
+		targetURL.Path = path
+
+		enc := r.EncodeRequestBuffer
+		dec := decodeResponseFunc
+
+		ep := tran.NewClient(method, targetURL, enc, dec).Endpoint()
+
+		ep = ymid.MidCommon(ep)
+		for _, f := range mid {
+			ep = f(ep)
+		}
+		return ep, nil, nil
+	}
+}

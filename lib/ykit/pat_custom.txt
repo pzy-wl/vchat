@@ -1,0 +1,110 @@
+
+//for snippet用于非标准返回值的微服务接口
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+
+	"github.com/go-kit/kit/endpoint"
+	tran "github.com/go-kit/kit/transport/http"
+
+	"kitDemo/ykit"
+)
+
+const (
+	local_$name$_HANDLER_PATH = "/$name$"
+)
+
+type (
+	$name$Service interface {
+		$method$(in *$name$Request) ($name$Response, error)
+	}
+	//input data
+	$name$Request struct {
+		S string `json:"s"`
+	}
+
+	//output data
+	$name$Response struct {
+		Code int         `json:"code"`
+	}
+
+	// handler implements
+	$name$Handler struct {
+		base ykit.RootTran
+	}
+)
+
+func (r *$name$Handler) MakeLocalEndpoint(svc $name$Service) endpoint.Endpoint {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
+		//modify
+		in := request.(*$name$Request)
+		v, err := svc.$method$(in)
+		return v, err
+	}
+}
+
+//个人实现,参数不能修改
+func (r *$name$Handler) DecodeRequest(ctx context.Context, req *http.Request) (interface{}, error) {
+	return r.base.DecodeRequest(new($name$Request), ctx, req)
+}
+
+//个人实现,参数不能修改
+func (r *$name$Handler) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
+	var response ykit.Result
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+//handler for router，微服务本地接口，
+func (r *$name$Handler) HandlerLocal(service $name$Service) *tran.Server {
+	endpoint := r.MakeLocalEndpoint(service)
+	handler := tran.NewServer(
+		endpoint,
+		r.DecodeRequest,
+		r.base.EncodeResponse,
+	)
+	//handler = loggingMiddleware()
+	return handler
+}
+
+//sd,proxy实现,用于etcd自动服务发现时的handler
+func (r *$name$Handler) HandlerSD() *tran.Server {
+	return r.base.HandlerSD(
+		context.Background(),
+		"api",
+		"POST",
+		local_$name$_HANDLER_PATH,
+		r.DecodeRequest,
+		r.DecodeResponse)
+}
+
+
+// for test
+//测试proxy方式的实现,用於測試某一微服務的運行情況
+func (r *$name$Handler) HandlerProxyForTest() *tran.Server {
+	e := r.MakeProxyEndPointForTest(context.Background())
+	handler := tran.NewServer(
+		e,
+		r.DecodeRequest,
+		r.base.EncodeResponse,
+	)
+
+	return handler
+}
+
+// for test
+//sd,proxy实现,调用 指定位置的endPoint
+func (r *$name$Handler) MakeProxyEndPointForTest(
+	ctx context.Context) endpoint.Endpoint {
+	//modify
+	return r.base.MakeProxyEndPoint(
+		//此为被调用的微服务的(host:port),
+		"localhost:9001",
+		"POST",
+		local_$name$_HANDLER_PATH,
+		r.DecodeResponse,
+		ctx)
+}
