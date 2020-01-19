@@ -71,7 +71,7 @@ func (r *AMqWorker) scan(cfg yconfig.RabbitConfig) {
 		//如果长度过半，则加一个长度
 		high := len(r.queue)
 		if int64(high) > count*5 && count < max {
-			r.createOne(cfg)
+			_ = r.createOne(cfg)
 			continue
 		}
 
@@ -160,7 +160,8 @@ func (r *AMqWorker) Publish(topic string, msg interface{}) error {
 	return nil
 }
 
-func (r *AMqWorker) Consume(topic string, handler AMQSubCallBack) (cnt *amqp.Connection, err error) {
+func (r *AMqWorker) Consume(topic string, handler AMQSubCallBack,
+	workerCount int) (cnt *amqp.Connection, err error) {
 	//---------从池中扑出来一个，不归还的mq client------------
 	cnt, err = r.getCntDirect(*r.config)
 	if err != nil {
@@ -168,11 +169,11 @@ func (r *AMqWorker) Consume(topic string, handler AMQSubCallBack) (cnt *amqp.Con
 	}
 
 	//订阅并返回，有多个订阅时，可以直接在返回结果上操作
-	err = consumeWrap(cnt, topic, handler, true)
+	err = consumeWrap(cnt, topic, handler, true, workerCount)
 	return cnt, err
 }
 
-func (r *AMqWorker) ConsumeAck(topic string, handler AMQSubCallBack) (cnt *amqp.Connection, err error) {
+func (r *AMqWorker) ConsumeAck(topic string, handler AMQSubCallBack, workerCount int) (cnt *amqp.Connection, err error) {
 	//---------从池中扑出来一个，不归还的mq client------------
 	cnt, err = r.getCntDirect(*r.config)
 	if err != nil {
@@ -181,7 +182,7 @@ func (r *AMqWorker) ConsumeAck(topic string, handler AMQSubCallBack) (cnt *amqp.
 
 	//订阅并返回，有多个订阅时，可以直接在返回结果上操作
 	//autoack = false
-	err = consumeWrap(cnt, topic, handler, false)
+	err = consumeWrap(cnt, topic, handler, false, workerCount)
 	return cnt, err
 }
 

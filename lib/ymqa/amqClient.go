@@ -6,6 +6,7 @@ import (
 
 	"github.com/streadway/amqp"
 
+	"github.com/ivpusic/grpool"
 	"github.com/vhaoran/vchat/common/g"
 	"github.com/vhaoran/vchat/lib/ylog"
 )
@@ -65,7 +66,7 @@ func publishWrap(conn *amqp.Connection, data *AMqData) error {
 	return err
 }
 
-func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, autoAck bool) error {
+func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, autoAck bool, antCount int) error {
 	ch, err := conn.Channel()
 	if err != nil {
 		return err
@@ -99,6 +100,8 @@ func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, a
 
 	//forever := make(chan bool)
 	go func() {
+		pool := grpool.NewPool(antCount, 100)
+
 		for {
 			select {
 			case d, ok := <-l:
@@ -106,14 +109,15 @@ func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, a
 					time.Sleep(50 * time.Millisecond)
 					continue
 				}
-				func() {
+				pool.JobQueue <- func() {
 					defer func() {
+						//pool.JobDone()
 						if err := recover(); err != nil {
 							ylog.Error(err)
 						}
 					}()
 					_ = callback(d)
-				}()
+				}
 			}
 		}
 	}()
