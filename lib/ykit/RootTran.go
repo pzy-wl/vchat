@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
-	golog "log"
 	"net/http"
 	"net/url"
 	"os"
@@ -29,7 +27,7 @@ import (
 
 /*--auth: whr  date:2019-12-05--------------------------
  这是微服务是基类，所有实现微服务的接口都
- 需要"继承"此类，用于快速开发及部署
+ 需要"继承"此类，用于快速开发及部署,
 --------------------------------------- */
 type (
 	RootTran struct {
@@ -37,9 +35,9 @@ type (
 )
 
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
-	spew.Dump("RootTran->DecodeRequest:reqDatePtr", reqDataPtr)
+	ylog.DebugDump("RootTran->DecodeRequest:reqDatePtr", reqDataPtr)
 	//	spew.Dump("RootTran->DecodeRequest:req", req.Body)
-	fmt.Println("----host:------", req.Host, "------------")
+	ylog.Debug("----host:------", req.Host, "------------")
 
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
 		return nil, err
@@ -114,9 +112,8 @@ func (r *RootTran) ProxyEndpointSD(ctx context.Context,
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 
-	golog.Println("----------", "context", "------------")
-	spew.Dump(ctx)
-	golog.Println("----------", "context", "------------")
+	ylog.Debug("----------", "context", "------------")
+	ylog.DebugDump(ctx)
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
@@ -132,7 +129,7 @@ func (r *RootTran) ProxyEndpointSD(ctx context.Context,
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
-		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		ylog.Debug("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
 		return nil
 	}
 
@@ -140,7 +137,7 @@ func (r *RootTran) ProxyEndpointSD(ctx context.Context,
 	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
 	if err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
-		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		ylog.Debug("RootTran.go->HandlerSD,获取实例时失败，err:", err)
 		return nil
 	}
 
@@ -169,9 +166,8 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 
-	golog.Println("----------", "context", "------------")
-	spew.Dump(ctx)
-	golog.Println("----------", "context", "------------")
+	ylog.Debug("----------", "context", "------------")
+	ylog.Debug("----------", "context", "------------")
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
@@ -179,7 +175,7 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
-		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		ylog.Debug("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
 		return nil
 	}
 
@@ -187,7 +183,6 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
 	if err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
-		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
 		return nil
 	}
 
@@ -217,9 +212,9 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 
-	golog.Println("----------", "context", "------------")
-	spew.Dump(ctx)
-	golog.Println("----------", "context", "------------")
+	ylog.Debug("----------", "context", "------------")
+	ylog.DebugDump(ctx)
+	ylog.Debug("----------", "context", "------------")
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
@@ -235,7 +230,6 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
-		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
 		return nil
 	}
 
@@ -243,7 +237,6 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
 	if err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
-		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
 		return nil
 	}
 
@@ -279,9 +272,8 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 
-	golog.Println("----------", "context", "------------")
-	spew.Dump(ctx)
-	golog.Println("----------", "context", "------------")
+	ylog.Debug("----------", "context", "------------")
+	ylog.DebugDump(ctx)
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
@@ -289,7 +281,6 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
-		golog.Println("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
 		return nil
 	}
 
@@ -297,7 +288,6 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
 	if err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
-		golog.Println("RootTran.go->HandlerSD,获取实例时失败，err:", err)
 		return nil
 	}
 
@@ -322,7 +312,10 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 }
 
 // unit discovery
-func (r *RootTran) FactorySD(ctx context.Context, method, path string,
+func (r *RootTran) FactorySD(
+	ctx context.Context,
+	method,
+	path string,
 	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
 	mid ...endpoint.Middleware) sd.Factory {
 	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
