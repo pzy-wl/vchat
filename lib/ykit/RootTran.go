@@ -35,10 +35,6 @@ type (
 )
 
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
-	ylog.DebugDump("RootTran->DecodeRequest:reqDatePtr", reqDataPtr)
-	//	spew.Dump("RootTran->DecodeRequest:req", req.Body)
-	ylog.Debug("----host:------", req.Host, "------------")
-
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
 		return nil, err
 	}
@@ -112,32 +108,17 @@ func (r *RootTran) ProxyEndpointSD(ctx context.Context,
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 
-	ylog.Debug("----------", "context", "------------")
-	ylog.DebugDump(ctx)
-
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
 	retryTimeout := 500 * time.Millisecond
 
-	//
-
-	//etcdAddr := "127.0.0.1:2379"
-	//options := etcdv3.ClientOptions{
-	//	DialTimeout:   time.Second * 10,
-	//	DialKeepAlive: time.Second * 50,
-	//}
-
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
-		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
-		ylog.Debug("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
 		return nil
 	}
 
 	//
 	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
 	if err != nil {
-		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
-		ylog.Debug("RootTran.go->HandlerSD,获取实例时失败，err:", err)
 		return nil
 	}
 
@@ -156,7 +137,6 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 	mid []endpoint.Middleware,
 	options ...tran.ServerOption) endpoint.Endpoint {
 
-	ylog.Debug(" ....... enter ProxyEndpointSDDefault")
 	var err error
 	var client etcdv3.Client
 	var logger log.Logger
@@ -165,9 +145,6 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
-
-	ylog.Debug("----------", "context", "------------")
-	ylog.Debug("----------", "context", "------------")
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
@@ -212,21 +189,9 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
 
-	ylog.Debug("----------", "context", "------------")
-	ylog.DebugDump(ctx)
-	ylog.Debug("----------", "context", "------------")
-
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
 	retryTimeout := 500 * time.Millisecond
-
-	//
-
-	//etcdAddr := "127.0.0.1:2379"
-	//options := etcdv3.ClientOptions{
-	//	DialTimeout:   time.Second * 10,
-	//	DialKeepAlive: time.Second * 50,
-	//}
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
@@ -253,7 +218,9 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 		ep = f(ep)
 	}
 
-	return tran.NewServer(ep, decodeRequestFunc, r.EncodeResponse, options...)
+	//
+	opts := append(options, tran.ServerBefore(Jwt2ctx()))
+	return tran.NewServer(ep, decodeRequestFunc, r.EncodeResponse, opts...)
 }
 
 //unit auto discovery
@@ -271,9 +238,6 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 		logger = log.With(logger, "caller", log.DefaultCaller)
 	}
-
-	ylog.Debug("----------", "context", "------------")
-	ylog.DebugDump(ctx)
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
@@ -331,7 +295,9 @@ func (r *RootTran) FactorySD(
 		enc := r.EncodeRequestBuffer
 		dec := decodeResponseFunc
 
-		ep := tran.NewClient(method, targetURL, enc, dec).Endpoint()
+		//before := tran.ClientBefore(Head2ClientReq())
+		before := tran.ClientBefore(Jwt2Req())
+		ep := tran.NewClient(method, targetURL, enc, dec, before).Endpoint()
 
 		ep = ymid.MidCommon(ep)
 		for _, f := range mid {
