@@ -3,30 +3,25 @@ package ypg
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"sync"
-	"testing"
-	"time"
-
 	"github.com/davecgh/go-spew/spew"
 	gorm "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/magiconair/properties/assert"
-
 	"github.com/vhaoran/vchat/common/ytime"
+	"log"
+	"testing"
+
 	"github.com/vhaoran/vchat/lib/yconfig"
 )
 
 type (
 	personX struct {
 		BaseModel
-		ID        uint32     `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id"`
-		Name      string     `gorm:"size:255;not null;unique" json:"Name"`
-		Nickname  string     `gorm:"size:255" json:"nickname"`
-		Email     string     `gorm:"size:255" json:"email"`
-		Password  string     `gorm:"size:255" json:"password"`
-		CreatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-		Updated   ytime.Date `gorm:"type:timestamptz;default:CURRENT_TIMESTAMP" json:"updated"`
+		ID       uint32 `gorm:"PRIMARY_KEY;AUTO_INCREMENT" json:"id"`
+		Name     string `gorm:"size:255;not null;unique" json:"Name"`
+		Nickname string `gorm:"size:255" json:"nickname"`
+		Email    string `gorm:"size:255" json:"email"`
+		Password string `gorm:"size:255" json:"password"`
 	}
 )
 
@@ -47,6 +42,7 @@ func newDBCnt() *gorm.DB {
 		log.Println(err)
 	}
 	db.DB().SetMaxOpenConns(500)
+	db.LogMode(true)
 	return db
 }
 
@@ -72,14 +68,20 @@ func Test_cnt(t *testing.T) {
 func Test_cnt_insert(t *testing.T) {
 	db := newDBCnt()
 
-	h := 100
-	var wg sync.WaitGroup
-	wg.Add(h)
+	ytime.SetTimeZone()
 
+	h := 100
 	for i := 0; i < h; i++ {
-		go func(k int) {
+		func(k int) {
 			bean := &personX{
-				Name: fmt.Sprint("aaaaa", k, "bbb", k),
+				BaseModel: BaseModel{
+					CreatedAt: ytime.OfNow(),
+					UpdatedAt: ytime.OfNow(),
+				},
+				Name:     fmt.Sprint("aaaaa", k, "bbb", k),
+				Nickname: "",
+				Email:    "",
+				Password: "",
 			}
 
 			if err := db.Save(bean).Error; err != nil {
@@ -90,7 +92,7 @@ func Test_cnt_insert(t *testing.T) {
 		}(i)
 	}
 
-	wg.Wait()
+
 }
 
 var db *gorm.DB
@@ -155,9 +157,7 @@ func Test_db_time(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 		bean := &personX{
-			Name:      fmt.Sprint(i, "_name"),
-			CreatedAt: time.Now(),
-			Updated:   ytime.OfNow(),
+			Name: fmt.Sprint(i, "_name"),
 		}
 
 		if err = db.Save(bean).Error; err != nil {

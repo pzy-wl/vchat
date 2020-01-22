@@ -3,8 +3,6 @@ package ytime
 import (
 	"database/sql/driver"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"log"
 	"time"
 )
@@ -16,7 +14,7 @@ const (
 	CustomDateFmt = "2006-01-02 15:04:05"
 
 	//DateLayout ...
-	//DateLayout = "2006-01-02"
+	DateLayout = "2006-01-02"
 )
 
 func init() {
@@ -130,35 +128,4 @@ func (t *Date) Scan(v interface{}) error {
 
 func (t Date) TimeShanghai() time.Time {
 	return t.Time.In(time.Local)
-}
-
-// UnmarshalBSON unmarshal bson
-func (t *Date) UnmarshalBSON(data []byte) (err error) {
-	var d bson.D
-	err = bson.Unmarshal(data, &d)
-	if err != nil {
-		return err
-	}
-	if v, ok := d.Map()["t"]; ok {
-		t.Time = time.Time{}
-		return t.Time.UnmarshalText([]byte(v.(string)))
-	}
-	return fmt.Errorf("key 't' missing")
-}
-
-// MarshalBSON marshal bson
-func (t *Date) MarshalBSON() ([]byte, error) {
-	txt, err := t.Time.MarshalText()
-	if err != nil {
-		return nil, err
-	}
-	b, err := bson.Marshal(map[string]string{"t": string(txt)})
-	return b, err
-}
-
-// MarshalBSONValue marshal bson value
-func (t Date) MarshalBSONValue() (bsontype.Type, []byte, error) {
-	fmt.Println(t)
-	b, err := bson.Marshal(t)
-	return bson.TypeEmbeddedDocument, b, err
 }

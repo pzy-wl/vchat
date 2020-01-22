@@ -1,8 +1,10 @@
 package test
 
 import (
+	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/jinzhu/gorm"
+	"github.com/vhaoran/vchat/common/ytime"
 	"github.com/vhaoran/vchat/lib"
 	"github.com/vhaoran/vchat/lib/ypg"
 	"log"
@@ -12,6 +14,9 @@ import (
 type GoodA struct {
 	ID   int64
 	Name string
+	T    ytime.Date
+	TM   ytime.Date
+	B    *ytime.DateM
 }
 
 func (GoodA) TableName() string {
@@ -50,4 +55,24 @@ func Test_trigger_2(t *testing.T) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func Test_insert(t *testing.T) {
+	ypg.X.AutoMigrate(new(GoodA))
+	for i := 3; i < 10; i++ {
+		c := ytime.OfNowM()
+		bean := &GoodA{
+			Name: fmt.Sprint(i, " name_"),
+			T:    ytime.OfNow(),
+			TM:   ytime.OfNow(),
+			B:    &c,
+		}
+		err := ypg.X.Save(bean).Error
+		if err != nil {
+			fmt.Println("pg_test.go->", err)
+			return
+		}
+		fmt.Println(i, " ok")
+	}
+
 }

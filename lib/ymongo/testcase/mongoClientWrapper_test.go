@@ -3,8 +3,10 @@ package testcase
 import (
 	"context"
 	"fmt"
+	"github.com/vhaoran/vchat/common/ytime"
 	"log"
 	"testing"
+	"time"
 
 	"github.com/davecgh/go-spew/spew"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,9 +22,11 @@ import (
 type ABC struct {
 	ID int `json:"id omitempty"`
 	//
-	Name    string `json:"name omitempty"`
-	Age     int    `json:"age omitempty"`
-	AgeIsOk int    `json:"test_b omitempty"`
+	Name      string     `json:"name omitempty"`
+	Age       int        `json:"age omitempty"`
+	AgeIsOk   int        `json:"test_b omitempty"`
+	CreatedAt ytime.Date `json:"created_at,omitempty"   bson:"created_at,omitempty"`
+	T         time.Time  `json:"t,omitempty"   bson:"t,omitempty"`
 }
 
 var (
@@ -54,9 +58,11 @@ func init() {
 func Test_wrapper_insert_one(t *testing.T) {
 
 	bean := &ABC{
-		ID:   5,
-		Name: "whr",
-		Age:  3,
+		ID:        5,
+		Name:      "whr",
+		Age:       3,
+		CreatedAt: ytime.OfNow(),
+		T:         time.Now(),
 	}
 
 	ret, err := db.DoInsertOne("test", "abc", bean)
