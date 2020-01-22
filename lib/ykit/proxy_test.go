@@ -42,3 +42,15 @@ func call(i int, f endpoint.Endpoint) {
 	log.Println("----------", "ok", "------------")
 	spew.Dump(y)
 }
+
+func Test_GetUIDOfContext(t *testing.T) {
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "Uid", 123)
+	uid := GetUIDOfContext(ctx)
+	log.Println("----------", "uid: ", uid, "------------")
+
+	ctx = context.WithValue(ctx, "Uid", "12345789")
+	uid = GetUIDOfContext(ctx)
+	log.Println("----------", "uid: ", uid, "------------")
+
+}

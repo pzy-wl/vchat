@@ -2,10 +2,13 @@ package ykit
 
 import (
 	"context"
+	"fmt"
 	tran "github.com/go-kit/kit/transport/http"
+	"github.com/vhaoran/vchat/lib/yjwt"
 	"github.com/vhaoran/vchat/lib/ylog"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -45,4 +48,28 @@ func Jwt2Req() tran.RequestFunc {
 		ylog.Debug("set jwt :", l)
 		return c
 	}
+}
+
+func GetUIDOfReq(req *http.Request) int64 {
+	s := req.Header.Get(JWT_TOKEN)
+	if len(s) > 0 {
+		uid, err := yjwt.Parse(s)
+		if err != nil {
+			ylog.Error("jwt_utils.go->", err)
+			return 0
+		}
+		return uid
+	}
+	return 0
+}
+
+func GetUIDOfContext(ctx context.Context) int64 {
+	i := ctx.Value("Uid")
+
+	uid, err := strconv.ParseInt(fmt.Sprint(i), 10, 64)
+	if err != nil {
+		ylog.Error("jwt_utils.go->", err)
+		return 0
+	}
+	return uid
 }
