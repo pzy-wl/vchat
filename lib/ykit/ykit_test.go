@@ -8,6 +8,7 @@ import (
 	"github.com/vhaoran/vchat/common/g"
 	"github.com/vhaoran/vchat/lib/ylog"
 	"log"
+	"net/http"
 	"testing"
 )
 
@@ -36,7 +37,7 @@ func call(i int, f endpoint.Endpoint) {
 
 	y, err := f(context.Background(), m)
 	if err != nil {
-		ylog.Error("proxy_test.go->", err)
+		ylog.Error("ykit_test.go->", err)
 		return
 	}
 	log.Println("----------", "ok", "------------")
@@ -53,4 +54,14 @@ func Test_GetUIDOfContext(t *testing.T) {
 	uid = GetUIDOfContext(ctx)
 	log.Println("----------", "uid: ", uid, "------------")
 
+}
+
+func Test_GetUIDOfReq(t *testing.T) {
+	req := &http.Request{
+		Header: map[string][]string{},
+	}
+
+	req.Header.Set(JWT_TOKEN, "test/123")
+	uid := GetUIDOfReq(req)
+	log.Println("----------", "uid : ", uid, "------------")
 }
