@@ -59,7 +59,7 @@ func Test_Consume_1(t *testing.T) {
 	c := make(chan int)
 	for i := 0; i < 5; i++ {
 		topic := fmt.Sprint("t_", i%5)
-		if _, err := ymqa.X.Consume(topic, f); err != nil {
+		if _, err := ymqa.X.Consume(topic, f, 10); err != nil {
 			ylog.Debug(err)
 		} else {
 			ylog.Debug(i, "   consume ok  ", i)
@@ -93,7 +93,7 @@ func Test_Consume_ack(t *testing.T) {
 	c := make(chan int)
 	for i := 0; i < 5; i++ {
 		topic := fmt.Sprint("t_", i%5)
-		if _, err := ymqa.X.ConsumeAck(topic, f); err != nil {
+		if _, err := ymqa.X.ConsumeAck(topic, f, 10); err != nil {
 			ylog.Debug(err)
 		} else {
 			// ylog.Debug(i, "   consume ok  ", i)

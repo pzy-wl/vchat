@@ -160,7 +160,7 @@ func (r *AMqWorker) Publish(topic string, msg interface{}) error {
 	return nil
 }
 
-func (r *AMqWorker) Consume(topic string, handler AMQSubCallBack) (cnt *amqp.Connection, err error) {
+func (r *AMqWorker) Consume(topic string, handler AMQSubCallBack, workerCount int) (cnt *amqp.Connection, err error) {
 	//---------从池中扑出来一个，不归还的mq client------------
 	cnt, err = r.getCntDirect(*r.config)
 	if err != nil {
@@ -172,7 +172,7 @@ func (r *AMqWorker) Consume(topic string, handler AMQSubCallBack) (cnt *amqp.Con
 	return cnt, err
 }
 
-func (r *AMqWorker) ConsumeAck(topic string, handler AMQSubCallBack) (cnt *amqp.Connection, err error) {
+func (r *AMqWorker) ConsumeAck(topic string, handler AMQSubCallBack, workerCount int) (cnt *amqp.Connection, err error) {
 	//---------从池中扑出来一个，不归还的mq client------------
 	cnt, err = r.getCntDirect(*r.config)
 	if err != nil {
