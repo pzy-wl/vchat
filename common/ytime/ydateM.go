@@ -129,13 +129,3 @@ func (p DateM) MarshalText() ([]byte, error) {
 	str := p.ToStr()
 	return []byte(str), nil
 }
-
-// UnmarshalText implements the encoding.TextUnmarshaler interface.
-// The time is expected to be in RFC 3339 format.
-func (p *DateM) UnmarshalText(data []byte) error {
-	t, err := OfStrM(string(data))
-	if err == nil {
-		*p = DateM(t)
-	}
-	return err
-}

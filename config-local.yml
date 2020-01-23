@@ -1,24 +1,15 @@
 microService:
   # 每一种服务不相同，同类的微服务相同
-  tag:  api
+  tag:  user
   # 本地监听商品，docker中
-  port: 9000
+  port: 9050
   # 本地监听主机，docker中
-  host: localhost
+  host: 0.0.0.0
   # etct注册端口，docker映射到外部时使用
-  regPort: 9000
+  regPort: 9050
   # etct注册主机，docker映射到外部时使用
-  regHost: localhost
+  regHost: 127.0.0.1
   # 所有微服務相同
-log:
-  logLevel: debug
-  # 日志路径
-  # logPath: "./logs"
-  # 文件名，不含路径
-  fileName: log
-  # 扩展名
-  ext: .log
-
 etcd:
   hosts:
     - "127.0.0.1:2379"
@@ -53,7 +44,7 @@ emq:
   password: ""
 
 mongo:
-  url:  "mongodb://root:password@172.2.2.2:27017/test?&authSource=admin"
+  url:  "mongodb://root:password@127.0.0.1:27017/test?&authSource=admin"
   options:
     connectTimeout: 10
     heartbeatInterval: 20
@@ -61,4 +52,8 @@ mongo:
     maxPoolSize:       100
     minPoolSize:       10
     serverSelectionTimeout: 5
+rabbitMq:
+  url: amqp://root:password@127.0.0.1:5672/
+  poolMax: 100
+  poolMin: 10
 

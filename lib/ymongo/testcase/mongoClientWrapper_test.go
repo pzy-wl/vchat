@@ -23,12 +23,13 @@ import (
 type ABC struct {
 	ID int `json:"id omitempty"`
 	//
-	Name      string     `json:"name omitempty"`
-	Age       int        `json:"age omitempty"`
-	AgeIsOk   int        `json:"test_b omitempty"`
-	CreatedAt ytime.Date `json:"created_at,omitempty"   bson:"created_at,omitempty"`
-	T         time.Time  `json:"t,omitempty"   bson:"t,omitempty"`
-	Salary    int        `json:"salary,omitempty"   bson:"salary,omitempty"`
+	Name      string      `json:"name omitempty"`
+	Age       int         `json:"age omitempty"`
+	AgeIsOk   int         `json:"test_b omitempty"`
+	CreatedAt ytime.Date  `json:"created_at,omitempty"   bson:"created_at,omitempty"`
+	T         time.Time   `json:"t,omitempty"   bson:"t,omitempty"`
+	M         ytime.DateM `json:"m,omitempty"   bson:"m,omitempty"`
+	Salary    int         `json:"salary,omitempty"   bson:"salary,omitempty"`
 }
 
 var (
@@ -67,6 +68,7 @@ func Test_wrapper_insert_one(t *testing.T) {
 		Age:       3,
 		CreatedAt: ytime.OfNow(),
 		T:         time.Now(),
+		M:         ytime.OfTimeM(time.Now().AddDate(0, 0, -5)),
 		Salary:    50,
 	}
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"time"
 
 	"github.com/go-kit/kit/sd/etcdv3"
@@ -158,20 +159,12 @@ func GetYmlConfig() (*YmlConfig, error) {
 	if pwd, err = os.Getwd(); err != nil {
 		return nil, errors.New("get ymlConfig err," + err.Error())
 	}
-
-	otherPath := ""
-	//only for test case,all yml from on path
-	if s := os.Getenv("vchat_yml_path"); len(s) > 0 {
-		fmt.Println("------------vchat_yml_path hitted-----", s)
-		otherPath = s
-	} else {
-		fmt.Println("vchat_yml_path not found,config file used dir:", s)
-	}
+	l := []string{"../", "../../", "../../../../", "../../../../"}
 
 	vp := viper.New()
 	vp.AddConfigPath(pwd)
-	if len(otherPath) > 0 {
-		vp.AddConfigPath(otherPath)
+	for _, v := range l {
+		vp.AddConfigPath(path.Join(pwd, v))
 	}
 
 	vp.SetConfigName("config")
