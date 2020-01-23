@@ -3,6 +3,8 @@ package ytime
 import (
 	"database/sql/driver"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"log"
 	"time"
 )
@@ -108,24 +110,60 @@ func (p *Date) UnmarshalJSON(data []byte) error {
 }
 
 // Value insert timestamp into mysql need this function.
-func (t Date) Value() (driver.Value, error) {
+func (p Date) Value() (driver.Value, error) {
 	var zeroTime time.Time
-	if t.Time.UnixNano() == zeroTime.UnixNano() {
+	if p.Time.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil
 	}
-	return t.Time, nil
+	return p.Time, nil
 }
 
 // Scan value of time.Time
-func (t *Date) Scan(v interface{}) error {
+func (p *Date) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
 	if ok {
-		*t = Date{Time: value}
+		*p = Date{Time: value}
 		return nil
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)
 }
 
-func (t Date) TimeShanghai() time.Time {
-	return t.Time.In(time.Local)
+func (p Date) TimeShanghai() time.Time {
+	return p.Time.In(time.Local)
+}
+
+//------------------------------
+// UnmarshalBSON unmarshal bson
+func (p *Date) UnmarshalBSON(data []byte) (err error) {
+	fmt.Println("#### Un-MarshalBSON ", p, " #####")
+
+	var d bson.D
+	err = bson.Unmarshal(data, &d)
+	if err != nil {
+		return err
+	}
+	if v, ok := d.Map()["time"]; ok {
+		p.Time = time.Time{}
+		return p.Time.UnmarshalText([]byte(v.(string)))
+	}
+	return fmt.Errorf("key 't' missing")
+}
+
+// MarshalBSON marshal bson
+func (p Date) MarshalBSON() ([]byte, error) {
+	fmt.Println("#### MarshalBSON ", p, " #####")
+
+	txt, err := p.Time.MarshalText()
+	if err != nil {
+		return nil, err
+	}
+	b, err := bson.Marshal(map[string]string{"time": string(txt)})
+	return b, err
+}
+
+// MarshalBSONValue marshal bson value
+func (p *Date) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	fmt.Println("#### MarshalBSONValue ", p, " #####")
+	b, err := bson.Marshal(p)
+	return bson.TypeEmbeddedDocument, b, err
 }

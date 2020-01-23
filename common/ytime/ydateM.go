@@ -2,6 +2,7 @@ package ytime
 
 import (
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -69,18 +70,27 @@ func (p DateM) ToStrDate() string {
 }
 
 func (p DateM) MarshalJSON() ([]byte, error) {
-	tune := (time.Time(p)).Format(`"2006-01-02 15:04:05"`)
-	return []byte(tune), nil
+	//tune := (time.Time(p)).Format(`"2006-01-02 15:04:05"`)
+	//return []byte(tune), nil
+	if y := time.Time(p).Year(); y < 0 || y >= 10000 {
+		return nil, errors.New("Time.MarshalJSON: year outside of range [0,9999]")
+	}
+	t := time.Time(p)
+
+	b := make([]byte, 0, len(CustomDateFmt)+2)
+	b = append(b, '"')
+	b = t.AppendFormat(b, CustomDateFmt)
+	b = append(b, '"')
+	return b, nil
 }
 
 //UnmarshalJSON ...
 func (p *DateM) UnmarshalJSON(data []byte) error {
-	local, err := time.ParseInLocation(`"`+CustomDateFmt+`"`, string(data), time.Local)
-	if err != nil {
-		return err
+	t, err := OfStrM(string(data))
+	if err == nil {
+		*p = t
 	}
-	*p = DateM(local)
-	return nil
+	return err
 }
 
 // Value insert timestamp into mysql need this function.
@@ -99,9 +109,33 @@ func (p *DateM) Scan(v interface{}) error {
 		*p = DateM(value)
 		return nil
 	}
+	//
+	v1, ok1 := v.(DateM)
+	if ok1 {
+		*p = v1
+		return nil
+	}
+
 	return fmt.Errorf("can not convert %v to timestamp", v)
 }
 
 func (p DateM) TimeShanghai() time.Time {
 	return time.Time(p).In(time.Local)
+}
+
+// MarshalText implements the encoding.TextMarshaler interface.
+// The time is formatted in RFC 3339 format, with sub-second precision added if present.
+func (p DateM) MarshalText() ([]byte, error) {
+	str := p.ToStr()
+	return []byte(str), nil
+}
+
+// UnmarshalText implements the encoding.TextUnmarshaler interface.
+// The time is expected to be in RFC 3339 format.
+func (p *DateM) UnmarshalText(data []byte) error {
+	t, err := OfStrM(string(data))
+	if err == nil {
+		*p = DateM(t)
+	}
+	return err
 }

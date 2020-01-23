@@ -2,6 +2,7 @@ package testcase
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/vhaoran/vchat/common/ytime"
 	"log"
@@ -27,6 +28,7 @@ type ABC struct {
 	AgeIsOk   int        `json:"test_b omitempty"`
 	CreatedAt ytime.Date `json:"created_at,omitempty"   bson:"created_at,omitempty"`
 	T         time.Time  `json:"t,omitempty"   bson:"t,omitempty"`
+	Salary    int        `json:"salary,omitempty"   bson:"salary,omitempty"`
 }
 
 var (
@@ -45,6 +47,8 @@ func init() {
 		log.Println(err)
 		panic(err)
 	}
+	//set time zone
+	ytime.SetTimeZone()
 
 	db = ymongo.X
 	if db == nil {
@@ -63,6 +67,7 @@ func Test_wrapper_insert_one(t *testing.T) {
 		Age:       3,
 		CreatedAt: ytime.OfNow(),
 		T:         time.Now(),
+		Salary:    50,
 	}
 
 	ret, err := db.DoInsertOne("test", "abc", bean)
@@ -115,7 +120,9 @@ func Test_mongo_client_wrapper_find(t *testing.T) {
 
 func Test_test_wrapper_find(t *testing.T) {
 	l := make([]*ABC, 0)
-	err := db.DoFindMany(&l, "test", "abc", bson.M{"_id": 1, "b": 10})
+	err := db.DoFindMany(&l, "test",
+		"abc",
+		bson.M{"_id": 1, "b": 10})
 	if err != nil {
 		log.Println(err)
 		return
@@ -222,10 +229,12 @@ func Test_a_test(t *testing.T) {
 
 func Test_a_insert_One(t *testing.T) {
 	bean := &ABC{
-		ID:      1,
-		Name:    "abc",
-		Age:     0,
-		AgeIsOk: 0,
+		ID:        1,
+		Name:      "abc",
+		Age:       0,
+		AgeIsOk:   0,
+		CreatedAt: ytime.OfNow(),
+		Salary:    50,
 	}
 	_, err := db.DoInsertOne("test", "abc", bean)
 	if err != nil {
@@ -319,4 +328,37 @@ func Test_page_bean(t *testing.T) {
 	//
 	fmt.Println("------", "", "-----------")
 	ylog.DebugDump("", bean)
+}
+
+func Test_find_many_1(t *testing.T) {
+	l := make([]*ABC, 0)
+	//err := db.DoFindMany(&l, "test",
+	//	"abc",
+	//	bson.D{{"_id", 1}, {"b", 10}})
+	//err := db.DoFindMany(&l, "test",
+	//	"abc",
+	//	bson.D{{"name", "whr"},
+	//		{"age", bson.M{"$gte": 3}}})
+
+	//err := db.DoFindMany(&l, "test",
+	//	"abc",
+	//	bson.M{"name": "whr",
+	//		"created_at.time": bson.M{"$lt": ytime.OfNow())}})
+
+	err := db.DoFindMany(&l, "test",
+		"abc",
+		bson.M{"name": "whr",
+			"created_at.time":
+			bson.M{"$lt": ytime.OfNow().TimeShanghai()}})
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	fmt.Println("------", "", "-----------")
+	spew.Dump(l)
+	log.Println("----------", "json", "------------")
+	s, _ := json.Marshal(l)
+	log.Println("----------", "s", string(s), "------------")
+
 }

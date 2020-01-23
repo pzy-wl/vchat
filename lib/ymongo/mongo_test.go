@@ -29,6 +29,8 @@ type (
 	Good struct {
 		ID   int    `json:"id,omitempty"`
 		Name string `json:"name,omitempty"`
+		Age int `json:"age,omitempty"   bson:"age,omitempty"`
+		Salary int `json:"salary,omitempty"   bson:"salary,omitempty"`
 	}
 )
 

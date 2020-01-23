@@ -16,7 +16,7 @@ type GoodA struct {
 	Name string
 	T    ytime.Date
 	TM   ytime.Date
-	B    *ytime.DateM
+	B    ytime.DateM
 }
 
 func (GoodA) TableName() string {
@@ -59,13 +59,16 @@ func Test_trigger_2(t *testing.T) {
 
 func Test_insert(t *testing.T) {
 	ypg.X.AutoMigrate(new(GoodA))
+	ypg.X.LogMode(true)
+	ytime.SetTimeZone()
+
 	for i := 3; i < 10; i++ {
-		c := ytime.OfNowM()
+		//c := ytime.OfNowM()
 		bean := &GoodA{
 			Name: fmt.Sprint(i, " name_"),
 			T:    ytime.OfNow(),
 			TM:   ytime.OfNow(),
-			B:    &c,
+			//B:    ytime.OfNowM(),
 		}
 		err := ypg.X.Save(bean).Error
 		if err != nil {
