@@ -94,7 +94,7 @@ func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
 		defer func() {
 			r.count.Dec()
 			_ = cnt.Close()
-			log.Println("##### mq pool close,len(", r.count.Load(), ")")
+			//log.Println("##### mq pool close,len(", r.count.Load(), ")")
 		}()
 
 		//start := time.Now()
@@ -120,7 +120,7 @@ func (r *AMqWorker) createOne(cfg yconfig.RabbitConfig) error {
 					continue
 				}
 			case <-time.After(time.Minute * 50):
-				log.Println("mq wait timeout-->")
+				log.Println("mq wait timeout-and auto closed->")
 				if r.count.Load() > r.min.Load() {
 					endLoop = true
 				}
