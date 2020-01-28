@@ -17,6 +17,8 @@ func Tx(callback func(*gorm.DB) error) error {
 	err := callback(tx)
 	if err != nil {
 		tx.Rollback()
+		return err
 	}
+
 	return tx.Commit().Error
 }
