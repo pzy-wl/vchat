@@ -1,8 +1,11 @@
 package ypg
 
-import "github.com/vhaoran/vchat/lib/ylog"
+import (
+	"github.com/jinzhu/gorm"
+	"github.com/vhaoran/vchat/lib/ylog"
+)
 
-func Tx(callback func() error) error {
+func Tx(callback func(*gorm.DB) error) error {
 	tx := X.Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -11,7 +14,7 @@ func Tx(callback func() error) error {
 		}
 	}()
 
-	err := callback()
+	err := callback(tx)
 	if err != nil {
 		tx.Rollback()
 	}
