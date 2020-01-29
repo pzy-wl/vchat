@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	JWT_TOKEN = "jwt"
+	JWT_TOKEN = "Jwt"
 )
 
 func Jwt2ctx() tran.RequestFunc {
@@ -78,10 +78,34 @@ func GetUIDOfReq(req *http.Request) int64 {
 
 func GetUIDOfContext(ctx context.Context) int64 {
 	i := ctx.Value("Uid")
+	str, ok := i.(string)
 
-	uid, err := strconv.ParseInt(fmt.Sprint(i), 10, 64)
+	if ok && len(str) > 0 {
+		uid, err := strconv.ParseInt(fmt.Sprint(i), 10, 64)
+		if err != nil {
+			return 0
+		}
+		return uid
+	}
+
+	//--------not found uid then parse jwt -----------------------------
+	i = ctx.Value(JWT_TOKEN)
+	s, ok := i.(string)
+	if !ok {
+		return 0
+	}
+
+	if len(s) == 0 {
+		return 0
+	}
+	if i := UIDOfTest(s); i > 0 {
+		return i
+	}
+
+	ii, err := yjwt.Parse(s)
 	if err != nil {
 		return 0
 	}
-	return uid
+	return ii
+
 }

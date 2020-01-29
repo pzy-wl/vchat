@@ -55,6 +55,12 @@ func Test_GetUIDOfContext(t *testing.T) {
 	log.Println("----------", "uid: ", uid, "------------")
 
 }
+func Test_GetUIDOfContext_jwt(t *testing.T) {
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "Jwt", "test/1234")
+	uid := GetUIDOfContext(ctx)
+	log.Println("----------", "uid: ", uid, "------------")
+}
 
 func Test_GetUIDOfReq(t *testing.T) {
 	req := &http.Request{

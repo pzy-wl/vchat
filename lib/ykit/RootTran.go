@@ -271,6 +271,7 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 	opt := make([]tran.ServerOption, 0)
 	opt = append(opt, ymid.ServerBeforeCallback)
 	opt = append(opt, options...)
+	opt = append(opt, tran.ServerBefore(Jwt2ctx()))
 
 	return tran.NewServer(ep, r.DecodeRequestDefault, r.EncodeResponse, opt...)
 }
@@ -326,6 +327,7 @@ func (r *RootTran) HandlerSDCommon(ctx context.Context,
 	opt := make([]tran.ServerOption, 0)
 	opt = append(opt, ymid.ServerBeforeCallback)
 	opt = append(opt, options...)
+	opt = append(opt, tran.ServerBefore(Jwt2ctx()))
 
 	return tran.NewServer(ep,
 		r.DecodeRequestDefault,
