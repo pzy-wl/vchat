@@ -78,9 +78,8 @@ func GetUIDOfReq(req *http.Request) int64 {
 
 func GetUIDOfContext(ctx context.Context) int64 {
 	i := ctx.Value("Uid")
-	str, ok := i.(string)
 
-	if ok && len(str) > 0 {
+	if i != nil {
 		uid, err := strconv.ParseInt(fmt.Sprint(i), 10, 64)
 		if err != nil {
 			return 0
