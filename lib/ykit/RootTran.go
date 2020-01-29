@@ -275,6 +275,63 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 	return tran.NewServer(ep, r.DecodeRequestDefault, r.EncodeResponse, opt...)
 }
 
+//unit auto discovery
+//输入为map[string]interface{}
+//输出为result的 handler
+func (r *RootTran) HandlerSDCommon(ctx context.Context,
+	serviceTag, method, path string,
+	mid []endpoint.Middleware,
+	options ...tran.ServerOption) *tran.Server {
+	var err error
+	var client etcdv3.Client
+	var logger log.Logger
+	{
+		logger = log.NewLogfmtLogger(os.Stderr)
+		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+		logger = log.With(logger, "caller", log.DefaultCaller)
+	}
+
+	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
+	retryMax := 3
+	retryTimeout := 500 * time.Millisecond
+
+	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		return nil
+	}
+
+	//
+	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
+	if err != nil {
+		ylog.Error("RootTran.go->HandlerSD,获取实例时失败，err:", err)
+		return nil
+	}
+
+	//
+	factory := r.FactorySD(ctx,
+		method,
+		path,
+		r.DecodeResponseMap)
+	endPointer := sd.NewEndpointer(instance, factory, logger)
+	balance := lb.NewRoundRobin(endPointer)
+	retry := lb.Retry(retryMax, retryTimeout, balance)
+	ep := retry
+
+	//bind middle ware
+	ep = ymid.MidCommon(ep)
+	for _, f := range mid {
+		ep = f(ep)
+	}
+
+	opt := make([]tran.ServerOption, 0)
+	opt = append(opt, ymid.ServerBeforeCallback)
+	opt = append(opt, options...)
+
+	return tran.NewServer(ep,
+		r.DecodeRequestDefault,
+		r.EncodeResponse, opt...)
+}
+
 // unit discovery
 func (r *RootTran) FactorySD(
 	ctx context.Context,
@@ -305,4 +362,12 @@ func (r *RootTran) FactorySD(
 		}
 		return ep, nil, nil
 	}
+}
+
+func (r *RootTran) DecodeResponseMap(ctx context.Context, res *http.Response) (interface{}, error) {
+	var response map[string]interface{}
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return nil, err
+	}
+	return response, nil
 }

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"github.com/vhaoran/vchat/lib/ykit"
 	golog "log"
 	"net/http"
 	//单独运行时导入改为这个
@@ -34,6 +36,13 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.Handle("/api/CtxTest", new(intf.CtxTestHandler).HandlerSD(nil))
+	mux.Handle("/api/MapTest", new(intf.MapTestH).HandlerSD(nil))
+	mux.Handle("/api/MapTestCommon", new(ykit.RootTran).HandlerSDCommon(
+		context.Background(),
+		"api",
+		"POST",
+		"/MapTest",
+		nil))
 
 	golog.Println(
 		`start at :9999,url is curl:localhost/hello`,

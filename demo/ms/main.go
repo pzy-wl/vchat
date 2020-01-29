@@ -68,6 +68,7 @@ func main() {
 	// 每一个微服务都需要实现的方法，用于测试服务是否运行
 	mux.Handle("/ping", http.HandlerFunc(new(Ping).handler))
 	mux.Handle("/CtxTest", new(intf.CtxTestHandler).HandlerLocal(new(ctl.CtxTestImpl), nil))
+	mux.Handle("/MapTest", new(intf.MapTestH).HandlerLocal(new(ctl.MapTestImpl), nil))
 
 	//-------register micro-impl-----------------
 	// 每二步:註冊微服務到etcd

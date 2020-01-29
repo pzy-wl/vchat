@@ -18,17 +18,17 @@ import (
 --------------------------------------- */
 type (
 	YmlConfig struct {
-		RabbitMq RabbitConfig `json:"rabbitMq omitempty"`
-		Gateway  GWConfig     `json:"gwConfig omitempty"`
+		RabbitMq RabbitConfig `json:"rabbitMq,omitempty"`
+		Gateway  GWConfig     `json:"gwConfig,omitempty"`
 
 		//微服务配置
 		MicroService MicroServiceConfig `json:"microService,omitempty"`
 		//etcd配置
 		Etcd     ETCDConfig  `json:"etcd,omitempty"`
-		Postgres PGConfig    `json:"postgres  omitempty"`
-		Redis    RedisConfig `json:"redis   omitempty"`
-		Emq      MQConfig    `json:"emq  omitempty"`
-		Mongo    MongoConfig `json:"mongo   omitempty"`
+		Postgres PGConfig    `json:"postgres,omitempty"`
+		Redis    RedisConfig `json:"redis,omitempty"`
+		Emq      MQConfig    `json:"emq,omitempty"`
+		Mongo    MongoConfig `json:"mongo,omitempty"`
 		Log      LogConfig   `json:"log,omitempty"`
 		Jwt      JwtConfig   `json:"jwt,omitempty"`
 	}
@@ -55,9 +55,9 @@ type (
 	//postgres-sql connection param
 	PGConfig struct {
 		// e.g: "host=%s user=%s dbname=%s sslmode=disable password=%s"
-		URL     string `json:"url   omitempty"`
-		PoolMax int    `json:"poolMax  omitempty"`
-		PoolMin int    `json:"poolMin   omitempty"`
+		URL     string `json:"url,omitempty"`
+		PoolMax int    `json:"poolMax,omitempty"`
+		PoolMin int    `json:"poolMin,omitempty"`
 	}
 	RedisConfig struct {
 		Addrs []string `json:"addrs,omitempty"`
@@ -106,47 +106,47 @@ type (
 	}
 
 	MongoConfig struct {
-		URL     string        `json:"url   omitempty"`
-		Options *MongoOptions `json:"options omitempty"`
+		URL     string        `json:"url,omitempty"`
+		Options *MongoOptions `json:"options,omitempty"`
 	}
 
 	MongoOptions struct {
-		AppName string `json:"appName omitempty"`
+		AppName string `json:"appName,omitempty"`
 		//Auth                   *Credential
-		ConnectTimeout time.Duration `json:"connectTimeout omitempty"`
-		Compressors    []string      `json:"compressors omitempty"`
+		ConnectTimeout time.Duration `json:"connectTimeout,omitempty"`
+		Compressors    []string      `json:"compressors,omitempty"`
 		//Dialer                 ContextDialer
-		HeartbeatInterval time.Duration `json:"heartbeatInterval omitempty"`
-		Hosts             []string      `json:"hosts omitempty"`
-		LocalThreshold    time.Duration `json:"localThreshold omitempty"`
-		MaxConnIdleTime   time.Duration `json:"maxConnIdleTime omitempty"`
-		MaxPoolSize       uint64        `json:"maxPoolSize omitempty"`
-		MinPoolSize       uint64        `json:"minPoolSize omitempty"`
+		HeartbeatInterval time.Duration `json:"heartbeatInterval,omitempty"`
+		Hosts             []string      `json:"hosts,omitempty"`
+		LocalThreshold    time.Duration `json:"localThreshold,omitempty"`
+		MaxConnIdleTime   time.Duration `json:"maxConnIdleTime,omitempty"`
+		MaxPoolSize       uint64        `json:"maxPoolSize,omitempty"`
+		MinPoolSize       uint64        `json:"minPoolSize,omitempty"`
 		//PoolMonitor            *event.PoolMonitor
 		//Monitor                *event.CommandMonitor
 		//ReadConcern            *readconcern.ReadConcern
 		//ReadPreference         *readpref.ReadPref
 		//Registry               *bsoncodec.Registry
-		ReplicaSet             string        `json:"replicaSet omitempty"`
-		RetryWrites            bool          `json:"retryWrites omitempty"`
-		RetryReads             bool          `json:"retryReads omitempty"`
-		ServerSelectionTimeout time.Duration `json:"serverSelectionTimeout omitempty"`
-		Direct                 bool          `json:"direct omitempty"`
-		SocketTimeout          time.Duration `json:"socketTimeout omitempty"`
+		ReplicaSet             string        `json:"replicaSet ,omitempty"`
+		RetryWrites            bool          `json:"retryWrites ,omitempty"`
+		RetryReads             bool          `json:"retryReads ,omitempty"`
+		ServerSelectionTimeout time.Duration `json:"serverSelectionTimeout,omitempty"`
+		Direct                 bool          `json:"direct,omitempty"`
+		SocketTimeout          time.Duration `json:"socketTimeout,omitempty"`
 		// TLSConfig              tls.Config
 		//WriteConcern           writeconcern.WriteConcern
-		ZlibLevel int `json:"zlibLevel omitempty"`
+		ZlibLevel int `json:"zlibLevel,omitempty"`
 		//err error
 
 		// Adds an option for internal use only and should not be set. This option is deprecated and is
 		// not part of the stability guarantee. It may be removed in the future.
-		AuthenticateToAnything bool `json:"authenticateToAnything omitempty"`
+		AuthenticateToAnything bool `json:"authenticateToAnything,omitempty"`
 	}
 
 	RabbitConfig struct {
-		Url     string `json:"url omitempty"`
-		PoolMax int    `json:"poolMax  omitempty"`
-		PoolMin int    `json:"poolMin   omitempty"`
+		Url     string `json:"url,omitempty"`
+		PoolMax int    `json:"poolMax,omitempty"`
+		PoolMin int    `json:"poolMin,omitempty"`
 	}
 )
 
