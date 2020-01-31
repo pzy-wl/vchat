@@ -6,6 +6,7 @@ require (
 	github.com/DataDog/zstd v1.4.4 // indirect
 	github.com/coreos/etcd v3.3.18+incompatible
 	github.com/davecgh/go-spew v1.1.1
+	github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364
 	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/go-kit/kit v0.9.0
 	github.com/go-redis/redis v6.15.6+incompatible

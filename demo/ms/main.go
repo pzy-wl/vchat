@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/vhaoran/vchat/lib/ycaptcha"
 	golog "log"
 	"net/http"
 
@@ -30,7 +31,7 @@ func init() {
 	cfg, err := lib.InitModulesOfOptions(&lib.LoadOption{
 		LoadEtcd:  true,
 		LoadPg:    false,
-		LoadRedis: false,
+		LoadRedis: true,
 		LoadMongo: false,
 		LoadMq:    false,
 		LoadJwt:   true,
@@ -55,6 +56,8 @@ func init() {
 	msTag, port, regPort = ms.Tag, ms.Port, ms.RegPort
 	//注冊用監聽/注册用主机
 	host, regHost = "0.0.0.0", ms.RegHost
+
+	ycaptcha.Init()
 }
 
 func main() {
@@ -69,6 +72,13 @@ func main() {
 	mux.Handle("/ping", http.HandlerFunc(new(Ping).handler))
 	mux.Handle("/CtxTest", new(intf.CtxTestHandler).HandlerLocal(new(ctl.CtxTestImpl), nil))
 	mux.Handle("/MapTest", new(intf.MapTestH).HandlerLocal(new(ctl.MapTestImpl), nil))
+
+	mux.Handle("/CaptchaID",
+		new(intf.CaptchaIDH).HandlerLocal(new(ctl.CaptchaIDImpl), nil))
+	mux.Handle("/CaptchaVerify",
+		new(intf.CaptchaVerifyH).HandlerLocal(new(ctl.CaptchaVerifyImpl), nil))
+	mux.Handle("/Captcha/",
+		ycaptcha.Handler())
 
 	//-------register micro-impl-----------------
 	// 每二步:註冊微服務到etcd
