@@ -34,10 +34,12 @@ func Page(db *gorm.DB, l interface{}, src *ypage.PageBean) (*ypage.PageBean, err
 	}
 
 	//
-	count := 0
-	err = db.Model(ptr).Where(exp, p...).Count(&count).Error
+	if src.RowsCount <= 0 {
+		count := 0
+		err = db.Model(ptr).Where(exp, p...).Count(&count).Error
+		src.RowsCount = int64(count)
+	}
 
-	src.RowsCount = int64(count)
 	src.PagesCount = src.GetPagesCount()
 	src.Data = l
 

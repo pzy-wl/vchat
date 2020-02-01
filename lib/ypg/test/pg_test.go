@@ -109,7 +109,6 @@ func Test_page(t *testing.T) {
 	fmt.Println("count:", count)
 }
 
-
 func Test_page1(t *testing.T) {
 	ypg.X.AutoMigrate(new(GoodA))
 	ypg.X.LogMode(true)
