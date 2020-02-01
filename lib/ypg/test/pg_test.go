@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/jinzhu/gorm"
+	"github.com/vhaoran/vchat/common/ypage"
 	"github.com/vhaoran/vchat/common/ytime"
 	"github.com/vhaoran/vchat/lib"
 	"github.com/vhaoran/vchat/lib/ypg"
+	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"testing"
 )
@@ -62,7 +64,7 @@ func Test_insert(t *testing.T) {
 	ypg.X.LogMode(true)
 	ytime.SetTimeZone()
 
-	for i := 3; i < 10; i++ {
+	for i := 3; i < 100; i++ {
 		//c := ytime.OfNowM()
 		bean := &GoodA{
 			Name: fmt.Sprint(i, " name_"),
@@ -77,5 +79,57 @@ func Test_insert(t *testing.T) {
 		}
 		fmt.Println(i, " ok")
 	}
+}
 
+func Test_page(t *testing.T) {
+	ypg.X.AutoMigrate(new(GoodA))
+	ypg.X.LogMode(true)
+	ytime.SetTimeZone()
+
+	where := bson.D{{
+		"id", bson.M{"$gte": 1},
+	}}
+	sort := bson.D{
+		{"id", 1},
+		{"name", 1}}
+
+	exp, p := new(ypage.SqlWhere).GetWhere(where)
+
+	//
+	l := make([]*GoodA, 0)
+	err := ypg.X.Order(ypage.GetSort(sort)).Limit(3).Offset(5).Where(exp, p...).Find(&l).Error
+	fmt.Println(err)
+	log.Println("----------", "ok", "------------")
+	spew.Dump(l)
+
+	log.Println("----------", "aaa", "------------")
+	//
+	count := 0
+	err = ypg.X.Model(new(GoodA)).Where(exp, p...).Count(&count).Error
+	fmt.Println("count:", count)
+}
+
+
+func Test_page1(t *testing.T) {
+	ypg.X.AutoMigrate(new(GoodA))
+	ypg.X.LogMode(true)
+	ytime.SetTimeZone()
+
+	where := bson.D{{
+		"id", bson.M{"$gte": 1},
+	}}
+	sort := bson.D{
+		{"id", 1},
+		{"name", 1}}
+	bean := &ypage.PageBean{
+		PageNo:      1,
+		RowsPerPage: 2,
+		Where:       where,
+		Sort:        sort,
+	}
+
+	l := make([]*GoodA, 0)
+	ret, err := ypg.Page(ypg.X, &l, bean)
+	log.Println("----------", err, "------------")
+	spew.Dump(ret)
 }

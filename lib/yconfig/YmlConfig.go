@@ -159,7 +159,12 @@ func GetYmlConfig() (*YmlConfig, error) {
 	if pwd, err = os.Getwd(); err != nil {
 		return nil, errors.New("get ymlConfig err," + err.Error())
 	}
-	l := []string{"../", "../../", "../../../../", "../../../../"}
+	l := []string{
+		"../",
+		"../../",
+		"../../../",
+		"../../../../",
+		"../../../../../"}
 
 	vp := viper.New()
 	vp.AddConfigPath(pwd)
