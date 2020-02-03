@@ -62,7 +62,7 @@ func GetLogger() *log.Logger {
 func levelN() int {
 	i, ok := constLevelSign[level]
 	if !ok {
-		return 2
+		return 1
 	}
 	return i
 }

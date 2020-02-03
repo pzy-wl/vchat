@@ -39,8 +39,8 @@ func (r *LogWorker) Close() error {
 }
 
 func (r *LogWorker) backup() error {
-	r.Lock()
-	defer r.Unlock()
+	//r.Lock()
+	//defer r.Unlock()
 
 	//backup
 	today := ytime.Today()
@@ -60,10 +60,10 @@ func (r *LogWorker) backup() error {
 }
 
 func (r *LogWorker) validateCreate() error {
-	r.backup()
-
 	r.Lock()
 	defer r.Unlock()
+
+	r.backup()
 
 	if r.log == nil {
 		suffix := ytime.OfToday().ToStrDate()

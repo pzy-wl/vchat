@@ -2,6 +2,7 @@ package ylog
 
 import (
 	"fmt"
+	"github.com/vhaoran/vchat/lib"
 	"github.com/vhaoran/vchat/lib/yconfig"
 	"log"
 	"testing"
@@ -10,6 +11,7 @@ import (
 	"github.com/vhaoran/vchat/common/g"
 	"github.com/vhaoran/vchat/common/ytime"
 )
+
 
 func Test_log_test(t *testing.T) {
 	obj := &LogWorker{

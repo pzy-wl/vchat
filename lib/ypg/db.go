@@ -43,7 +43,7 @@ func NewPGCnt(cfg *yconfig.PGConfig, debug ...bool) (*gorm.DB, error) {
 	db.DB().SetMaxOpenConns(cfg.PoolMax)
 	db.DB().SetMaxIdleConns(cfg.PoolMax)
 
-	if len(debug) > 1 {
+	if len(debug) > 0 {
 		db.LogMode(true)
 		db.SetLogger(ylog.GetLogger())
 	}

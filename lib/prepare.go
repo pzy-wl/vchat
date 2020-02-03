@@ -50,7 +50,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	if cfg, err = yconfig.GetYmlConfig(); err != nil {
 		return nil, err
 	}
-	ylog.Debug("----------", "config-file", "------------")
+	//ylog.Debug("----------", "config-file", "------------")
 	//spew.Dump(cfg)
 	//log.Println("----------", "----", "------------")
 
@@ -58,6 +58,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 		ylog.DebugDump(cfg.Log)
 		return nil, err
 	}
+
 	//--------etcd -----------------------------
 	// 微服务注册地址设置set XEtcdConfig
 	if opt.LoadEtcd {
@@ -72,7 +73,7 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//postgres 数据库配置参数设置 X
 	if opt.LoadPg {
 		ylog.Debug("postgres connecting...", cfg.Postgres.URL)
-		debug := (cfg.Log.LogLevel == "debug")
+		debug := (cfg.Log.LogLevel == "debug" || len(cfg.Log.LogLevel) == 0)
 		if err := ypg.InitPG(cfg.Postgres, debug); err != nil {
 			return nil, err
 		}
