@@ -36,7 +36,7 @@ type (
 )
 
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
-	ylog.DebugDump("body", req.Body)
+	// ylog.DebugDump("body", req.Body)
 
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
 		ylog.Error("RootTran.go->DecodeRequest", err)
@@ -358,7 +358,8 @@ func (r *RootTran) HandlerSDCommon(ctx context.Context,
 
 	return tran.NewServer(ep,
 		r.DecodeRequestDefault,
-		r.EncodeResponse, opt...)
+		r.EncodeResponse,
+		opt...)
 }
 
 // unit discovery
