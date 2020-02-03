@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	golog "log"
 	"net/http"
 	"net/url"
 	"os"
@@ -39,6 +40,9 @@ func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req 
 		ylog.Error("RootTran.go->DecodeRequest", err)
 		return nil, err
 	}
+	
+	golog.Println("RootTran) DecodeRequest")
+	spew.Dump(reqDataPtr)
 
 	return reqDataPtr, nil
 }
