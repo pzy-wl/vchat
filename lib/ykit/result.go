@@ -49,8 +49,8 @@ func RErr(err error) *Result {
 func ResultError(err error) *Result {
 	return &Result{
 		Code: ERR,
-		Msg:  err.Error(),
-		Data: nil,
+		Msg:  "操作错误",
+		Data: err.Error(),
 	}
 }
 

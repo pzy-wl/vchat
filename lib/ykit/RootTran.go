@@ -46,7 +46,7 @@ func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req 
 func (r *RootTran) DecodeRequestDefault(ctx context.Context, req *http.Request) (interface{}, error) {
 	ylog.Debug("RootTran.go->DecodeRequestDefault")
 
-	return r.DecodeRequest(new(RequestDefault), ctx, req)
+	return r.DecodeRequest(make(RequestDefault), ctx, req)
 }
 
 func (r *RootTran) EncodeRequestBuffer(_ context.Context, res *http.Request, requestData interface{}) error {
