@@ -3,13 +3,13 @@ package lib
 import (
 	"github.com/vhaoran/vchat/common/ytime"
 	_ "github.com/vhaoran/vchat/common/ytime"
-	"github.com/vhaoran/vchat/lib/ymqa"
 	"github.com/vhaoran/vchat/lib/yconfig"
 	"github.com/vhaoran/vchat/lib/yetcd"
 	"github.com/vhaoran/vchat/lib/yjwt"
 	"github.com/vhaoran/vchat/lib/ylog"
 	"github.com/vhaoran/vchat/lib/ymongo"
 	"github.com/vhaoran/vchat/lib/ymq"
+	"github.com/vhaoran/vchat/lib/ymqa"
 	"github.com/vhaoran/vchat/lib/ypg"
 	"github.com/vhaoran/vchat/lib/yredis"
 )
@@ -72,7 +72,8 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//postgres 数据库配置参数设置 X
 	if opt.LoadPg {
 		ylog.Debug("postgres connecting...", cfg.Postgres.URL)
-		if err := ypg.InitPG(cfg.Postgres); err != nil {
+		debug := (cfg.Log.LogLevel == "debug")
+		if err := ypg.InitPG(cfg.Postgres, debug); err != nil {
 			return nil, err
 		}
 		ylog.Debug("postgres connected ok")

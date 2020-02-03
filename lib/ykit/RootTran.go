@@ -39,6 +39,7 @@ func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req 
 		ylog.Error("RootTran.go->DecodeRequest", err)
 		return nil, err
 	}
+
 	return reqDataPtr, nil
 }
 
