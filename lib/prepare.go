@@ -50,9 +50,6 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	if cfg, err = yconfig.GetYmlConfig(); err != nil {
 		return nil, err
 	}
-	//ylog.Debug("----------", "config-file", "------------")
-	//spew.Dump(cfg)
-	//log.Println("----------", "----", "------------")
 
 	if err = ylog.InitLog(cfg.Log); err != nil {
 		ylog.DebugDump(cfg.Log)
