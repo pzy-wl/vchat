@@ -70,6 +70,9 @@ func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) 
 	var response Result
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 		ylog.Error("RootTran.go->DecodeResponseDefault", err)
+		ylog.ErrorDump(res.Body)
+		ylog.Debug("----------------------------------")
+
 		return nil, err
 	}
 	return response, nil
@@ -172,7 +175,10 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 	}
 
 	//
-	factory := r.FactorySD(ctx, method, path, r.DecodeResponseDefault)
+	factory := r.FactorySD(ctx,
+		method,
+		path,
+		r.DecodeResponseDefault)
 	endPointer := sd.NewEndpointer(instance, factory, logger)
 	balance := lb.NewRoundRobin(endPointer)
 	retry := lb.Retry(retryMax, retryTimeout, balance)
@@ -264,7 +270,10 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 	}
 
 	//
-	factory := r.FactorySD(ctx, method, path, r.DecodeResponseDefault)
+	factory := r.FactorySD(ctx,
+		method,
+		path,
+		r.DecodeResponseDefault)
 	endPointer := sd.NewEndpointer(instance, factory, logger)
 	balance := lb.NewRoundRobin(endPointer)
 	retry := lb.Retry(retryMax, retryTimeout, balance)
@@ -281,7 +290,10 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 	opt = append(opt, options...)
 	opt = append(opt, tran.ServerBefore(Jwt2ctx()))
 
-	return tran.NewServer(ep, r.DecodeRequestDefault, r.EncodeResponse, opt...)
+	return tran.NewServer(ep,
+		r.DecodeRequestDefault,
+		r.EncodeResponse,
+		opt...)
 }
 
 //unit auto discovery
