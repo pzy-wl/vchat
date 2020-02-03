@@ -36,11 +36,13 @@ type (
 )
 
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
+	ylog.DebugDump("body", req.Body)
+
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
 		ylog.Error("RootTran.go->DecodeRequest", err)
 		return nil, err
 	}
-	
+
 	golog.Println("RootTran) DecodeRequest")
 	spew.Dump(reqDataPtr)
 
