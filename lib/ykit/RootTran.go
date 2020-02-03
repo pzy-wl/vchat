@@ -320,7 +320,7 @@ func (r *RootTran) HandlerSDCommon(ctx context.Context,
 	factory := r.FactorySD(ctx,
 		method,
 		path,
-		r.DecodeResponseMap)
+		r.DecodeResponseDefault)
 	endPointer := sd.NewEndpointer(instance, factory, logger)
 	balance := lb.NewRoundRobin(endPointer)
 	retry := lb.Retry(retryMax, retryTimeout, balance)
@@ -382,6 +382,6 @@ func (r *RootTran) DecodeResponseMap(ctx context.Context, res *http.Response) (i
 		ylog.Error("RootTran.go->DecodeResponseMap", err)
 		return nil, err
 	}
-	
+
 	return response, nil
 }
