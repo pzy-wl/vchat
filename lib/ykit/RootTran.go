@@ -36,6 +36,7 @@ type (
 
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
+		ylog.Error("RootTran.go->DecodeRequest", err)
 		return nil, err
 	}
 	return reqDataPtr, nil
@@ -43,10 +44,14 @@ func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req 
 
 //针对黑夜传入类型的decode
 func (r *RootTran) DecodeRequestDefault(ctx context.Context, req *http.Request) (interface{}, error) {
+	ylog.Debug("RootTran.go->DecodeRequestDefault")
+
 	return r.DecodeRequest(new(RequestDefault), ctx, req)
 }
 
 func (r *RootTran) EncodeRequestBuffer(_ context.Context, res *http.Request, requestData interface{}) error {
+	ylog.Debug("RootTran.go->EncodeRequestBuffer", )
+
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(requestData); err != nil {
 		return err
@@ -56,6 +61,7 @@ func (r *RootTran) EncodeRequestBuffer(_ context.Context, res *http.Request, req
 }
 
 func (r *RootTran) EncodeResponse(_ context.Context, wr http.ResponseWriter, res interface{}) error {
+	ylog.Debug("RootTran.go->EncodeResponse")
 	return json.NewEncoder(wr).Encode(res)
 }
 
@@ -63,6 +69,7 @@ func (r *RootTran) EncodeResponse(_ context.Context, wr http.ResponseWriter, res
 func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) (interface{}, error) {
 	var response Result
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		ylog.Error("RootTran.go->DecodeResponseDefault", err)
 		return nil, err
 	}
 	return response, nil
@@ -82,6 +89,7 @@ func (r *RootTran) ProxyEndPointOfInstance(
 	}
 	u, err := url.Parse(instance)
 	if err != nil {
+		ylog.Error("RootTran.go->ProxyEndPointOfInstance", err)
 		panic(err)
 	}
 	u.Path = path
@@ -367,9 +375,13 @@ func (r *RootTran) FactorySD(
 }
 
 func (r *RootTran) DecodeResponseMap(ctx context.Context, res *http.Response) (interface{}, error) {
-	var response map[string]interface{}
+	ylog.Debug("RootTran.go->DecodeResponseMap")
+
+	var response map[string]interface{} = make(map[string]interface{})
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		ylog.Error("RootTran.go->DecodeResponseMap", err)
 		return nil, err
 	}
+	
 	return response, nil
 }
