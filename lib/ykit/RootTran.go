@@ -355,7 +355,8 @@ func (r *RootTran) HandlerSDCommon(ctx context.Context,
 	opt = append(opt, ymid.ServerBeforeCallback)
 	opt = append(opt, options...)
 	opt = append(opt, tran.ServerBefore(Jwt2ctx()))
-	opt = append(opt, tran.ServerBefore(Head2Context()))
+	opt = append(opt, tran.ServerBefore(DebugHead()))
+	//opt = append(opt, tran.ServerBefore(Head2Context()))
 
 	return tran.NewServer(ep,
 		r.DecodeRequestDefault,
@@ -383,11 +384,16 @@ func (r *RootTran) FactorySD(
 		enc := r.EncodeRequestBuffer
 		dec := decodeResponseFunc
 
-		//before := tran.ClientBefore(Head2ClientReq())
-		before := tran.ClientBefore(Jwt2Req())
-		before1 := tran.ClientBefore(Context2Head())
+		opts := make([]tran.ClientOption, 0)
+		opts = append(opts, tran.ClientBefore(Jwt2Req()))
+		opts = append(opts, tran.ClientBefore(CommonHead()))
+		opts = append(opts, tran.ClientBefore(DebugHead()))
 
-		ep := tran.NewClient(method, targetURL, enc, dec, before, before1).Endpoint()
+		ep := tran.NewClient(method,
+			targetURL,
+			enc,
+			dec,
+			opts...).Endpoint()
 
 		ep = ymid.MidCommon(ep)
 		for _, f := range mid {

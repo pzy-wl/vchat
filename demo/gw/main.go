@@ -43,6 +43,13 @@ func main() {
 		"POST",
 		"/MapTest",
 		nil))
+	mux.Handle("/api/pb",
+		new(ykit.RootTran).HandlerSDCommon(
+			context.Background(),
+			"api",
+			"POST",
+			"/pb",
+			nil))
 
 	golog.Println(
 		`start at :9999,url is curl:localhost/hello`,

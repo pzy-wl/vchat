@@ -72,6 +72,7 @@ func main() {
 	mux.Handle("/ping", http.HandlerFunc(new(Ping).handler))
 	mux.Handle("/CtxTest", new(intf.CtxTestHandler).HandlerLocal(new(ctl.CtxTestImpl), nil))
 	mux.Handle("/MapTest", new(intf.MapTestH).HandlerLocal(new(ctl.MapTestImpl), nil))
+	mux.Handle("/pb", new(intf.PBH).HandlerLocal(new(ctl.PBImpl), nil))
 
 	mux.Handle("/CaptchaID",
 		new(intf.CaptchaIDH).HandlerLocal(new(ctl.CaptchaIDImpl), nil))
