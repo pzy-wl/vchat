@@ -85,7 +85,7 @@ func Test_wrapper_insert_many(t *testing.T) {
 		bean := &ABC{
 			ID:   i,
 			Name: fmt.Sprint("wrh_", i),
-			Age:  i * 10,
+			Age:  i,
 		}
 		l = append(l, bean)
 	}
@@ -404,6 +404,38 @@ func Test_PageBean_map(t *testing.T) {
 		Where: bson.M{
 			"name": bson.M{
 				"$ne": "whr",
+			},
+		},
+		Sort: bson.M{
+			"name": 1,
+			"age":  1,
+		},
+	}
+
+	l := make([]*ABC, 0)
+	bean, err := ymongo.X.DoPageMap(&l, "test", "abc", pb)
+	if err != nil {
+		ylog.Error("mongoClientWrapper_test.go->", err)
+		return
+	}
+	log.Println("-----aaa-----", "ok", "------------")
+	spew.Dump(bean)
+}
+
+func Test_PageBean_map_2(t *testing.T) {
+	pb := &ypage.PageBeanMap{
+		PageNo:      1,
+		RowsPerPage: 5,
+		Where: bson.M{
+			"name": bson.M{
+				"$ne": "whr",
+			},
+			"$or": []bson.M{{
+				"age": 70,
+			},
+				{
+					"age": 80,
+				},
 			},
 		},
 		Sort: bson.M{

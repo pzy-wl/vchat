@@ -28,3 +28,26 @@ func GetSort(l bson.D) string {
 
 	return s
 }
+func GetSortMap(l bson.M) string {
+	s := ""
+	for k, v := range l {
+		str := fmt.Sprint(v)
+		//
+		i, _ := strconv.Atoi(str)
+		sign := " asc "
+		if i <= 0 {
+			sign = " desc "
+		}
+		if len(s) == 0 {
+			s = k + sign
+		} else {
+			s += "," + k + sign
+		}
+	}
+
+	if len(s) == 0 {
+		s = " id asc "
+	}
+
+	return s
+}

@@ -132,3 +132,27 @@ func Test_page1(t *testing.T) {
 	log.Println("----------", err, "------------")
 	spew.Dump(ret)
 }
+
+func Test_page_map_1(t *testing.T) {
+	ypg.X.AutoMigrate(new(GoodA))
+	ypg.X.LogMode(true)
+	ytime.SetTimeZone()
+
+	where := bson.M{
+		"id": bson.M{"$gte": 1},
+	}
+	sort := bson.M{
+		"id":   1,
+		"name": 1}
+	bean := &ypage.PageBeanMap{
+		PageNo:      1,
+		RowsPerPage: 2,
+		Where:       where,
+		Sort:        sort,
+	}
+
+	l := make([]*GoodA, 0)
+	ret, err := ypg.PageMap(ypg.X, &l, bean)
+	log.Println("----------", err, "------------")
+	spew.Dump(ret)
+}
