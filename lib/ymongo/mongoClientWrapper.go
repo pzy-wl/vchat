@@ -226,6 +226,14 @@ func (r *MongoClientWrapper) DoCount(db, tb string, filter bson.D,
 		filter,
 		opts...)
 }
+func (r *MongoClientWrapper) DoCountMap(db,
+	tb string, filter bson.M,
+	opts ...*options.CountOptions) (int64, error) {
+	return r.Table(db, tb).CountDocuments(
+		context.Background(),
+		filter,
+		opts...)
+}
 
 func (r *MongoClientWrapper) DoPage(slicePtr interface{},
 	db, tb string,
@@ -259,6 +267,40 @@ func (r *MongoClientWrapper) DoPage(slicePtr interface{},
 	//
 	bean.Data = slicePtr
 	return nil
+}
+func (r *MongoClientWrapper) DoPageMap(slicePtr interface{},
+	db, tb string,
+	bean *ypage.PageBeanMap) (*ypage.PageBeanMap, error) {
+	allCount, err := r.DoCountMap(db, tb, bean.Where)
+	if err != nil {
+		return nil, err
+	}
+	bean.RowsCount = allCount
+	bean.PagesCount = bean.GetPagesCount()
+
+	skip := bean.GetSkip()
+	filter := bson.M{}
+	if len(bean.Where) > 0 {
+		filter = bean.Where
+	}
+
+	limit := int64(bean.RowsPerPage)
+	opts := &options.FindOptions{
+		Limit: &limit,
+		Skip:  &skip,
+		Sort:  bean.Sort,
+	}
+
+	if len(bean.Sort) > 0 {
+		opts.Sort = bean.Sort
+	}
+
+	if err = r.DoFindMany(slicePtr, db, tb, filter, opts); err != nil {
+		return nil, err
+	}
+	//
+	bean.Data = slicePtr
+	return bean, nil
 }
 
 // don't use it,it not pass test case

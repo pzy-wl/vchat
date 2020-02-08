@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/vhaoran/vchat/common/ypage"
+	"log"
 	"net/http"
 
 	"github.com/davecgh/go-spew/spew"
@@ -65,6 +66,13 @@ func (r *PBH) MakeLocalEndpoint(svc PBService) endpoint.Endpoint {
 
 //个人实现,参数不能修改
 func (r *PBH) DecodeRequest(ctx context.Context, req *http.Request) (interface{}, error) {
+	log.Println("----------", "------------")
+	p := make([]byte, 1024*4)
+	c, err := req.Body.Read(p)
+
+	log.Println("-err--", c, "---", err, "------------")
+	log.Println(string(p))
+
 	return r.base.DecodeRequest(new(PBIn), ctx, req)
 }
 

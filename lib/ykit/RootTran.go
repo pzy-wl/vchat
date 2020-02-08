@@ -77,7 +77,7 @@ func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) 
 	var response Result
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 		ylog.Error("RootTran.go->DecodeResponseDefault", err)
-		ylog.ErrorDump(res.Body)
+		//ylog.ErrorDump(res.Body)
 		ylog.Debug("----------------------------------")
 
 		return nil, err

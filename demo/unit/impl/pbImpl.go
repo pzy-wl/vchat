@@ -7,6 +7,17 @@ import (
 	"github.com/vhaoran/vchat/lib/ykit"
 	"log"
 )
+/*
+curl -X POST  \
+-H 'Jwt:test/1' \
+-H 'Content-Type:application/json' \
+-d '{"page_no":1,"rows_per_page":2,"where":[ {"uid":1} ]   }' \
+localhost:9999/api/pb
+
+
+*/
+
+
 
 type PBImpl struct {
 }

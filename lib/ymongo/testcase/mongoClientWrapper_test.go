@@ -84,7 +84,7 @@ func Test_wrapper_insert_many(t *testing.T) {
 	for i := 0; i < 1234; i++ {
 		bean := &ABC{
 			ID:   i,
-			Name: fmt.Sprint("whr_aaaa_", i),
+			Name: fmt.Sprint("wrh_", i),
 			Age:  i * 10,
 		}
 		l = append(l, bean)
@@ -363,4 +363,61 @@ func Test_find_many_1(t *testing.T) {
 	s, _ := json.Marshal(l)
 	log.Println("----------", "s", string(s), "------------")
 
+}
+
+func Test_find_many_of_map(t *testing.T) {
+	l := make([]*ABC, 0)
+
+	limit := int64(2)
+	skip := int64(1)
+	opts := &options.FindOptions{
+		Limit: &limit,
+		Skip:  &skip,
+		Sort: bson.M{
+			"age": 1,
+		},
+	}
+
+	err := db.DoFindMany(&l, "test",
+		"abc",
+		bson.M{"name": bson.M{
+			"$ne": "whr",
+		},
+		}, opts)
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	fmt.Println("------", "", "-----------")
+	spew.Dump(l)
+	log.Println("----------", "json", "------------")
+	s, _ := json.Marshal(l)
+	log.Println("----------", "s", string(s), "------------")
+
+}
+
+func Test_PageBean_map(t *testing.T) {
+	pb := &ypage.PageBeanMap{
+		PageNo:      1,
+		RowsPerPage: 2,
+		Where: bson.M{
+			"name": bson.M{
+				"$ne": "whr",
+			},
+		},
+		Sort: bson.M{
+			"name": 1,
+			"age":  1,
+		},
+	}
+
+	l := make([]*ABC, 0)
+	bean, err := ymongo.X.DoPageMap(&l, "test", "abc", pb)
+	if err != nil {
+		ylog.Error("mongoClientWrapper_test.go->", err)
+		return
+	}
+	log.Println("-----aaa-----", "ok", "------------")
+	spew.Dump(bean)
 }

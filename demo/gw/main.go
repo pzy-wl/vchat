@@ -37,12 +37,14 @@ func main() {
 
 	mux.Handle("/api/CtxTest", new(intf.CtxTestHandler).HandlerSD(nil))
 	mux.Handle("/api/MapTest", new(intf.MapTestH).HandlerSD(nil))
+
 	mux.Handle("/api/MapTestCommon", new(ykit.RootTran).HandlerSDCommon(
 		context.Background(),
 		"api",
 		"POST",
 		"/MapTest",
 		nil))
+
 	mux.Handle("/api/pb",
 		new(ykit.RootTran).HandlerSDCommon(
 			context.Background(),
