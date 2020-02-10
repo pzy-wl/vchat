@@ -32,3 +32,12 @@ func Test_get_buffer(t *testing.T) {
 	s, _ = GetBufferForMq([]Good{Good{ID: 1, Name: "33"}, Good{ID: 2, Name: "3344"}})
 	fmt.Println("------", string(s), "-----------")
 }
+
+func Test_exec_path(t *testing.T) {
+	p, err := GetExecPath()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	log.Println("----path:------", p, "------------")
+}

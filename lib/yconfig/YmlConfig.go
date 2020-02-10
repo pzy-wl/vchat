@@ -3,6 +3,7 @@ package yconfig
 import (
 	"errors"
 	"fmt"
+	"github.com/vhaoran/vchat/common/g"
 	"os"
 	"path"
 	"time"
@@ -152,8 +153,9 @@ type (
 
 func GetYmlConfig() (*YmlConfig, error) {
 	var (
-		pwd string
-		err error
+		pwd      string
+		execPath string
+		err      error
 	)
 
 	if pwd, err = os.Getwd(); err != nil {
@@ -165,6 +167,9 @@ func GetYmlConfig() (*YmlConfig, error) {
 		"../../../",
 		"../../../../",
 		"../../../../../"}
+	if execPath, err = g.GetExecPath(); err != nil {
+		l = append(l, execPath)
+	}
 
 	vp := viper.New()
 	vp.AddConfigPath(pwd)
