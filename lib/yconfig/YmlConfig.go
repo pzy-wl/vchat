@@ -167,7 +167,7 @@ func GetYmlConfig() (*YmlConfig, error) {
 		"../../../",
 		"../../../../",
 		"../../../../../"}
-	if execPath, err = g.GetExecPath(); err != nil {
+	if execPath, err = g.GetExecPath(); err == nil {
 		l = append(l, execPath)
 	}
 
