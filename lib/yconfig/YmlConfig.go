@@ -167,15 +167,18 @@ func GetYmlConfig() (*YmlConfig, error) {
 		"../../../",
 		"../../../../",
 		"../../../../../"}
-	if execPath, err = g.GetExecPath(); err == nil {
-		l = append(l, execPath)
-	}
 
 	vp := viper.New()
 	vp.AddConfigPath(pwd)
 	for _, v := range l {
 		vp.AddConfigPath(path.Join(pwd, v))
 	}
+
+	//-----------add execPath-----------------
+	if execPath, err = g.GetExecPath(); err == nil {
+		vp.AddConfigPath(execPath)
+	}
+	
 
 	vp.SetConfigName("config")
 	if fileName := os.Getenv("vchat_yml_file"); len(fileName) > 0 {
