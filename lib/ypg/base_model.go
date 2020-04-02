@@ -10,8 +10,8 @@ import (
 )
 
 type BaseModel struct {
-	CreatedAt ytime.Date
-	UpdatedAt ytime.Date
+	CreatedAt ytime.Date `json:"created_at"`
+	UpdatedAt ytime.Date `json:"update_at"`
 	//DelTime     ytime.Date
 }
 
