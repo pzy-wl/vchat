@@ -13,96 +13,100 @@ import (
 )
 
 const (
-	$name$_HANDLER_PATH = "/$name$"
+$name$_H_PATH = "/$name$"
 )
 
 type (
-	$name$Service interface {
-		$methods$(in *$name$Request) (*ykit.Result, error)
-	}
+$name$Service interface {
+Exec(ctx context.Context,in *$name$In) (*ykit.Result, error)
+}
 
-	//input data
-	$name$Request struct {
-		S string `json:"s"`
-	}
+//input data $loc$
+$name$In struct {
+S string `json:"s"`
+}
 
-	//output data
-	//Result struct {
-	//	Code int         `json:"code"`
-	//	Msg  string      `json:"msg"`
-	//	Data interface{} `json:"data"`
-	//}
+//output data
+//Result struct {
+//	Code int         `json:"code"`
+//	Msg  string      `json:"msg"`
+//	Data interface{} `json:"data"`
+//}
 
-	// handler implements
-	$name$Handler struct {
-		base ykit.RootTran
-	}
+// handler implements
+$name$H struct {
+base ykit.RootTran
+}
 )
 
-func (r *$name$Handler) MakeLocalEndpoint(svc $name$Service) endpoint.Endpoint {
+func (r *$name$H) MakeLocalEndpoint(svc $name$Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		fmt.Println("#############  $name$ ###########")
 		spew.Dump(ctx)
 
-		in := request.(*$name$Request)
-		return svc.$methods$(in)
+		in := request.(*$name$In)
+		return svc.Exec(ctx,in)
 	}
 }
 
 //个人实现,参数不能修改
-func (r *$name$Handler) DecodeRequest(ctx context.Context, req *http.Request) (interface{}, error) {
-	return r.base.DecodeRequest(new($name$Request), ctx, req)
+func (r *$name$H) DecodeRequest(ctx context.Context, req *http.Request) (interface{}, error) {
+return r.base.DecodeRequest(new($name$In), ctx, req)
 }
 
 //个人实现,参数不能修改
-func (r *$name$Handler) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
-	var response ykit.Result
-	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
-		return nil, err
-	}
-	return response, nil
+func (r *$name$H) DecodeResponse(_ context.Context, res *http.Response) (interface{}, error) {
+var response ykit.Result
+if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+return nil, err
+}
+return response, nil
 }
 
 //handler for router，微服务本地接口，
-func (r *$name$Handler) HandlerLocal(service $name$Service,
-	mid []endpoint.Middleware,
-	options ...tran.ServerOption) *tran.Server {
+func (r *$name$H) HandlerLocal(service $name$Service,
+mid []endpoint.Middleware,
+options ...tran.ServerOption) *tran.Server {
 
 	ep := r.MakeLocalEndpoint(service)
 	for _, f := range mid {
 		ep = f(ep)
 	}
+	
+	before := tran.ServerBefore(ykit.Jwt2ctx())
+	opts := make([]tran.ServerOption, 0)
+	opts = append(opts, before)
+	opts = append(opts, options...)	
 
 	handler := tran.NewServer(
 		ep,
 		r.DecodeRequest,
 		r.base.EncodeResponse,
-		options...)
+		opts...)
 	//handler = loggingMiddleware()
 	return handler
 }
 
 //sd,proxy实现,用于etcd自动服务发现时的handler
-func (r *$name$Handler) HandlerSD(mid []endpoint.Middleware,
-	options ...tran.ServerOption) *tran.Server {
+func (r *$name$H) HandlerSD(mid []endpoint.Middleware,
+options ...tran.ServerOption) *tran.Server {
 	return r.base.HandlerSD(
 		context.Background(),
-		MSTAG,
+		cmn.MSTAG,
 		"POST",
-		$name$_HANDLER_PATH,
+	$name$_H_PATH,
 		r.DecodeRequest,
 		r.DecodeResponse,
 		mid,
 		options...)
 }
 
-func (r *$name$Handler) ProxySD() endpoint.Endpoint {
+func (r *$name$H) ProxySD() endpoint.Endpoint {
 	return r.base.ProxyEndpointSD(
 		context.Background(),
-		MSTAG,
+		cmn.MSTAG,
 		"POST",
-		$name$_HANDLER_PATH,
+	$name$_H_PATH,
 		r.DecodeRequest,
 		r.DecodeResponse)
 }
-
