@@ -20,6 +20,7 @@ import (
 --------------------------------------- */
 type (
 	YmlConfig struct {
+		WS       WSConfig     `json:"ws,omitempty"`
 		RabbitMq RabbitConfig `json:"rabbitMq,omitempty"`
 		Gateway  GWConfig     `json:"gwConfig,omitempty"`
 
@@ -179,7 +180,6 @@ func GetYmlConfig() (*YmlConfig, error) {
 	if execPath, err = g.GetExecPath(); err == nil {
 		vp.AddConfigPath(execPath)
 	}
-	
 
 	vp.SetConfigName("config")
 	if fileName := os.Getenv("vchat_yml_file"); len(fileName) > 0 {

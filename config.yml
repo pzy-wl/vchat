@@ -10,7 +10,10 @@ microService:
   # etct注册主机，docker映射到外部时使用
   regHost: 127.0.0.1
   # 所有微服務相同
-
+ws:
+  port: 8888
+  httpSendPwd: password
+  wsSendPwd: password
 log:
   logLevel: debug
   # 日志路径

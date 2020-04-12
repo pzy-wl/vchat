@@ -13,6 +13,8 @@ type (
 		//向etcd注册的商品，,在docker中时需要区分
 		RegPort int
 		//向etcd注册的host,在docker中时需要区分
-		RegHost string
+		RegHost     string
+		DispatchUrl string
+		DispatchPwd string
 	}
 )
