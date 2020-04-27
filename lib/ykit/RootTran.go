@@ -128,7 +128,7 @@ func (r *RootTran) ProxyEndpointSD(ctx context.Context,
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
-	retryTimeout := 20 * 1000 * time.Millisecond
+	retryTimeout := 10 * 1000 * time.Millisecond
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		return nil
@@ -166,7 +166,7 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
-	retryTimeout := 500 * time.Millisecond
+	retryTimeout := 10 * 1000 * time.Millisecond
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
@@ -212,7 +212,7 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
-	retryTimeout := 500 * time.Millisecond
+	retryTimeout := 10 * 1000 * time.Millisecond
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
@@ -262,7 +262,7 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
-	retryTimeout := 500 * time.Millisecond
+	retryTimeout := 10 * 1000 * time.Millisecond
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
@@ -321,7 +321,7 @@ func (r *RootTran) HandlerSDCommon(ctx context.Context,
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
-	retryTimeout := 500 * time.Millisecond
+	retryTimeout := 10 * 1000 * time.Millisecond
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
