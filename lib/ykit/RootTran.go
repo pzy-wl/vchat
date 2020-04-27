@@ -57,7 +57,7 @@ func (r *RootTran) DecodeRequestDefault(ctx context.Context, req *http.Request) 
 }
 
 func (r *RootTran) EncodeRequestBuffer(_ context.Context, res *http.Request, requestData interface{}) error {
-	ylog.Debug("RootTran.go->EncodeRequestBuffer", )
+	ylog.Debug("RootTran.go->EncodeRequestBuffer")
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(requestData); err != nil {
@@ -128,7 +128,7 @@ func (r *RootTran) ProxyEndpointSD(ctx context.Context,
 
 	//etcdAddr   := flag.String("consul.addr", "", "Consul agent address")
 	retryMax := 3
-	retryTimeout := 500 * time.Millisecond
+	retryTimeout := 20 * 1000 * time.Millisecond
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		return nil
