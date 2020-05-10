@@ -12,4 +12,7 @@ func Test_get_yml_config(t *testing.T) {
 	fmt.Println("-----------------", bean, err)
 	fmt.Println("-----------------")
 	spew.Dump(bean)
+	fmt.Println("-----------------")
+	spew.Dump(bean.ES)
+	fmt.Println("-----------------")
 }

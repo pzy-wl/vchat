@@ -66,4 +66,4 @@ rabbitMq:
   poolMin: 10
 es:
   url:
-    - "localhost:9200"
+    - "http://localhost:9200"

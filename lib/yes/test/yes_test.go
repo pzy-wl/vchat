@@ -3,9 +3,8 @@ package test
 import (
 	"context"
 	"fmt"
-	"testing"
-
 	"github.com/olivere/elastic/v7"
+	"testing"
 
 	"github.com/vhaoran/vchat/lib"
 	"github.com/vhaoran/vchat/lib/yes"
@@ -15,8 +14,8 @@ import (
 type Product struct {
 	ID       string `json:"id,omitempty"`
 	Name     string `json:"name,omitempty"`
-	CateID   int64  `json:"category_id,omitempty"`
-	CateName string `json:"category,omitempty"`
+	CateID   int64  `json:"cate_id,omitempty"`
+	CateName string `json:"cate_name,omitempty"`
 	Tag      string `json:"tag,omitempty"`
 
 	Price  float32 `json:"price,omitempty"`
@@ -64,6 +63,22 @@ func Test_match(t *testing.T) {
 
 	r, err := yes.X.Search("index").
 		Query(q).
+		Do(context.Background())
+	ylog.Debug("--------yes_test.go------", err)
+	ylog.DebugDump("--------yes_test.go------", r)
+}
+//
+func Test_match2(t *testing.T) {
+	//q := elastic.NewTermQuery("tag", "飞机")
+	//q := elastic.NewQueryStringQuery()
+	//q := elastic.NewMatchAllQuery()
+	q := elastic.NewMatchQuery()
+
+
+	//q := elastic.NewScriptQuery("")
+	//q := elastic.NewWrapperQuery()
+
+	r, err := yes.X.Search("index").Query().
 		Do(context.Background())
 	ylog.Debug("--------yes_test.go------", err)
 	ylog.DebugDump("--------yes_test.go------", r)
