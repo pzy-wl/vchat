@@ -67,18 +67,18 @@ func Test_match(t *testing.T) {
 	ylog.Debug("--------yes_test.go------", err)
 	ylog.DebugDump("--------yes_test.go------", r)
 }
+
 //
 func Test_match2(t *testing.T) {
-	//q := elastic.NewTermQuery("tag", "飞机")
+	q := elastic.NewTermQuery("tag", "飞机")
 	//q := elastic.NewQueryStringQuery()
 	//q := elastic.NewMatchAllQuery()
-	q := elastic.NewMatchQuery()
-
+	//q := elastic.NewMatchQuery()
 
 	//q := elastic.NewScriptQuery("")
 	//q := elastic.NewWrapperQuery()
 
-	r, err := yes.X.Search("index").Query().
+	r, err := yes.X.Search("index").Query(q).
 		Do(context.Background())
 	ylog.Debug("--------yes_test.go------", err)
 	ylog.DebugDump("--------yes_test.go------", r)
