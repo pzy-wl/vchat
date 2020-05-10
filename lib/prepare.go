@@ -4,6 +4,7 @@ import (
 	"github.com/vhaoran/vchat/common/ytime"
 	_ "github.com/vhaoran/vchat/common/ytime"
 	"github.com/vhaoran/vchat/lib/yconfig"
+	"github.com/vhaoran/vchat/lib/yes"
 	"github.com/vhaoran/vchat/lib/yetcd"
 	"github.com/vhaoran/vchat/lib/yjwt"
 	"github.com/vhaoran/vchat/lib/ylog"
@@ -23,6 +24,7 @@ type LoadOption struct {
 	LoadMq           bool //5
 	LoadRabbitMq     bool //6
 	LoadJwt          bool //7
+	LoadES           bool //8
 }
 
 func InitModulesOfAll() (*yconfig.YmlConfig, error) {
@@ -35,6 +37,7 @@ func InitModulesOfAll() (*yconfig.YmlConfig, error) {
 		LoadMq:           true,
 		LoadRabbitMq:     true,
 		LoadJwt:          true,
+		LoadES:           true,
 	}
 
 	return InitModulesOfOptions(&cfg)
@@ -119,6 +122,14 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 			return nil, err
 		}
 		ylog.Debug("rabbitmq connected ok")
+	}
+
+	if opt.LoadES {
+		ylog.Debug("elasticsearch connecting...", cfg.ES)
+		if err := yes.InitES(cfg.ES); err != nil {
+			return nil, err
+		}
+		ylog.Debug("elasticsearch connected ok")
 	}
 
 	return cfg, nil

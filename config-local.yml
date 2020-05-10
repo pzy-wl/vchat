@@ -64,4 +64,6 @@ rabbitMq:
   url: amqp://root:password@127.0.0.1:5672/
   poolMax: 100
   poolMin: 10
-
+es:
+  url:
+    - "localhost:9200"
