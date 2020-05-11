@@ -2,9 +2,12 @@ package test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"github.com/olivere/elastic/v7"
 	"testing"
+	"time"
+
+	"github.com/olivere/elastic/v7"
 
 	"github.com/vhaoran/vchat/lib"
 	"github.com/vhaoran/vchat/lib/yes"
@@ -58,8 +61,24 @@ func Test_add(t *testing.T) {
 	}
 }
 
+func Test_add_n(t *testing.T) {
+
+	bean := Product{
+		//ID:       i,
+		Name:     fmt.Sprint("name_", time.Now().UnixNano()),
+		CateID:   0,
+		CateName: fmt.Sprint("cate_", 1),
+		Tag:      "汽车 蓝天 白云",
+		Price:    10.0,
+		Remark:   "中国 魏浩然  李明 王伟",
+	}
+	r, err := yes.X.Index().Index("index").BodyJson(bean).Do(context.Background())
+	ylog.Debug("--------yes_test.go------", err)
+	ylog.DebugDump("--------yes_test.go------", r)
+}
+
 func Test_match(t *testing.T) {
-	q := elastic.NewTermQuery("tag", "飞机")
+	q := elastic.NewTermQuery("tag", "汽车")
 
 	r, err := yes.X.Search("index").
 		Query(q).
@@ -69,17 +88,49 @@ func Test_match(t *testing.T) {
 }
 
 //
-func Test_match2(t *testing.T) {
-	q := elastic.NewTermQuery("tag", "飞机")
-	//q := elastic.NewQueryStringQuery()
-	//q := elastic.NewMatchAllQuery()
-	//q := elastic.NewMatchQuery()
-
-	//q := elastic.NewScriptQuery("")
-	//q := elastic.NewWrapperQuery()
-
+func Test_match_one_field(t *testing.T) {
+	q := elastic.NewRawStringQuery(`
+      {
+              "match": {
+                 "tag": "飞机"
+              }
+      }
+    `)
 	r, err := yes.X.Search("index").Query(q).
 		Do(context.Background())
-	ylog.Debug("--------yes_test.go------", err)
-	ylog.DebugDump("--------yes_test.go------", r)
+	ylog.Debug("-----err------", err)
+	ylog.DebugDump("----result---", r)
+	output(r)
+}
+
+func Test_match_multi_valueOfOneField(t *testing.T) {
+	q := elastic.NewRawStringQuery(`
+      {
+		"bool": {
+		  "should": [
+			{ "match": { "tag": "飞机" }},
+			{ "match": { "tag": "蓝天" }},
+			{ "match": { "tag": "白云" }}
+		  ]
+		}                 
+					 
+      }
+    `)
+	r, err := yes.X.Search("index").Query(q).
+		Do(context.Background())
+	ylog.Debug("-----err------", err)
+	ylog.DebugDump("----result---", r)
+	output(r)
+}
+
+func output(r *elastic.SearchResult) {
+	fmt.Println("-------- -----------------------------")
+	for _, v := range r.Hits.Hits {
+		str, err := json.Marshal(v)
+		if err == nil {
+			fmt.Println("##### :  ", string(str))
+		} else {
+			fmt.Println("***err:", err.Error())
+		}
+	}
 }
