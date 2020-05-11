@@ -67,3 +67,8 @@ rabbitMq:
 es:
   url:
     - "http://localhost:9200"
+qiniu:
+  accessKey: "gEpp05gnISRQeLZ6d5GCnAryXSFDnMfl_G5iG5p5"
+  secretKey: "EkZHh2f3vLwVw2v3orRsmK25dVWfSy_wDCOofjVD"
+  buckPermanent: "permanent-wlkj"
+  buckTemp: "temporary-wlkj"

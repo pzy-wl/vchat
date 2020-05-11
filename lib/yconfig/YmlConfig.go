@@ -20,7 +20,7 @@ import (
 --------------------------------------- */
 type (
 	YmlConfig struct {
-		ES       ESConfig `json:"es,omitempty"`
+		ES       ESConfig     `json:"es,omitempty"`
 		WS       WSConfig     `json:"ws,omitempty"`
 		RabbitMq RabbitConfig `json:"rabbitMq,omitempty"`
 		Gateway  GWConfig     `json:"gwConfig,omitempty"`
@@ -35,6 +35,7 @@ type (
 		Mongo    MongoConfig `json:"mongo,omitempty"`
 		Log      LogConfig   `json:"log,omitempty"`
 		Jwt      JwtConfig   `json:"jwt,omitempty"`
+		Qiniu    QiniuConfig `json:"qiniu,omitempty"`
 	}
 
 	ETCDConfig struct {

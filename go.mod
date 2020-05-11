@@ -22,6 +22,7 @@ require (
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/olivere/elastic/v7 v7.0.15
+	github.com/qiniu/api.v7/v7 v7.5.0
 	github.com/robbert229/jwt v2.0.0+incompatible
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.6.1
