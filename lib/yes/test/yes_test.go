@@ -37,6 +37,7 @@ func init() {
 			LoadRabbitMq:     false,
 			LoadJwt:          false,
 			LoadES:           true,
+			LoadQiniu:  true,
 		})
 	if err != nil {
 		panic(err.Error())

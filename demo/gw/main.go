@@ -23,6 +23,7 @@ func init() {
 		LoadMongo:        false,
 		LoadMq:           false,
 		LoadJwt:          false,
+		LoadQiniu:  true,
 	})
 	if err != nil {
 		panic(err.Error())

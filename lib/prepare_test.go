@@ -176,6 +176,7 @@ func Test_load_options(t *testing.T) {
 		LoadMongo: false,
 		LoadMq:    false,
 		LoadJwt:   false,
+		LoadQiniu:  true,
 	}
 	cfg, err := InitModulesOfOptions(&opt)
 	fmt.Println("------", "", "-----------")

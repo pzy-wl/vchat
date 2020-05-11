@@ -12,6 +12,7 @@ import (
 	"github.com/vhaoran/vchat/lib/ymq"
 	"github.com/vhaoran/vchat/lib/ymqa"
 	"github.com/vhaoran/vchat/lib/ypg"
+	"github.com/vhaoran/vchat/lib/yqiniu"
 	"github.com/vhaoran/vchat/lib/yredis"
 )
 
@@ -25,6 +26,7 @@ type LoadOption struct {
 	LoadRabbitMq     bool //6
 	LoadJwt          bool //7
 	LoadES           bool //8
+	LoadQiniu        bool //9
 }
 
 func InitModulesOfAll() (*yconfig.YmlConfig, error) {
@@ -38,6 +40,7 @@ func InitModulesOfAll() (*yconfig.YmlConfig, error) {
 		LoadRabbitMq:     true,
 		LoadJwt:          true,
 		LoadES:           true,
+		LoadQiniu:        true,
 	}
 
 	return InitModulesOfOptions(&cfg)
@@ -109,11 +112,13 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	}
 
 	if opt.LoadMq {
-		ylog.Debug("emqx connecting...", cfg.Emq.Url, "  ;  ", cfg.Emq.Host)
-		if err := ymq.InitMq(cfg.Emq); err != nil {
-			return nil, err
+		if &opt.LoadQiniu != nil {
+			ylog.Debug("emqx connecting...", cfg.Emq.Url, "  ;  ", cfg.Emq.Host)
+			if err := ymq.InitMq(cfg.Emq); err != nil {
+				return nil, err
+			}
+			ylog.Debug("emqx connected ok")
 		}
-		ylog.Debug("emqx connected ok")
 	}
 
 	if opt.LoadRabbitMq {
@@ -130,6 +135,10 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 			return nil, err
 		}
 		ylog.Debug("elasticsearch connected ok")
+	}
+
+	if opt.LoadQiniu {
+		yqiniu.InitQiniu(cfg.Qiniu)
 	}
 
 	return cfg, nil

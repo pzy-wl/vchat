@@ -8,19 +8,26 @@ import (
 	"github.com/qiniu/api.v7/v7/auth/qbox"
 	"github.com/qiniu/api.v7/v7/storage"
 
+	"github.com/vhaoran/vchat/lib/yconfig"
 	"github.com/vhaoran/vchat/lib/ylog"
 )
 
-const (
-	accessKey = "gEpp05gnISRQeLZ6d5GCnAryXSFDnMfl_G5iG5p5"
-	secretKey = "EkZHh2f3vLwVw2v3orRsmK25dVWfSy_wDCOofjVD"
-	//q52as9ix7.bkt.clouddn.com
-	buck_permanent = "permanent-wlkj"
-	buck_temp      = "temporary-wlkj"
+var (
+	accessKey      string = "gEpp05"
+	secretKey      string = "EkZHh2"
+	buck_permanent string = "permanent-wlkj"
+	buck_temp      string = "temporary-wlkj"
 )
 
+func InitQiniu(cfg yconfig.QiniuConfig) {
+	accessKey = cfg.AccessKey
+	secretKey = cfg.SecretKey
+	buck_permanent = cfg.BuckPermanent
+	buck_temp = cfg.BuckTemp
+}
+
 func GetToken(hours int64) (string, error) {
-	const bucket = buck_permanent
+	bucket := buck_permanent
 	n := time.Now().Unix() + hours*3600
 
 	putPolicy := storage.PutPolicy{
@@ -34,7 +41,7 @@ func GetToken(hours int64) (string, error) {
 }
 
 func GetTokenTemp(hours int64) (string, error) {
-	const bucket = buck_temp
+	bucket := buck_temp
 	//- 持续化存储空间名: permanent-wlkj
 	//--->  域名地址:p.0755yicai.com
 	//- 临时存储空间名(7天):
