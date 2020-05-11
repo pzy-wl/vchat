@@ -25,6 +25,15 @@ func IsSlice(a interface{}) bool {
 	return false
 }
 
+func IsStruct(a interface{}) bool {
+	tp := reflect.Indirect(reflect.ValueOf(a))
+	switch tp.Kind() {
+	case reflect.Struct:
+		return true
+	}
+	return false
+}
+
 //make a Point of slice element
 //
 func MakeSliceElemPtr(a interface{}) (interface{}, error) {
