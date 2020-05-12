@@ -6,9 +6,16 @@ import (
 	"reflect"
 
 	"github.com/vhaoran/vchat/common/reflectUtils"
+	"github.com/vhaoran/vchat/lib/ylog"
 )
 
 func Key2UrlOfQiNiu(obj interface{}, fields ...string) error {
+	defer func() {
+		if err := recover(); err != nil {
+			ylog.Debug("--------tran-image-url.go------", err)
+		}
+	}()
+
 	if !reflectUtils.IsStruct(obj) {
 		return errors.New("不是结构")
 	}
@@ -17,6 +24,10 @@ func Key2UrlOfQiNiu(obj interface{}, fields ...string) error {
 	}
 
 	v := reflect.Indirect(reflect.ValueOf(obj))
+	if v.IsNil() {
+		return errors.New("必须是珍上指针，才能操作")
+	}
+
 	//
 	for _, fdName := range fields {
 		if _, ok := v.Type().FieldByName(fdName); ok {

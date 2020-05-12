@@ -37,7 +37,7 @@ func init() {
 			LoadRabbitMq:     false,
 			LoadJwt:          false,
 			LoadES:           true,
-			LoadQiniu:  true,
+			LoadQiniu:        true,
 		})
 	if err != nil {
 		panic(err.Error())
@@ -45,7 +45,7 @@ func init() {
 	fmt.Println(" ---------- init ok---------")
 }
 
-func Test_add(t *testing.T) {
+func Test_add_batch(t *testing.T) {
 	for i := int64(0); i < 100; i++ {
 		bean := Product{
 			//ID:       i,
@@ -57,8 +57,8 @@ func Test_add(t *testing.T) {
 			Remark:   "this is a good test",
 		}
 		r, err := yes.X.Index().Index("index").BodyJson(bean).Do(context.Background())
-		ylog.Debug("--------yes_test.go------", err)
-		ylog.DebugDump("--------yes_test.go------", r)
+		ylog.Debug("--------yes_search_test.go------", err)
+		ylog.DebugDump("--------yes_search_test.go------", r)
 	}
 }
 
@@ -74,8 +74,8 @@ func Test_add_n(t *testing.T) {
 		Remark:   "中国 魏浩然  李明 王伟",
 	}
 	r, err := yes.X.Index().Index("index").BodyJson(bean).Do(context.Background())
-	ylog.Debug("--------yes_test.go------", err)
-	ylog.DebugDump("--------yes_test.go------", r)
+	ylog.Debug("--------yes_search_test.go------", err)
+	ylog.DebugDump("--------yes_search_test.go------", r)
 }
 
 func Test_match(t *testing.T) {
@@ -84,8 +84,8 @@ func Test_match(t *testing.T) {
 	r, err := yes.X.Search("index").
 		Query(q).
 		Do(context.Background())
-	ylog.Debug("--------yes_test.go------", err)
-	ylog.DebugDump("--------yes_test.go------", r)
+	ylog.Debug("--------yes_search_test.go------", err)
+	ylog.DebugDump("--------yes_search_test.go------", r)
 }
 
 //
@@ -104,7 +104,7 @@ func Test_match_one_field(t *testing.T) {
 	output(r)
 }
 
-func Test_match_multi_valueOfOneField(t *testing.T) {
+func Test_match_multi_valueOfOneField_or(t *testing.T) {
 	q := elastic.NewRawStringQuery(`
       {
 		"bool": {
@@ -117,6 +117,67 @@ func Test_match_multi_valueOfOneField(t *testing.T) {
 					 
       }
     `)
+	r, err := yes.X.Search("index").Query(q).
+		Do(context.Background())
+	ylog.Debug("-----err------", err)
+	ylog.DebugDump("----result---", r)
+	output(r)
+}
+
+func Test_match_multi_valueOfOneField_all(t *testing.T) {
+	q := elastic.NewRawStringQuery(`
+      {
+        "query_string" : {
+            "default_field" : "tag",
+            "query" : "(白云) and (飞机)",
+            "minimum_should_match": 2
+        }					 
+      }
+    `)
+	r, err := yes.X.Search("index").Query(q).
+		Do(context.Background())
+	ylog.Debug("-----err------", err)
+	ylog.DebugDump("----result---", r)
+	output(r)
+}
+
+func Test_match_multi_field_multi_valueOfOneField_all(t *testing.T) {
+	q := elastic.NewRawStringQuery(`
+      {
+        "query_string" : {
+           "fields": [
+                "tag",
+                "remark"
+            ],
+            "query" : "(白云) and (飞机) and (魏浩然)",
+            "minimum_should_match": 3
+        }					 
+      }
+    `)
+	r, err := yes.X.Search("index").Query(q).
+		Do(context.Background())
+	ylog.Debug("-----err------", err)
+	ylog.DebugDump("----result---", r)
+	output(r)
+}
+
+func Test_match_multi_field_multi_valueOfOneField_all_qStr(t *testing.T) {
+	//q := elastic.NewRawStringQuery(`
+	//  {
+	//    "query_string" : {
+	//       "fields": [
+	//            "tag",
+	//            "remark"
+	//        ],
+	//        "query" : "(白云) and (飞机) and (魏浩然)",
+	//        "minimum_should_match": 3
+	//    }
+	//  }
+	//`)
+	q := elastic.NewQueryStringQuery("(白云) and (飞机) and (魏浩然)").Field("tag").
+		Field("remark").
+		MinimumShouldMatch("3")
+
 	r, err := yes.X.Search("index").Query(q).
 		Do(context.Background())
 	ylog.Debug("-----err------", err)
