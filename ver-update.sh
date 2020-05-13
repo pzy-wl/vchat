@@ -5,7 +5,15 @@ up(){
    file="$2";
    echo "------------->""$file";
 
-   sed -E -i '' "s/github\.com\/vhaoran\/vchat .*/github\.com\/vhaoran\/vchat $ver/g"  "$file";
+   OS=$(uname -o)
+
+   if [[ $OS = "GNU/Linux" ]]; then 
+      sed -E -i "s/github\.com\/vhaoran\/vchat .*/github\.com\/vhaoran\/vchat $ver/g"  "$file";
+   else
+      sed -E -i ''  "s/github\.com\/vhaoran\/vchat .*/github\.com\/vhaoran\/vchat $ver/g"  "$file";
+   fi; 
+
+
    echo "-------after update----------------"
    grep "vchat"  "$file"
 
