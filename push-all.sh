@@ -20,6 +20,8 @@ up   "$GOPATH/src/vchatmsg/";
 up   "$GOPATH/src/vchatfinance/";
 up   "$GOPATH/src/vchatgw/";
 
+up   "$GOPATH/src/vchatyser/";
+
 
 
 
