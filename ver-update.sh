@@ -23,5 +23,7 @@ up "$VER"  "$GOPATH/src/vchatmsg/go.mod";
 up "$VER"  "$GOPATH/src/vchatfinance/go.mod";
 up "$VER"  "$GOPATH/src/vchatgw/go.mod";
 
+up "$VER"  "$GOPATH/src/infouser/go.mod";
+
 
 echo "$VER"

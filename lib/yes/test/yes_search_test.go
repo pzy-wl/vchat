@@ -162,18 +162,6 @@ func Test_match_multi_field_multi_valueOfOneField_all(t *testing.T) {
 }
 
 func Test_match_multi_field_multi_valueOfOneField_all_qStr(t *testing.T) {
-	//q := elastic.NewRawStringQuery(`
-	//  {
-	//    "query_string" : {
-	//       "fields": [
-	//            "tag",
-	//            "remark"
-	//        ],
-	//        "query" : "(白云) and (飞机) and (魏浩然)",
-	//        "minimum_should_match": 3
-	//    }
-	//  }
-	//`)
 	q := elastic.NewQueryStringQuery("(白云) and (飞机) and (魏浩然)").Field("tag").
 		Field("remark").
 		MinimumShouldMatch("3")

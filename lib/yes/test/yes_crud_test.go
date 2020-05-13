@@ -23,10 +23,12 @@ func Test_add_single(t *testing.T) {
 
 	r, err := yes.X.Index().
 		Index("t").
-		Id("111").
+		Id("111a").
 		BodyJson(bean).Do(context.Background())
 	ylog.Debug("--------yes_search_test.go------", err)
 	ylog.DebugDump("--------yes_search_test.go------", r)
+	//
+
 }
 
 func Test_update_rec(t *testing.T) {
