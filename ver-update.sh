@@ -5,7 +5,7 @@ up(){
    file="$2";
    echo "------------->""$file";
 
-   OS=$(uname -o)
+   OS=$(uname -s)
 
    if [[ $OS = "GNU/Linux" ]]; then 
       sed -E -i "s/github\.com\/vhaoran\/vchat .*/github\.com\/vhaoran\/vchat $ver/g"  "$file";

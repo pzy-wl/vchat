@@ -19,7 +19,8 @@ fn   "$GOPATH/src/vchatmsg/";
 fn   "$GOPATH/src/vchatfinance/";
 fn  "$GOPATH/src/vchatgw/";
 
-fn   "$GOPATH/src/vchatuser/";
+fn   "$GOPATH/src/intfuser/";
+fn   "$GOPATH/src/intfgw/";
 
 
 

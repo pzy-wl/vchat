@@ -34,6 +34,14 @@ func IsStruct(a interface{}) bool {
 	return false
 }
 
+func isNil(v interface{}) bool {
+	if v == nil {
+		return true
+	}
+	rv := reflect.ValueOf(v)
+	return rv.Kind() != reflect.Struct && rv.IsNil()
+}
+
 //make a Point of slice element
 //
 func MakeSliceElemPtr(a interface{}) (interface{}, error) {
