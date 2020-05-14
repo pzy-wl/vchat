@@ -6,41 +6,6 @@ import (
 	"reflect"
 )
 
-func IsPointer(ptr interface{}) bool {
-	tp := reflect.TypeOf(ptr)
-	switch tp.Kind() {
-	case reflect.Ptr, reflect.UnsafePointer:
-		return true
-	}
-	return false
-}
-
-//is slice or Point to Slice
-func IsSlice(a interface{}) bool {
-	tp := reflect.Indirect(reflect.ValueOf(a))
-	switch tp.Kind() {
-	case reflect.Slice, reflect.Array:
-		return true
-	}
-	return false
-}
-
-func IsStruct(a interface{}) bool {
-	tp := reflect.Indirect(reflect.ValueOf(a))
-	switch tp.Kind() {
-	case reflect.Struct:
-		return true
-	}
-	return false
-}
-
-func isNil(v interface{}) bool {
-	if v == nil {
-		return true
-	}
-	rv := reflect.ValueOf(v)
-	return rv.Kind() != reflect.Struct && rv.IsNil()
-}
 
 //make a Point of slice element
 //

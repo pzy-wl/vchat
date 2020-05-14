@@ -23,7 +23,7 @@ type PBImpl struct {
 }
 
 func (r *PBImpl) Exec(ctx context.Context, in *intf.PBIn) (*ykit.Result, error) {
-	log.Println("------PBImpl) Exec----", "------------")
+	log.Println("------PBImpl) Fn----", "------------")
 	spew.Dump(in)
 	log.Println("------end----", "------------")
 	return ykit.ROK(in), nil
