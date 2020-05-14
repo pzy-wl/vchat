@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func DBErrr(db *gorm.DB) error {
+func DBErr(db *gorm.DB) error {
 	if db.Error != nil {
 		return db.Error
 	}
