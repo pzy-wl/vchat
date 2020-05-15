@@ -201,6 +201,17 @@ func (r *VerifyOBJ) Fn(l ...error) *VerifyOBJ {
 	return r
 }
 
+func (r *VerifyOBJ) FnBool(name string, b bool) *VerifyOBJ {
+	if r.hasErr() && r.onErrStop {
+		return r
+	}
+
+	if !b {
+		r.push(fmt.Sprintf("<%s>值必须为真值", name))
+	}
+	return r
+}
+
 //这是链式语法验证的结果
 func (r *VerifyOBJ) Err() error {
 	if len(r.Errs) > 0 {

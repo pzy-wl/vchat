@@ -18,7 +18,9 @@ func Test_aaa(t *testing.T) {
 		Gt(3, 20, "fd1").
 		Lt(40, 5, "fd2").
 		Fn(errors.New("err2")).
-		Err(); err != nil {
+		FnBool("我的姓别", false).
+		Err()
+		err != nil {
 		fmt.Println("ret: ", err.Error())
 	}
 
