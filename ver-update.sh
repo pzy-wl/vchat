@@ -1,4 +1,5 @@
 #!/bin/bash
+exit
 
 up(){
    ver="$1";
