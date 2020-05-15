@@ -35,7 +35,7 @@ func (r *VerifyOBJ) hasErr() bool {
 	return r.Errs != nil && len(r.Errs) > 0
 }
 
-func (r *VerifyOBJ) Gt(src interface{}, dst interface{}, name string) *VerifyOBJ {
+func (r *VerifyOBJ) Gt(name string, src interface{}, dst interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -62,7 +62,7 @@ func (r *VerifyOBJ) Gt(src interface{}, dst interface{}, name string) *VerifyOBJ
 }
 
 //输入为整形值 或浮点娄，必须大于0
-func (r *VerifyOBJ) Gte(src interface{}, dst interface{}, name string) *VerifyOBJ {
+func (r *VerifyOBJ) Gte(name string, src interface{}, dst interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -88,7 +88,7 @@ func (r *VerifyOBJ) Gte(src interface{}, dst interface{}, name string) *VerifyOB
 }
 
 //输入为整形值 或浮点，src<dst
-func (r *VerifyOBJ) Lt(src interface{}, dst interface{}, name string) *VerifyOBJ {
+func (r *VerifyOBJ) Lt(name string, src interface{}, dst interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -114,7 +114,7 @@ func (r *VerifyOBJ) Lt(src interface{}, dst interface{}, name string) *VerifyOBJ
 }
 
 //输入为整形值 或浮点娄，必须大于0
-func (r *VerifyOBJ) Lte(src interface{}, dst interface{}, name string) *VerifyOBJ {
+func (r *VerifyOBJ) Lte(name string, src interface{}, dst interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -147,7 +147,7 @@ func (r *VerifyOBJ) push(s string) {
 }
 
 // l is string,array,slice,amp
-func (r *VerifyOBJ) IsEmpty(l interface{}, name string) *VerifyOBJ {
+func (r *VerifyOBJ) IsEmpty(name string, l interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -174,7 +174,7 @@ func (r *VerifyOBJ) IsEmpty(l interface{}, name string) *VerifyOBJ {
 	return r
 }
 
-func (r *VerifyOBJ) InSlice(src, l interface{}, name string) *VerifyOBJ {
+func (r *VerifyOBJ) InSlice(name string, src, l interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -211,6 +211,7 @@ func (r *VerifyOBJ) FnBool(name string, b bool) *VerifyOBJ {
 	}
 	return r
 }
+
 
 //这是链式语法验证的结果
 func (r *VerifyOBJ) Err() error {
