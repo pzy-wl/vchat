@@ -147,7 +147,7 @@ func (r *VerifyOBJ) push(s string) {
 }
 
 // l is string,array,slice,amp
-func (r *VerifyOBJ) IsEmpty(name string, l interface{}) *VerifyOBJ {
+func (r *VerifyOBJ) NotEmpty(name string, l interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -211,7 +211,6 @@ func (r *VerifyOBJ) FnBool(name string, b bool) *VerifyOBJ {
 	}
 	return r
 }
-
 
 //这是链式语法验证的结果
 func (r *VerifyOBJ) Err() error {
