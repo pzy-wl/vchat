@@ -13,14 +13,18 @@ up(){
 
 
 
+up   "$GOPATH/src/vchat/";
 up   "$GOPATH/src/vchatintf/";
 up   "$GOPATH/src/vchatuser/";
 up   "$GOPATH/src/vchatutil/";
 up   "$GOPATH/src/vchatmsg/";
 up   "$GOPATH/src/vchatfinance/";
 up   "$GOPATH/src/vchatgw/";
+up   "$GOPATH/src/vchatws/";
 
-up   "$GOPATH/src/vchatyser/";
+up   "$GOPATH/src/infoser/";
+up   "$GOPATH/src/infogw/";
+
 
 
 
