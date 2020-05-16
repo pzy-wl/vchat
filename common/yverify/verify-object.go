@@ -35,7 +35,7 @@ func (r *VerifyOBJ) hasErr() bool {
 	return r.Errs != nil && len(r.Errs) > 0
 }
 
-func (r *VerifyOBJ) NotZeroI(name string, src interface{}) *VerifyOBJ {
+func (r *VerifyOBJ) NotZero(name string, src interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
@@ -59,12 +59,17 @@ func (r *VerifyOBJ) NotZeroI(name string, src interface{}) *VerifyOBJ {
 	return r
 }
 
-func (r *VerifyOBJ) Gt(name string, src interface{}, dst interface{}) *VerifyOBJ {
+func (r *VerifyOBJ) GtF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	dst := float64(0)
+	if len(l) > 0 {
+		dst = l[0]
+	}
+
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
 
-	if src == nil || dst == nil {
+	if src == nil {
 		return r
 	}
 	//
@@ -73,22 +78,21 @@ func (r *VerifyOBJ) Gt(name string, src interface{}, dst interface{}) *VerifyOBJ
 	}
 	//
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
-		if f2, err := strconv.ParseFloat(fmt.Sprint(dst), 64); err == nil {
-			if !(f1 > f2) {
-				msg := fmt.Sprintf("<%s>值<%f>必须大于<%f>", name, f1, f2)
+		f2 := dst
+		if !(f1 > f2) {
+			msg := fmt.Sprintf("<%s>值<%f>必须大于<%f>", name, f1, f2)
 
-				r.push(msg)
-				return r
-			}
+			r.push(msg)
+			return r
 		}
 	}
 	return r
 }
 
-func (r *VerifyOBJ) GtI(name string, src interface{}, dsts ...int64) *VerifyOBJ {
+func (r *VerifyOBJ) Gt(name string, src interface{}, l ...int64) *VerifyOBJ {
 	dst := int64(0)
-	if len(dsts) > 0 {
-		dst = dsts[0]
+	if len(l) > 0 {
+		dst = l[0]
 	}
 
 	if r.hasErr() && r.onErrStop {
@@ -115,12 +119,17 @@ func (r *VerifyOBJ) GtI(name string, src interface{}, dsts ...int64) *VerifyOBJ 
 }
 
 //输入为整形值 或浮点娄，必须大于0
-func (r *VerifyOBJ) Gte(name string, src interface{}, dst interface{}) *VerifyOBJ {
+func (r *VerifyOBJ) GteF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	dst := float64(0)
+	if len(l) > 0 {
+		dst = l[0]
+	}
+
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
 
-	if src == nil || dst == nil {
+	if src == nil {
 		return r
 	}
 	//
@@ -129,19 +138,18 @@ func (r *VerifyOBJ) Gte(name string, src interface{}, dst interface{}) *VerifyOB
 	}
 	//
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
-		if f2, err := strconv.ParseFloat(fmt.Sprint(dst), 64); err == nil {
-			if !(f1 >= f2) {
-				msg := fmt.Sprintf("<%s>值<%f>必须大于或等于<%f>", name, f1, f2)
-				r.push(msg)
-				return r
-			}
+		f2 := dst
+		if !(f1 >= f2) {
+			msg := fmt.Sprintf("<%s>值<%f>必须大于或等于<%f>", name, f1, f2)
+			r.push(msg)
+			return r
 		}
 	}
 	return r
 }
 
 //输入为整形值 或浮点娄，必须大于0
-func (r *VerifyOBJ) GteI(name string, src interface{}, l ...int64) *VerifyOBJ {
+func (r *VerifyOBJ) Gte(name string, src interface{}, l ...int64) *VerifyOBJ {
 	dst := int64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -170,12 +178,17 @@ func (r *VerifyOBJ) GteI(name string, src interface{}, l ...int64) *VerifyOBJ {
 }
 
 //输入为整形值 或浮点，src<dst
-func (r *VerifyOBJ) Lt(name string, src interface{}, dst interface{}) *VerifyOBJ {
+func (r *VerifyOBJ) LtF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	dst := float64(0)
+	if len(l) > 0 {
+		dst = l[0]
+	}
+
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
 
-	if src == nil || dst == nil {
+	if src == nil {
 		return r
 	}
 	//
@@ -184,19 +197,18 @@ func (r *VerifyOBJ) Lt(name string, src interface{}, dst interface{}) *VerifyOBJ
 	}
 	//
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
-		if f2, err := strconv.ParseFloat(fmt.Sprint(dst), 64); err == nil {
-			if !(f1 < f2) {
-				msg := fmt.Sprintf("<%s>值<%f>必须小于<%f>", name, f1, f2)
-				r.push(msg)
-				return r
-			}
+		f2 := dst
+		if !(f1 < f2) {
+			msg := fmt.Sprintf("<%s>值<%f>必须小于<%f>", name, f1, f2)
+			r.push(msg)
+			return r
 		}
 	}
 	return r
 }
 
 //输入为整形值 或浮点，src<dst
-func (r *VerifyOBJ) LtI(name string, src interface{}, l ...int64) *VerifyOBJ {
+func (r *VerifyOBJ) Lt(name string, src interface{}, l ...int64) *VerifyOBJ {
 	dst := int64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -226,12 +238,17 @@ func (r *VerifyOBJ) LtI(name string, src interface{}, l ...int64) *VerifyOBJ {
 }
 
 //输入为整形值 或浮点娄，必须大于0
-func (r *VerifyOBJ) Lte(name string, src interface{}, dst interface{}) *VerifyOBJ {
+func (r *VerifyOBJ) LteF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	dst := float64(0)
+	if len(l) > 0 {
+		dst = l[0]
+	}
+
 	if r.hasErr() && r.onErrStop {
 		return r
 	}
 
-	if src == nil || dst == nil {
+	if src == nil {
 		return r
 	}
 	//
@@ -240,19 +257,18 @@ func (r *VerifyOBJ) Lte(name string, src interface{}, dst interface{}) *VerifyOB
 	}
 	//
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
-		if f2, err := strconv.ParseFloat(fmt.Sprint(dst), 64); err == nil {
-			if !(f1 <= f2) {
-				msg := fmt.Sprintf("<%s>值<%f>必须小于或等于<%f>", name, f1, f2)
-				r.push(msg)
-				return r
-			}
+		f2 := dst
+		if !(f1 <= f2) {
+			msg := fmt.Sprintf("<%s>值<%f>必须小于或等于<%f>", name, f1, f2)
+			r.push(msg)
+			return r
 		}
 	}
 	return r
 }
 
 //输入为整形值 或浮点娄，必须大于0
-func (r *VerifyOBJ) LteI(name string, src interface{}, l ...int64) *VerifyOBJ {
+func (r *VerifyOBJ) Lte(name string, src interface{}, l ...int64) *VerifyOBJ {
 	dst := int64(0)
 	if len(l) > 0 {
 		dst = l[0]
