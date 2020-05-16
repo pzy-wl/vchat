@@ -35,6 +35,30 @@ func (r *VerifyOBJ) hasErr() bool {
 	return r.Errs != nil && len(r.Errs) > 0
 }
 
+func (r *VerifyOBJ) NotZeroI(name string, src interface{}) *VerifyOBJ {
+	if r.hasErr() && r.onErrStop {
+		return r
+	}
+
+	if src == nil {
+		return r
+	}
+	//
+	if !reflectUtils.IsInt(src) {
+		return r
+	}
+	//
+	if ii, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
+		if ii == 0 {
+			msg := fmt.Sprintf("<%s>值<%d>必须不为0", name, ii)
+
+			r.push(msg)
+			return r
+		}
+	}
+	return r
+}
+
 func (r *VerifyOBJ) Gt(name string, src interface{}, dst interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
 		return r
@@ -53,6 +77,30 @@ func (r *VerifyOBJ) Gt(name string, src interface{}, dst interface{}) *VerifyOBJ
 			if !(f1 > f2) {
 				msg := fmt.Sprintf("<%s>值<%f>必须大于<%f>", name, f1, f2)
 
+				r.push(msg)
+				return r
+			}
+		}
+	}
+	return r
+}
+func (r *VerifyOBJ) GtI(name string, src interface{}, dst interface{}) *VerifyOBJ {
+	if r.hasErr() && r.onErrStop {
+		return r
+	}
+
+	if src == nil || dst == nil {
+		return r
+	}
+	//
+	if !reflectUtils.IsNumber(src) || !reflectUtils.IsNumber(dst) {
+		return r
+	}
+	//
+	if i1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
+		if i2, err := strconv.ParseInt(fmt.Sprint(dst), 10, 64); err == nil {
+			if !(i1 > i2) {
+				msg := fmt.Sprintf("<%s>值<%d>必须大于<%d>", name, i1, i2)
 				r.push(msg)
 				return r
 			}
@@ -87,6 +135,32 @@ func (r *VerifyOBJ) Gte(name string, src interface{}, dst interface{}) *VerifyOB
 	return r
 }
 
+//输入为整形值 或浮点娄，必须大于0
+func (r *VerifyOBJ) GteI(name string, src interface{}, dst interface{}) *VerifyOBJ {
+	if r.hasErr() && r.onErrStop {
+		return r
+	}
+
+	if src == nil || dst == nil {
+		return r
+	}
+	//
+	if !reflectUtils.IsNumber(src) || !reflectUtils.IsNumber(dst) {
+		return r
+	}
+	//
+	if f1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
+		if f2, err := strconv.ParseInt(fmt.Sprint(dst), 10, 64); err == nil {
+			if !(f1 >= f2) {
+				msg := fmt.Sprintf("<%s>值<%d>必须大于或等于<%d>", name, f1, f2)
+				r.push(msg)
+				return r
+			}
+		}
+	}
+	return r
+}
+
 //输入为整形值 或浮点，src<dst
 func (r *VerifyOBJ) Lt(name string, src interface{}, dst interface{}) *VerifyOBJ {
 	if r.hasErr() && r.onErrStop {
@@ -105,6 +179,32 @@ func (r *VerifyOBJ) Lt(name string, src interface{}, dst interface{}) *VerifyOBJ
 		if f2, err := strconv.ParseFloat(fmt.Sprint(dst), 64); err == nil {
 			if !(f1 < f2) {
 				msg := fmt.Sprintf("<%s>值<%f>必须小于<%f>", name, f1, f2)
+				r.push(msg)
+				return r
+			}
+		}
+	}
+	return r
+}
+
+//输入为整形值 或浮点，src<dst
+func (r *VerifyOBJ) LtI(name string, src interface{}, dst interface{}) *VerifyOBJ {
+	if r.hasErr() && r.onErrStop {
+		return r
+	}
+
+	if src == nil || dst == nil {
+		return r
+	}
+	//
+	if !reflectUtils.IsNumber(src) || !reflectUtils.IsNumber(dst) {
+		return r
+	}
+	//
+	if f1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
+		if f2, err := strconv.ParseInt(fmt.Sprint(dst), 10, 64); err == nil {
+			if !(f1 < f2) {
+				msg := fmt.Sprintf("<%s>值<%d>必须小于<%d>", name, f1, f2)
 				r.push(msg)
 				return r
 			}
@@ -139,11 +239,58 @@ func (r *VerifyOBJ) Lte(name string, src interface{}, dst interface{}) *VerifyOB
 	return r
 }
 
+//输入为整形值 或浮点娄，必须大于0
+func (r *VerifyOBJ) LteI(name string, src interface{}, dst interface{}) *VerifyOBJ {
+	if r.hasErr() && r.onErrStop {
+		return r
+	}
+
+	if src == nil || dst == nil {
+		return r
+	}
+	//
+	if !reflectUtils.IsNumber(src) || !reflectUtils.IsNumber(dst) {
+		return r
+	}
+	//
+	if f1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
+		if f2, err := strconv.ParseInt(fmt.Sprint(dst), 10, 64); err == nil {
+			if !(f1 <= f2) {
+				msg := fmt.Sprintf("<%s>值<%d>必须小于或等于<%d>", name, f1, f2)
+				r.push(msg)
+				return r
+			}
+		}
+	}
+	return r
+}
+
 func (r *VerifyOBJ) push(s string) {
 	if r.Errs == nil {
 		r.Errs = make([]string, 0)
 	}
 	r.Errs = append(r.Errs, s)
+}
+
+func (r *VerifyOBJ) NotEmptyPtr(name string, ptr interface{}) *VerifyOBJ {
+	if ptr == nil {
+		msg := fmt.Sprintf("<%s>不能为空", name)
+		r.push(msg)
+		return r
+	}
+
+	if !reflectUtils.IsPointer(ptr) {
+		return r
+	}
+	//
+	v := reflect.ValueOf(ptr)
+	if v.IsNil() {
+		msg := fmt.Sprintf("<%s>不能为空", name)
+		r.push(msg)
+		return r
+	}
+
+	return r
 }
 
 // l is string,array,slice,amp
