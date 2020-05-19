@@ -23,10 +23,11 @@ func Key2UrlOfQiNiu(obj interface{}, fields ...string) error {
 		return errors.New("不是指针，无法继续")
 	}
 
-	v := reflect.Indirect(reflect.ValueOf(obj))
-	if v.IsNil() {
-		return errors.New("必须是珍上指针，才能操作")
+	if reflect.ValueOf(obj).IsNil() {
+		return errors.New("必须是指针，才能操作")
 	}
+
+	v := reflect.Indirect(reflect.ValueOf(obj))
 
 	//
 	for _, fdName := range fields {
