@@ -36,7 +36,7 @@ func (r *VerifyOBJ) hasErr() bool {
 }
 
 func (r *VerifyOBJ) needContinue() bool {
-	return r.hasErr() && !r.onErrStop
+	return !r.hasErr() || (r.hasErr() && !r.onErrStop)
 }
 
 func (r *VerifyOBJ) NotZero(name string, src interface{}) *VerifyOBJ {
