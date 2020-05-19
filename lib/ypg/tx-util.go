@@ -2,6 +2,7 @@ package ypg
 
 import (
 	"github.com/jinzhu/gorm"
+
 	"github.com/vhaoran/vchat/lib/ylog"
 )
 
@@ -9,7 +10,7 @@ func Tx(callback func(*gorm.DB) error) error {
 	tx := X.Begin()
 	defer func() {
 		if err := recover(); err != nil {
-			ylog.Error(err)
+			ylog.Error("tx-util.go->", err)
 			tx.Rollback()
 		}
 	}()

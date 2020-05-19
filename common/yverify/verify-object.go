@@ -35,8 +35,12 @@ func (r *VerifyOBJ) hasErr() bool {
 	return r.Errs != nil && len(r.Errs) > 0
 }
 
+func (r *VerifyOBJ) needContinue() bool {
+	return r.hasErr() && !r.onErrStop
+}
+
 func (r *VerifyOBJ) NotZero(name string, src interface{}) *VerifyOBJ {
-	if r.hasErr() && r.onErrStop {
+	if !r.needContinue() {
 		return r
 	}
 
@@ -60,6 +64,10 @@ func (r *VerifyOBJ) NotZero(name string, src interface{}) *VerifyOBJ {
 }
 
 func (r *VerifyOBJ) GtF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := float64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -90,6 +98,10 @@ func (r *VerifyOBJ) GtF(name string, src interface{}, l ...float64) *VerifyOBJ {
 }
 
 func (r *VerifyOBJ) Gt(name string, src interface{}, l ...int64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := int64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -120,6 +132,10 @@ func (r *VerifyOBJ) Gt(name string, src interface{}, l ...int64) *VerifyOBJ {
 
 //输入为整形值 或浮点娄，必须大于0
 func (r *VerifyOBJ) GteF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := float64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -150,6 +166,10 @@ func (r *VerifyOBJ) GteF(name string, src interface{}, l ...float64) *VerifyOBJ 
 
 //输入为整形值 或浮点娄，必须大于0
 func (r *VerifyOBJ) Gte(name string, src interface{}, l ...int64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := int64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -179,6 +199,10 @@ func (r *VerifyOBJ) Gte(name string, src interface{}, l ...int64) *VerifyOBJ {
 
 //输入为整形值 或浮点，src<dst
 func (r *VerifyOBJ) LtF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := float64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -209,6 +233,10 @@ func (r *VerifyOBJ) LtF(name string, src interface{}, l ...float64) *VerifyOBJ {
 
 //输入为整形值 或浮点，src<dst
 func (r *VerifyOBJ) Lt(name string, src interface{}, l ...int64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := int64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -239,6 +267,10 @@ func (r *VerifyOBJ) Lt(name string, src interface{}, l ...int64) *VerifyOBJ {
 
 //输入为整形值 或浮点娄，必须大于0
 func (r *VerifyOBJ) LteF(name string, src interface{}, l ...float64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := float64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -269,6 +301,10 @@ func (r *VerifyOBJ) LteF(name string, src interface{}, l ...float64) *VerifyOBJ 
 
 //输入为整形值 或浮点娄，必须大于0
 func (r *VerifyOBJ) Lte(name string, src interface{}, l ...int64) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
 	dst := int64(0)
 	if len(l) > 0 {
 		dst = l[0]
@@ -304,30 +340,36 @@ func (r *VerifyOBJ) push(s string) {
 	r.Errs = append(r.Errs, s)
 }
 
-func (r *VerifyOBJ) NotEmptyPtr(name string, ptr interface{}) *VerifyOBJ {
-	if ptr == nil {
+//判断鞭值是否为空指针
+func (r *VerifyOBJ) NotNilPtr(name string, l ...interface{}) *VerifyOBJ {
+	if !r.needContinue() {
+		return r
+	}
+
+	if l == nil {
 		msg := fmt.Sprintf("<%s>不能为空", name)
 		r.push(msg)
 		return r
 	}
 
-	if !reflectUtils.IsPointer(ptr) {
-		return r
+	for _, ptr := range l {
+		if !reflectUtils.IsPointer(ptr) {
+			continue
+		}
+		//
+		v := reflect.ValueOf(ptr)
+		if v.IsNil() {
+			msg := fmt.Sprintf("<%s>不能为空", name)
+			r.push(msg)
+			return r
+		}
 	}
-	//
-	v := reflect.ValueOf(ptr)
-	if v.IsNil() {
-		msg := fmt.Sprintf("<%s>不能为空", name)
-		r.push(msg)
-		return r
-	}
-
 	return r
 }
 
 // l is string,array,slice,amp
 func (r *VerifyOBJ) NotEmpty(name string, l interface{}) *VerifyOBJ {
-	if r.hasErr() && r.onErrStop {
+	if !r.needContinue() {
 		return r
 	}
 
@@ -354,7 +396,7 @@ func (r *VerifyOBJ) NotEmpty(name string, l interface{}) *VerifyOBJ {
 }
 
 func (r *VerifyOBJ) InSlice(name string, src, l interface{}) *VerifyOBJ {
-	if r.hasErr() && r.onErrStop {
+	if !r.needContinue() {
 		return r
 	}
 
@@ -368,7 +410,7 @@ func (r *VerifyOBJ) InSlice(name string, src, l interface{}) *VerifyOBJ {
 
 //这是自定义的fn，用户可以传入自定义验证结果
 func (r *VerifyOBJ) Fn(l ...error) *VerifyOBJ {
-	if r.hasErr() && r.onErrStop {
+	if !r.needContinue() {
 		return r
 	}
 
@@ -381,7 +423,7 @@ func (r *VerifyOBJ) Fn(l ...error) *VerifyOBJ {
 }
 
 func (r *VerifyOBJ) FnBool(name string, b bool) *VerifyOBJ {
-	if r.hasErr() && r.onErrStop {
+	if !r.needContinue() {
 		return r
 	}
 

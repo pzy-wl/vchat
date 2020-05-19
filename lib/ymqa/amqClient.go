@@ -109,7 +109,8 @@ func consumeWrap(conn *amqp.Connection, queue string, callback AMQSubCallBack, a
 				func() {
 					defer func() {
 						if err := recover(); err != nil {
-							ylog.Error(err)
+							ylog.Error("amqClient.go->", err)
+
 						}
 					}()
 					_ = callback(d)

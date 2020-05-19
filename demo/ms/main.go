@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/vhaoran/vchat/lib/ycaptcha"
 	golog "log"
 	"net/http"
+
+	"github.com/vhaoran/vchat/lib/ycaptcha"
 
 	"github.com/vhaoran/vchat/common/g"
 	"github.com/vhaoran/vchat/lib"
@@ -35,7 +36,7 @@ func init() {
 		LoadMongo: false,
 		LoadMq:    false,
 		LoadJwt:   true,
-		LoadQiniu:  true,
+		LoadQiniu: true,
 	})
 	if err != nil {
 		panic(err.Error())
@@ -86,7 +87,7 @@ func main() {
 	// 每二步:註冊微服務到etcd
 	ylog.Info("正在向etcd注册微服务......")
 	if err := yetcd.RegisterService(msTag, regHost, fmt.Sprint(regPort)); err != nil {
-		ylog.Error("error", err)
+		ylog.Error("main.go->", err)
 		return
 	}
 	ylog.Info("注册微服务", msTag, " 成功")

@@ -38,7 +38,7 @@ func Test_publish(t *testing.T) {
 		s := fmt.Sprint("  ", i, " hello_", ytime.OfNow().String())
 		//
 		if err := ymqa.X.Publish(topic, s); err != nil {
-			ylog.Error(err)
+			ylog.Error("amq_test.go->", err)
 		} else {
 			ylog.Debug(i, "  ok.....")
 		}
@@ -111,6 +111,7 @@ func Test_bench_publish(t *testing.T) {
 		//
 		if err := ymqa.X.Publish(topic, s); err != nil {
 			ylog.Error(err)
+			ylog.Error("amq_test.go->", err)
 		} else {
 			ylog.Debug(i, "  ok.....")
 		}
