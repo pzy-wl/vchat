@@ -12,7 +12,7 @@ func DBErr(db *gorm.DB) error {
 	}
 
 	if db.RowsAffected <= 0 {
-		return errors.New("新增失败，示知原因")
+		return errors.New("操作失败，可能是以下原因【未找到符合条件的数据】")
 	}
 	return nil
 }
