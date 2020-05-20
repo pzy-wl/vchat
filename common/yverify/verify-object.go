@@ -368,29 +368,45 @@ func (r *VerifyOBJ) NotNilPtr(name string, l ...interface{}) *VerifyOBJ {
 }
 
 // l is string,array,slice,amp
-func (r *VerifyOBJ) NotEmpty(name string, l interface{}) *VerifyOBJ {
+func (r *VerifyOBJ) NotEmpty(name string, lst ...interface{}) *VerifyOBJ {
 	if !r.needContinue() {
 		return r
 	}
 
-	if l == nil {
+	if lst == nil {
 		msg := fmt.Sprintf("<%s>不能为空", name)
 		r.push(msg)
 		return r
 	}
 
-	v := reflect.Indirect(reflect.ValueOf(l))
-	i := 0
-	switch v.Kind() {
-	case reflect.String, reflect.Map, reflect.Array, reflect.Slice:
-		i = v.Len()
-	default:
-		i = 0
-	}
+	for _, l := range lst {
+		if l == nil {
+			msg := fmt.Sprintf("<%s>不能为空", name)
+			r.push(msg)
+			return r
+		}
+		if reflectUtils.IsPointer(l) {
+			if reflectUtils.IsNil(l) {
+				msg := fmt.Sprintf("<%s>不能为空,长度必须大于0", name)
+				r.push(msg)
+				return r
+			}
+		}
 
-	if i <= 0 {
-		msg := fmt.Sprintf("<%s>不能为空,长度必须大于0", name)
-		r.push(msg)
+		v := reflect.Indirect(reflect.ValueOf(l))
+		i := 1
+		switch v.Kind() {
+		case reflect.String, reflect.Map, reflect.Array, reflect.Slice:
+			i = v.Len()
+		default:
+			i = 1
+		}
+
+		if i <= 0 {
+			msg := fmt.Sprintf("<%s>不能为空,长度必须大于0", name)
+			r.push(msg)
+			return r
+		}
 	}
 	return r
 }

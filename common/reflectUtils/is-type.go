@@ -32,7 +32,7 @@ func IsStruct(a interface{}) bool {
 	return false
 }
 
-func isNil(v interface{}) bool {
+func IsNil(v interface{}) bool {
 	if v == nil {
 		return true
 	}
