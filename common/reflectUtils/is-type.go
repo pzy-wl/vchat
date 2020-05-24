@@ -32,12 +32,22 @@ func IsStruct(a interface{}) bool {
 	return false
 }
 
+func IsMap(a interface{}) bool {
+	tp := reflect.Indirect(reflect.ValueOf(a))
+	switch tp.Kind() {
+	case reflect.Map:
+		return true
+	}
+	return false
+}
+
 func IsNil(v interface{}) bool {
 	if v == nil {
 		return true
 	}
 	rv := reflect.ValueOf(v)
-	return rv.Kind() != reflect.Struct && rv.IsNil()
+	return (rv.Kind() == reflect.Ptr ||
+		rv.Kind() == reflect.UnsafePointer) && rv.IsNil()
 }
 
 func IsNumber(v interface{}) bool {

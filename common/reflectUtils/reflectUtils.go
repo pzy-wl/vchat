@@ -6,7 +6,6 @@ import (
 	"reflect"
 )
 
-
 //make a Point of slice element
 //
 func MakeSliceElemPtr(a interface{}) (interface{}, error) {
