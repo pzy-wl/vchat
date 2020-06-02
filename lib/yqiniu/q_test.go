@@ -14,12 +14,19 @@ type Abc struct {
 	Remark string
 }
 
+type AbcD struct {
+	Abc
+	X string
+}
+
 func Test_struct_value(t *testing.T) {
-	bean := &Abc{
-		ID:     1,
-		Name:   "name_1",
-		Url:    "this is url",
-		Remark: "this is remark",
+	bean := &AbcD{
+		Abc: Abc{
+			ID:     1,
+			Name:   "name_1",
+			Url:    "this is url",
+			Remark: "this is remark",
+		},
 	}
 	err := Key2UrlOfQiNiu(bean, "Name", "Url", "Remark")
 	fmt.Println(" ****  ", err)
