@@ -2,9 +2,11 @@ package ykit
 
 import (
 	"context"
-	tran "github.com/go-kit/kit/transport/http"
-	"github.com/vhaoran/vchat/lib/ylog"
 	"net/http"
+
+	tran "github.com/go-kit/kit/transport/http"
+
+	"github.com/vhaoran/vchat/lib/ylog"
 )
 
 func CommonHead() tran.RequestFunc {
@@ -22,6 +24,8 @@ func DebugHead() tran.RequestFunc {
 		for k, v := range req.Header {
 			ylog.Debug("default-head.go->header: ", k, ":", v)
 		}
+		ylog.Debug("--------visit:", req.URL)
+
 		return ctx
 	}
 }

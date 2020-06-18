@@ -12,8 +12,8 @@ import (
 func MidCommon(ep endpoint.Endpoint) endpoint.Endpoint {
 	t0 := time.Now()
 	defer func() {
-		ylog.Debug("#####time.Since:", time.Since(t0))
+		ylog.Debug("#####exec time(ms):", time.Since(t0).Milliseconds())
 	}()
-	
+
 	return ep
 }

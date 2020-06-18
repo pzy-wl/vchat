@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/vhaoran/vchat/lib/ykit"
 	golog "log"
 	"net/http"
+
+	"github.com/vhaoran/vchat/lib/ykit"
 	//单独运行时导入改为这个
 	// or import "github.com/vhaoran/vchat"
 	"github.com/vhaoran/vchat/demo/unit/intf"
@@ -13,6 +14,7 @@ import (
 )
 
 func init() {
+
 	//------------ prepare modules----------
 	//本步骤主要是装入系统必备的模块
 	_, err := lib.InitModulesOfOptions(&lib.LoadOption{
@@ -23,7 +25,7 @@ func init() {
 		LoadMongo:        false,
 		LoadMq:           false,
 		LoadJwt:          false,
-		LoadQiniu:  true,
+		LoadQiniu:        true,
 	})
 	if err != nil {
 		panic(err.Error())
@@ -32,6 +34,7 @@ func init() {
 
 //gateway功能不需要每一个模块来实现，但用这个模块可以测试微服务是否能补成功调用
 func main() {
+
 	addr := "localhost:9999"
 	//ctx := context.Background()
 	mux := http.NewServeMux()

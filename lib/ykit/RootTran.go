@@ -106,7 +106,7 @@ func (r *RootTran) ProxyEndPointOfInstance(
 	}
 	u.Path = path
 
-	ylog.Debug("--------begin Visit:-------", instance, "->", path)
+	//ylog.Debug("--------begin Visit:-------", instance, "->", path)
 
 	return tran.NewClient(
 		method,
@@ -388,7 +388,7 @@ func (r *RootTran) FactorySD(
 		}
 		targetURL.Path = path
 
-		ylog.Debug("--------begin Visit:-------", instance, "->", path)
+		//ylog.Debug("--------begin Visit:-------", instance, "->", path)
 
 		enc := r.EncodeRequestBuffer
 		dec := decodeResponseFunc
