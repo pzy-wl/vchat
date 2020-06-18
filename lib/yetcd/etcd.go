@@ -40,7 +40,7 @@ func InitETCD(cfg yconfig.ETCDConfig) error {
 	*XETCDConfig = cfg
 	//
 	XETCDConfig.Options.DialTimeout = time.Second * 10
-	XETCDConfig.Options.DialKeepAlive *= time.Second * 100
+	XETCDConfig.Options.DialKeepAlive = time.Second * 100
 	return nil
 }
 

@@ -36,7 +36,7 @@ type (
 )
 
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
-	// ylog.DebugDump("body", req.Body)
+	ylog.Debug("--------RootTran.go--->DeecodeRequest---")
 
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
 		ylog.Error("RootTran.go->DecodeRequest", err)
@@ -74,6 +74,8 @@ func (r *RootTran) EncodeResponse(_ context.Context, wr http.ResponseWriter, res
 
 //实现decoder
 func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) (interface{}, error) {
+	ylog.Debug("--------RootTran.go--->DecodeResponseDefault---")
+
 	var response Result
 	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 		ylog.Error("RootTran.go->DecodeResponseDefault", err)
@@ -103,6 +105,9 @@ func (r *RootTran) ProxyEndPointOfInstance(
 		panic(err)
 	}
 	u.Path = path
+
+	ylog.Debug("--------begin Visit:-------", instance, "->", path)
+
 	return tran.NewClient(
 		method,
 		u,
@@ -131,12 +136,14 @@ func (r *RootTran) ProxyEndpointSD(ctx context.Context,
 	retryTimeout := 10 * 1000 * time.Millisecond
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
+		ylog.Error("--------RootTran.go--->etcdv3.NewClient-error--", err)
 		return nil
 	}
 
 	//
 	instance, err := etcdv3.NewInstancer(client, serviceTag, logger)
 	if err != nil {
+		ylog.Error("--------RootTran.go--->etcdv3.NewInstancer-error--", err)
 		return nil
 	}
 
@@ -170,7 +177,7 @@ func (r *RootTran) ProxyEndpointSDDefault(ctx context.Context,
 
 	if client, err = etcdv3.NewClient(ctx, yetcd.XETCDConfig.Hosts, yetcd.XETCDConfig.Options); err != nil {
 		ylog.Error("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
-		ylog.Debug("RootTran.go->HandlerSD,获取etcd连接时失败，err:", err, " etcd config：", spew.Sdump(yetcd.XETCDConfig))
+		ylog.Debug("RootTran.go->ProxyEndpointSDDefault,获取etcd连接时失败，err:", err)
 		return nil
 	}
 
@@ -380,6 +387,8 @@ func (r *RootTran) FactorySD(
 			return nil, nil, err
 		}
 		targetURL.Path = path
+
+		ylog.Debug("--------begin Visit:-------", instance, "->", path)
 
 		enc := r.EncodeRequestBuffer
 		dec := decodeResponseFunc

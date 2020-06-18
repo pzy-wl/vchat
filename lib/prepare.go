@@ -65,11 +65,11 @@ func InitModulesOfOptions(opt *LoadOption) (*yconfig.YmlConfig, error) {
 	//--------etcd -----------------------------
 	// 微服务注册地址设置set XEtcdConfig
 	if opt.LoadEtcd {
-		ylog.Debug("etcd connecting...", cfg.Etcd.Hosts)
+		ylog.Debug("etcd config init...", cfg.Etcd.Hosts)
 		if err := yetcd.InitETCD(cfg.Etcd); err != nil {
 			return nil, err
 		}
-		ylog.Debug("etcd connected ok")
+		ylog.Debug("etcd config init ok")
 	}
 
 	//-------- postgres sql -----------------------------
