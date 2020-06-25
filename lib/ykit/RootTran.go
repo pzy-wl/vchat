@@ -35,6 +35,7 @@ type (
 	}
 )
 
+//指定一个确定的数据类型，进行decode
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
 	ylog.Debug("--------RootTran.go--->DeecodeRequest---")
 
@@ -49,25 +50,26 @@ func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req 
 	return reqDataPtr, nil
 }
 
-//针对黑夜传入类型的decode
+//针对特定传入类型的decode
 func (r *RootTran) DecodeRequestDefault(ctx context.Context, req *http.Request) (interface{}, error) {
 	ylog.Debug("RootTran.go->DecodeRequestDefault")
 
 	return r.DecodeRequest(new(RequestDefault), ctx, req)
 }
 
-func (r *RootTran) EncodeRequestBuffer(_ context.Context, res *http.Request, requestData interface{}) error {
+func (r *RootTran) EncodeRequestBuffer(_ context.Context, req *http.Request, reqData interface{}) error {
 	ylog.Debug("RootTran.go->EncodeRequestBuffer")
 
 	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(requestData); err != nil {
+
+	if err := json.NewEncoder(&buf).Encode(reqData); err != nil {
 		return err
 	}
-	res.Body = ioutil.NopCloser(&buf)
+	req.Body = ioutil.NopCloser(&buf)
 	return nil
 }
 
-func (r *RootTran) EncodeResponse(_ context.Context, wr http.ResponseWriter, res interface{}) error {
+func (r *RootTran) EncodeResponse(ctx context.Context, wr http.ResponseWriter, res interface{}) error {
 	ylog.Debug("RootTran.go->EncodeResponse")
 	return json.NewEncoder(wr).Encode(res)
 }
@@ -85,6 +87,20 @@ func (r *RootTran) DecodeResponseDefault(_ context.Context, res *http.Response) 
 		return nil, err
 	}
 	return response, nil
+}
+
+//实现decoder
+func (r *RootTran) DecodeResponseString(_ context.Context, res *http.Response) (interface{}, error) {
+	ylog.Debug("--------RootTran.go--->DecodeResponseString---")
+	buf := make([]byte, res.ContentLength*2)
+
+	i, err := res.Body.Read(buf)
+	if err != nil {
+		return "", err
+	}
+
+	s := string(buf[0:i])
+	return s, nil
 }
 
 //manual proxy
@@ -248,6 +264,8 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 
 	//
 	opts := append(options, tran.ServerBefore(Jwt2ctx()))
+	opts = append(opts, tran.ServerBefore(DebugHead()))
+
 	return tran.NewServer(ep, decodeRequestFunc, r.EncodeResponse, opts...)
 }
 
@@ -301,6 +319,8 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 
 	opt := make([]tran.ServerOption, 0)
 	opt = append(opt, ymid.ServerBeforeCallback)
+	opt = append(opt, ymid.ServerBeforeCallback)
+
 	opt = append(opt, options...)
 	opt = append(opt, tran.ServerBefore(Jwt2ctx()))
 

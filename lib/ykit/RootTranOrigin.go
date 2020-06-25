@@ -24,9 +24,21 @@ import (
 
 type (
 	RootTranOrigin struct {
-		base RootTran
+		RootTran
 	}
 )
+
+func (r *RootTranOrigin) HandlerSDOriginDefault(ctx context.Context,
+	serviceTag, method, path string,
+	mid []endpoint.Middleware) *tran.Server {
+	return r.HandlerSDOrigin(ctx,
+		serviceTag,
+		method,
+		path,
+		r.DecodeRequestDefault,
+		r.DecodeResponseString,
+		mid)
+}
 
 //unit auto discovery
 func (r *RootTranOrigin) HandlerSDOrigin(ctx context.Context,
@@ -35,6 +47,7 @@ func (r *RootTranOrigin) HandlerSDOrigin(ctx context.Context,
 	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
 	mid []endpoint.Middleware,
 	options ...tran.ServerOption) *tran.Server {
+
 	var err error
 	var client etcdv3.Client
 	var logger log.Logger
@@ -76,7 +89,7 @@ func (r *RootTranOrigin) HandlerSDOrigin(ctx context.Context,
 	//
 	opts := append(options, tran.ServerBefore(Jwt2ctx()))
 	//here
-	return tran.NewServer(ep, decodeRequestFunc, r.base.EncodeResponse, opts...)
+	return tran.NewServer(ep, decodeRequestFunc, r.EncodeResponse, opts...)
 }
 
 func (r *RootTranOrigin) FactorySDOrigin(
@@ -97,7 +110,7 @@ func (r *RootTranOrigin) FactorySDOrigin(
 
 		//ylog.Debug("--------begin Visit:-------", instance, "->", path)
 
-		enc := r.base.EncodeRequestBuffer
+		enc := r.EncodeRequestBuffer
 		dec := decodeResponseFunc
 
 		opts := make([]tran.ClientOption, 0)

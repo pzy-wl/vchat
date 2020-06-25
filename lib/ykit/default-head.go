@@ -14,8 +14,10 @@ func CommonHead() tran.RequestFunc {
 		req.Header.Set("Content-Type", "application/json;charset:utf-8")
 		//req.Header.Set("Content-Type", "charset:utf-8")
 		req.Header.Set("Accept", "*/*")
+		c := context.WithValue(ctx, "origin-header", req.Header)
+		c = context.WithValue(ctx, "origin-url", req.RequestURI)
 
-		return ctx
+		return c
 	}
 }
 
@@ -24,7 +26,9 @@ func DebugHead() tran.RequestFunc {
 		for k, v := range req.Header {
 			ylog.Debug("default-head.go->header: ", k, ":", v)
 		}
-		ylog.Debug("--------visit:", req.URL)
+
+		ylog.Debug("--URL------visit:", req.URL)
+		ylog.Debug("--RequestURI------visit:", req.RequestURI)
 
 		return ctx
 	}
