@@ -31,3 +31,14 @@ func GetExecPath() (string, error) {
 	//fmt.Println("path333:", path)
 	return string(path[0 : i+1]), nil
 }
+
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path) //os.Stat获取文件信息
+	if err != nil {
+		if os.IsExist(err) {
+			return true, err
+		}
+		return false, err
+	}
+	return true, nil
+}

@@ -41,3 +41,21 @@ func Test_exec_path(t *testing.T) {
 	}
 	log.Println("----path:------", p, "------------")
 }
+
+func Test_path_exists(t *testing.T) {
+	l := []string{
+		"~/a",
+		"~/go/src",
+		"./",
+		"/usr",
+		"/etc/",
+	}
+
+	for _, p := range l {
+		ok, err := PathExists(p)
+		fmt.Println("---", p)
+		fmt.Println("-----------", ok)
+		fmt.Println("-----------", err)
+	}
+
+}
