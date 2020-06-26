@@ -2,10 +2,11 @@ package xorm
 
 import (
 	"fmt"
-	"github.com/go-xorm/xorm"
-	_ "github.com/lib/pq"
 	"log"
 	"testing"
+
+	"github.com/go-xorm/xorm"
+	_ "github.com/lib/pq"
 )
 
 const (
@@ -58,7 +59,7 @@ type UserTbl struct {
 func selectAll() {
 	var user []UserTbl
 	engine := GetCnt()
-	engine.SQL("select * from user_tbl").Find(&user)
+	engine.SQL("select * from user_tbl where ").Find(&user)
 	fmt.Println(user)
 }
 

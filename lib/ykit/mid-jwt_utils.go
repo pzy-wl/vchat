@@ -3,12 +3,14 @@ package ykit
 import (
 	"context"
 	"fmt"
-	tran "github.com/go-kit/kit/transport/http"
-	"github.com/vhaoran/vchat/lib/yjwt"
-	"github.com/vhaoran/vchat/lib/ylog"
 	"net/http"
 	"strconv"
 	"strings"
+
+	tran "github.com/go-kit/kit/transport/http"
+
+	"github.com/vhaoran/vchat/lib/yjwt"
+	"github.com/vhaoran/vchat/lib/ylog"
 )
 
 const (
@@ -19,10 +21,15 @@ const (
 func Jwt2ctx() tran.RequestFunc {
 	return func(ctx context.Context, req *http.Request) context.Context {
 		jwt := req.Header.Get(JWT_TOKEN)
+		c := ctx
 		if len(jwt) > 0 {
-			return context.WithValue(ctx, JWT_TOKEN, jwt)
+			c = context.WithValue(c, JWT_TOKEN, jwt)
 		}
-		return ctx
+
+		//
+
+		//
+		return c
 	}
 }
 
@@ -33,15 +40,12 @@ func Jwt2Req() tran.RequestFunc {
 		ylog.Debug("----------", "jwt raw", "------------")
 
 		l, ok := a.(string)
-		if !ok {
-			return c
+		if ok && len(l) > 0 {
+			req.Header.Set(JWT_TOKEN, l)
 		}
 
-		if len(l) == 0 {
-			return c
-		}
+		//
 
-		req.Header.Set(JWT_TOKEN, l)
 		return c
 	}
 }
@@ -52,7 +56,7 @@ func UIDOfTest(s string) int64 {
 		if len(l) > 1 {
 			uid, err := strconv.ParseInt(l[1], 10, 64)
 			if err != nil {
-				ylog.Error("jwt_utils.go->", err)
+				ylog.Error("mid-jwt_utils.go->", err)
 				return 0
 			}
 
@@ -72,7 +76,7 @@ func GetUIDOfReq(req *http.Request) int64 {
 
 		uid, err := yjwt.Parse(s)
 		if err != nil {
-			ylog.Error("jwt_utils.go->", err)
+			ylog.Error("mid-jwt_utils.go->", err)
 			return 0
 		}
 		return uid
@@ -86,7 +90,7 @@ func GetUIDOfContext(ctx context.Context) int64 {
 	if i != nil {
 		uid, err := strconv.ParseInt(fmt.Sprint(i), 10, 64)
 		if err != nil {
-			ylog.Error("jwt_utils.go->", err)
+			ylog.Error("mid-jwt_utils.go->", err)
 			return 0
 		}
 		return uid
@@ -108,7 +112,7 @@ func GetUIDOfContext(ctx context.Context) int64 {
 
 	ii, err := yjwt.Parse(s)
 	if err != nil {
-		ylog.Error("jwt_utils.go->", err)
+		ylog.Error("mid-jwt_utils.go->", err)
 		return 0
 	}
 	return ii

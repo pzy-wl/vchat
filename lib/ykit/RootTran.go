@@ -39,9 +39,15 @@ type (
 func (r *RootTran) DecodeRequest(reqDataPtr interface{}, _ context.Context, req *http.Request) (interface{}, error) {
 	ylog.Debug("--------RootTran.go--->DeecodeRequest---")
 
+	for k, v := range req.URL.Query() {
+		ylog.Debug("--------RootTran.go--->query param---", k, ":", v)
+	}
+
 	if err := json.NewDecoder(req.Body).Decode(reqDataPtr); err != nil {
-		ylog.Error("RootTran.go->DecodeRequest", err)
-		return nil, err
+		ylog.Error("****** RootTran.go->DecodeRequest", err)
+		if req.Method != "GET" {
+			return nil, err
+		}
 	}
 
 	golog.Println("RootTran) DecodeRequest")
@@ -264,6 +270,7 @@ func (r *RootTran) HandlerSD(ctx context.Context,
 
 	//
 	opts := append(options, tran.ServerBefore(Jwt2ctx()))
+	opts = append(opts, tran.ServerBefore(QStr2ctx()))
 	opts = append(opts, tran.ServerBefore(DebugHead()))
 
 	return tran.NewServer(ep, decodeRequestFunc, r.EncodeResponse, opts...)
@@ -323,6 +330,7 @@ func (r *RootTran) HandlerSDDefault(ctx context.Context,
 
 	opt = append(opt, options...)
 	opt = append(opt, tran.ServerBefore(Jwt2ctx()))
+	opt = append(opt, tran.ServerBefore(QStr2ctx()))
 
 	return tran.NewServer(ep,
 		r.DecodeRequestDefault,
@@ -382,6 +390,7 @@ func (r *RootTran) HandlerSDCommon(ctx context.Context,
 	opt = append(opt, ymid.ServerBeforeCallback)
 	opt = append(opt, options...)
 	opt = append(opt, tran.ServerBefore(Jwt2ctx()))
+	opt = append(opt, tran.ServerBefore(QStr2ctx()))
 	opt = append(opt, tran.ServerBefore(DebugHead()))
 	//opt = append(opt, tran.ServerBefore(Head2Context()))
 
@@ -399,6 +408,8 @@ func (r *RootTran) FactorySD(
 	decodeResponseFunc func(_ context.Context, res *http.Response) (interface{}, error),
 	mid ...endpoint.Middleware) sd.Factory {
 	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
+		ylog.Debug("--------RootTran.go->factory->instance---", instance)
+
 		if !strings.HasPrefix(instance, "http") {
 			instance = "http://" + instance
 		}
@@ -415,6 +426,7 @@ func (r *RootTran) FactorySD(
 
 		opts := make([]tran.ClientOption, 0)
 		opts = append(opts, tran.ClientBefore(Jwt2Req()))
+		opts = append(opts, tran.ClientBefore(QStr2Req()))
 		opts = append(opts, tran.ClientBefore(CommonHead()))
 		opts = append(opts, tran.ClientBefore(DebugHead()))
 

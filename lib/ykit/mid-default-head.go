@@ -24,10 +24,14 @@ func CommonHead() tran.RequestFunc {
 func DebugHead() tran.RequestFunc {
 	return func(ctx context.Context, req *http.Request) context.Context {
 		for k, v := range req.Header {
-			ylog.Debug("default-head.go->header: ", k, ":", v)
+			ylog.Debug("mid-default-head.go->header: ", k, ":", v)
 		}
 
-		ylog.Debug("--URL------visit:", req.URL)
+		for k, v := range req.URL.Query() {
+			ylog.Debug("mid-default-head.go->header: ", k, ":", v)
+		}
+
+		ylog.Debug("--URL------visit:", req.URL.String())
 		ylog.Debug("--RequestURI------visit:", req.RequestURI)
 
 		return ctx
