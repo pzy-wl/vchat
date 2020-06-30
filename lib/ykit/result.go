@@ -30,14 +30,19 @@ func RWarn(msg string, data interface{}) *Result {
 	}
 }
 
-func ROK(data interface{}) *Result {
-	return ResultOK(data)
+func ROK(data interface{}, info ...string) *Result {
+	return ResultOK(data, info...)
 }
 
-func ResultOK(data interface{}) *Result {
+func ResultOK(data interface{}, info ...string) *Result {
+	s := "执行成功"
+	if len(info) > 0 {
+		s += "," + info[0]
+	}
+
 	return &Result{
 		Code: OK,
-		Msg:  "执行成功",
+		Msg:  s,
 		Data: data,
 	}
 }
