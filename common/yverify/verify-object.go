@@ -54,7 +54,7 @@ func (r *VerifyOBJ) NotZero(name string, src interface{}) *VerifyOBJ {
 	//
 	if ii, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
 		if ii == 0 {
-			msg := fmt.Sprintf("<%s>值<%d>必须不为0", name, ii)
+			msg := fmt.Sprintf("[%s]值[%d]必须不为0", name, ii)
 
 			r.push(msg)
 			return r
@@ -88,7 +88,7 @@ func (r *VerifyOBJ) GtF(name string, src interface{}, l ...float64) *VerifyOBJ {
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
 		f2 := dst
 		if !(f1 > f2) {
-			msg := fmt.Sprintf("<%s>值<%f>必须大于<%f>", name, f1, f2)
+			msg := fmt.Sprintf("[%s]值[%f]必须大于[%f]", name, f1, f2)
 
 			r.push(msg)
 			return r
@@ -122,7 +122,7 @@ func (r *VerifyOBJ) Gt(name string, src interface{}, l ...int64) *VerifyOBJ {
 	if i1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
 		i2 := dst
 		if !(i1 > i2) {
-			msg := fmt.Sprintf("<%s>值<%d>必须大于<%d>", name, i1, i2)
+			msg := fmt.Sprintf("[%s]值[%d]必须大于[%d]", name, i1, i2)
 			r.push(msg)
 			return r
 		}
@@ -156,7 +156,7 @@ func (r *VerifyOBJ) GteF(name string, src interface{}, l ...float64) *VerifyOBJ 
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
 		f2 := dst
 		if !(f1 >= f2) {
-			msg := fmt.Sprintf("<%s>值<%f>必须大于或等于<%f>", name, f1, f2)
+			msg := fmt.Sprintf("%s 值[%f]必须大于或等于[%f]", name, f1, f2)
 			r.push(msg)
 			return r
 		}
@@ -189,7 +189,7 @@ func (r *VerifyOBJ) Gte(name string, src interface{}, l ...int64) *VerifyOBJ {
 	if f1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
 		f2 := dst
 		if !(f1 >= f2) {
-			msg := fmt.Sprintf("<%s>值<%d>必须大于或等于<%d>", name, f1, f2)
+			msg := fmt.Sprintf("[%s]值[%d]必须大于或等于[%d]", name, f1, f2)
 			r.push(msg)
 			return r
 		}
@@ -223,7 +223,7 @@ func (r *VerifyOBJ) LtF(name string, src interface{}, l ...float64) *VerifyOBJ {
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
 		f2 := dst
 		if !(f1 < f2) {
-			msg := fmt.Sprintf("<%s>值<%f>必须小于<%f>", name, f1, f2)
+			msg := fmt.Sprintf("[%s]值<%f>必须小于<%f>", name, f1, f2)
 			r.push(msg)
 			return r
 		}
@@ -257,7 +257,7 @@ func (r *VerifyOBJ) Lt(name string, src interface{}, l ...int64) *VerifyOBJ {
 	if f1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
 		f2 := dst
 		if !(f1 < f2) {
-			msg := fmt.Sprintf("<%s>值<%d>必须小于<%d>", name, f1, f2)
+			msg := fmt.Sprintf("[%s]值[%d]必须小于[%d]", name, f1, f2)
 			r.push(msg)
 			return r
 		}
@@ -291,7 +291,7 @@ func (r *VerifyOBJ) LteF(name string, src interface{}, l ...float64) *VerifyOBJ 
 	if f1, err := strconv.ParseFloat(fmt.Sprint(src), 64); err == nil {
 		f2 := dst
 		if !(f1 <= f2) {
-			msg := fmt.Sprintf("<%s>值<%f>必须小于或等于<%f>", name, f1, f2)
+			msg := fmt.Sprintf("[%s]值<%f>必须小于或等于<%f>", name, f1, f2)
 			r.push(msg)
 			return r
 		}
@@ -325,7 +325,7 @@ func (r *VerifyOBJ) Lte(name string, src interface{}, l ...int64) *VerifyOBJ {
 	if f1, err := strconv.ParseInt(fmt.Sprint(src), 10, 64); err == nil {
 		f2 := dst
 		if !(f1 <= f2) {
-			msg := fmt.Sprintf("<%s>值<%d>必须小于或等于<%d>", name, f1, f2)
+			msg := fmt.Sprintf("[%s]值[%d]必须小于或等于[%d]", name, f1, f2)
 			r.push(msg)
 			return r
 		}
@@ -347,7 +347,7 @@ func (r *VerifyOBJ) NotNilPtr(name string, l ...interface{}) *VerifyOBJ {
 	}
 
 	if l == nil {
-		msg := fmt.Sprintf("<%s>不能为空", name)
+		msg := fmt.Sprintf("[%s]不能为空", name)
 		r.push(msg)
 		return r
 	}
@@ -359,7 +359,7 @@ func (r *VerifyOBJ) NotNilPtr(name string, l ...interface{}) *VerifyOBJ {
 		//
 		v := reflect.ValueOf(ptr)
 		if v.IsNil() {
-			msg := fmt.Sprintf("<%s>不能为空", name)
+			msg := fmt.Sprintf("[%s]不能为空", name)
 			r.push(msg)
 			return r
 		}
@@ -374,20 +374,20 @@ func (r *VerifyOBJ) NotEmpty(name string, lst ...interface{}) *VerifyOBJ {
 	}
 
 	if lst == nil {
-		msg := fmt.Sprintf("<%s>不能为空", name)
+		msg := fmt.Sprintf("[%s]不能为空", name)
 		r.push(msg)
 		return r
 	}
 
 	for _, l := range lst {
 		if l == nil {
-			msg := fmt.Sprintf("<%s>不能为空", name)
+			msg := fmt.Sprintf("[%s]不能为空", name)
 			r.push(msg)
 			return r
 		}
 		if reflectUtils.IsPointer(l) {
 			if reflectUtils.IsNil(l) {
-				msg := fmt.Sprintf("<%s>不能为空,长度必须大于0", name)
+				msg := fmt.Sprintf("[%s]不能为空,长度必须大于0", name)
 				r.push(msg)
 				return r
 			}
@@ -403,7 +403,7 @@ func (r *VerifyOBJ) NotEmpty(name string, lst ...interface{}) *VerifyOBJ {
 		}
 
 		if i <= 0 {
-			msg := fmt.Sprintf("<%s>不能为空,长度必须大于0", name)
+			msg := fmt.Sprintf("[%s]不能为空,长度必须大于0", name)
 			r.push(msg)
 			return r
 		}
@@ -419,7 +419,7 @@ func (r *VerifyOBJ) InSlice(name string, src, l interface{}) *VerifyOBJ {
 	if g.InSlice(src, l) {
 		return r
 	}
-	msg := fmt.Sprintf("<%s>元素不在列表中", name)
+	msg := fmt.Sprintf("[%s]元素不在列表中", name)
 	r.push(msg)
 	return r
 }
@@ -438,13 +438,17 @@ func (r *VerifyOBJ) Fn(l ...error) *VerifyOBJ {
 	return r
 }
 
+func (r *VerifyOBJ) FnTrue(name string, b bool) *VerifyOBJ {
+	return r.FnBool(name, b)
+}
+
 func (r *VerifyOBJ) FnBool(name string, b bool) *VerifyOBJ {
 	if !r.needContinue() {
 		return r
 	}
 
 	if !b {
-		r.push(fmt.Sprintf("<%s>值必须为真值", name))
+		r.push(fmt.Sprintf("[%s]值必须为真值", name))
 	}
 	return r
 }
