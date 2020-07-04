@@ -16,14 +16,15 @@ func CacheAutoGetH(ptrTableBean interface{}, field interface{},
 	key := CacheKeyTableH(tbName)
 	fd := fmt.Sprint(field)
 	ylog.Debug("redis cache key is:", key)
-
+	//相当于定义了一个函数的别名 并且执行了一遍
 	doCallbackAndSet := func() (interface{}, error) {
 		v, err := callback()
 		if err != nil {
 			return nil, err
 		}
-		//
+		//println("123")
 		var s []byte
+		//正常执行,不出错误的话
 		if s, err = json.Marshal(v); err == nil {
 			_, err = X.HSet(key, fd, string(s)).Result()
 			if err != nil {
