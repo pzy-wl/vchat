@@ -25,7 +25,7 @@ func (Good) TableName() string {
 func init() {
 	_, err := lib.InitModulesOfAll()
 	if err != nil {
-		panic(" not init ok")
+		//panic(" not init ok")
 	}
 }
 
@@ -55,4 +55,7 @@ func Test_CacheClearH(t *testing.T) {
 
 func Test_debug(t *testing.T) {
 	ylog.Debug("hello")
+}
+func Test_say(t *testing.T)  {
+	fmt.Println("hello, world!")
 }

@@ -31,10 +31,10 @@ func (personX) TableName() string {
 
 func newDBCnt() *gorm.DB {
 	connStr := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s",
-		"127.0.0.1", //viper.GetString("DB_HOST"),
-		"root",      //viper.GetString("DB_USER"),
+		"localhost", //viper.GetString("DB_HOST"),
+		"postgres",      //viper.GetString("DB_USER"),
 		"test",      //viper.GetString("DB_NAME"),
-		"password",  ///viper.GetString("DB_PASS"),
+		"123456",  ///viper.GetString("DB_PASS"),
 	)
 
 	db, err := gorm.Open("postgres", connStr)

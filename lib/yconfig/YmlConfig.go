@@ -197,7 +197,6 @@ func GetYmlConfig() (*YmlConfig, error) {
 	if err = vp.ReadInConfig(); err != nil {
 		return nil, err
 	}
-
 	if err = vp.UnmarshalExact(yml); err != nil {
 		return nil, err
 	}

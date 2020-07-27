@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	golog "log"
 	"net/http"
 
@@ -17,6 +18,8 @@ func init() {
 
 	//------------ prepare modules----------
 	//本步骤主要是装入系统必备的模块
+	//网关初始化
+	fmt.Println("网关初始化!")
 	_, err := lib.InitModulesOfOptions(&lib.LoadOption{
 		LoadMicroService: true, //这不同必需要的
 		LoadEtcd:         true, //etcd必須開啟，否則無法自動發現服務
@@ -34,21 +37,18 @@ func init() {
 
 //gateway功能不需要每一个模块来实现，但用这个模块可以测试微服务是否能补成功调用
 func main() {
-
+    println("开始执行main函数")
 	addr := "localhost:9999"
 	//ctx := context.Background()
 	mux := http.NewServeMux()
-
 	mux.Handle("/api/CtxTest", new(intf.CtxTestHandler).HandlerSD(nil))
 	mux.Handle("/api/MapTest", new(intf.MapTestH).HandlerSD(nil))
-
 	mux.Handle("/api/MapTestCommon", new(ykit.RootTran).HandlerSDCommon(
 		context.Background(),
 		"api",
 		"POST",
 		"/MapTest",
 		nil))
-
 	mux.Handle("/api/pb",
 		new(ykit.RootTran).HandlerSDCommon(
 			context.Background(),
@@ -61,6 +61,9 @@ func main() {
 		`start at :9999,url is curl:localhost/hello`,
 		`test command:`,
 		`curl -X POST -H 'Authorization:whr_token' -H 'Content-Type:application/json'  -d '{"S":"hello,world pass in data"}' localhost:9999/api/CtxTest -v`)
+	fmt.Println("test0")
 
 	golog.Fatal(http.ListenAndServe(addr, mux))
+	fmt.Println("test1")
+
 }

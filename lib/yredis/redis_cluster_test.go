@@ -28,7 +28,6 @@ func Test_redis(t *testing.T) {
 		"192.168.0.99:7005",
 		"192.168.0.99:7006",
 	}
-
 	cfg := yconfig.RedisConfig{
 		Addrs:              url,
 		MaxRedirects:       0,
@@ -55,15 +54,15 @@ func Test_redis(t *testing.T) {
 		log.Println(err)
 		return
 	}
-
-	//
 	t0 := time.Now()
 	h := 100000
 	var wg sync.WaitGroup
+	//创建100000个任务
 	wg.Add(h)
 	for i := 0; i < h; i++ {
 		go func(k int) {
 			defer wg.Done()
+			//任务完成后任务池减1
 			if err := red.Set(fmt.Sprint("a_", k), k, time.Hour*100).Err(); err != nil {
 				log.Println(err)
 			} else {

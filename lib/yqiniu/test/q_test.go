@@ -27,6 +27,7 @@ func init() {
 }
 
 func Test_get_token(t *testing.T) {
+	//获取令牌
 	z, err := yqiniu.GetToken(30)
 	ylog.Debug("--------q_test.go------", z)
 	ylog.Debug("--------q_test.go------", err)
